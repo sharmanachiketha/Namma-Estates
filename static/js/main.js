@@ -44,7 +44,7 @@ map.on('click', async function(e) {
         if(matchedBtn) loadAreaData(data.nearest_area, matchedBtn);
         
     } catch (err) {
-        popup.setContent('<div style="color:red;font-family:\\'Outfit\\',sans-serif;">Error analyzing location.</div>');
+        popup.setContent('<div style="color:red;font-family:\'Outfit\',sans-serif;">Error analyzing location.</div>');
     }
 });
 
