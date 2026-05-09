@@ -33,7 +33,7 @@ map.on('click', async function(e) {
         const data = await response.json();
         if (data.error) throw new Error(data.error);
         
-        popup.setContent(`<div style="font-family:\\'Outfit\\',sans-serif;font-size:0.95rem;line-height:1.4;color:#333;padding:5px;">${data.summary}</div>`);
+        popup.setContent(`<div style="font-family:\'Outfit\',sans-serif;font-size:0.95rem;line-height:1.4;color:#333;padding:5px;">${data.summary}</div>`);
         
         // Also load the area data and highlight
         const buttons = document.querySelectorAll('.area-btn');
