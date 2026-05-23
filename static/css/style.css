@@ -384,16 +384,6 @@ header p {
     margin-top: 0.1rem;
 }
 
-/* METRO STATION SPECIFIC HIGHLIGHT */
-.metro-badge .badge-value {
-    color: #a855f7; /* beautiful premium violet highlight */
-    text-shadow: 0 0 4px rgba(168, 85, 247, 0.15);
-}
-
-html[data-theme="light"] .metro-badge .badge-value {
-    color: #7c3aed;
-}
-
 /* OUTLOOK REASONING BOX */
 .reasoning-box {
     background: rgba(59, 130, 246, 0.05);

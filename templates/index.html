@@ -14,7 +14,7 @@
     <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY=" crossorigin=""/>
     
     <!-- Custom CSS -->
-    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}?v=2.0.0">
 </head>
 <body>
     <div class="app-container">
@@ -61,11 +61,6 @@
                         <input type="checkbox" id="water-layer-toggle" onchange="toggleWaterLayer(this.checked)">
                         <span class="control-label">Kaveri Water Supply</span>
                     </label>
-                    <hr class="control-divider">
-                    <label class="control-item">
-                        <input type="checkbox" id="metro-layer-toggle" onchange="toggleMetroLayer(this.checked)">
-                        <span class="control-label">Namma Metro Network</span>
-                    </label>
                 </div>
             </div>
 
@@ -106,12 +101,6 @@
                         <div class="badge-details">
                             <span class="badge-label">Terrain Profile</span>
                             <span id="elevation-status-badge" class="badge-value">--</span>
-                        </div>
-                    </div>
-                    <div class="utility-badge metro-badge">
-                        <div class="badge-details">
-                            <span class="badge-label">Nearest Metro Station</span>
-                            <span id="metro-status-badge" class="badge-value">--</span>
                         </div>
                     </div>
                 </div>
@@ -169,6 +158,6 @@
     <!-- Leaflet JS -->
     <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=" crossorigin=""></script>
     <!-- Custom JS -->
-    <script src="{{ url_for('static', filename='js/main.js') }}"></script>
+    <script src="{{ url_for('static', filename='js/main.js') }}?v=2.0.0"></script>
 </body>
 </html>
