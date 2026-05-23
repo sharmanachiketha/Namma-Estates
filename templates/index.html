@@ -19,23 +19,50 @@
 <body>
     <div class="app-container">
         <!-- Sidebar / Control Panel -->
-        <aside class="sidebar glass-panel">
+        <aside id="sidebar" class="sidebar glass-panel">
             <header>
                 <div class="header-main">
                     <h1>Namma<span class="highlight">Estates</span></h1>
-                    <button id="theme-toggle" class="theme-toggle-btn" aria-label="Toggle Theme" onclick="toggleTheme()">
-                        <!-- Sun Icon (visible in Dark Theme) -->
-                        <svg class="sun-icon" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364-6.364l-.707.707M6.343 17.657l-.707.707m12.728 0l-.707-.707M6.343 6.364l-.707.707M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
-                        </svg>
-                        <!-- Moon Icon (visible in Light Theme) -->
-                        <svg class="moon-icon hidden" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z" />
-                        </svg>
-                    </button>
+                    <div class="header-actions">
+                        <button id="theme-toggle" class="header-btn" aria-label="Toggle Theme" onclick="toggleTheme()">
+                            <svg class="sun-icon" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364-6.364l-.707.707M6.343 17.657l-.707.707m12.728 0l-.707-.707M6.343 6.364l-.707.707M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+                            </svg>
+                            <svg class="moon-icon hidden" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z" />
+                            </svg>
+                        </button>
+                        <button class="header-btn collapse-btn" title="Collapse Sidebar" onclick="toggleSidebar()">
+                            <span class="desktop-only">◀</span>
+                            <span class="mobile-only">▼</span>
+                        </button>
+                    </div>
                 </div>
                 <p>AI-Powered Real Estate Intelligence</p>
             </header>
+
+            <!-- Map Overlays Control Panel (Moved to Sidebar!) -->
+            <div class="layers-section">
+                <h2>Map Overlays</h2>
+                <div class="controls-list">
+                    <label class="control-item">
+                        <input type="checkbox" id="topo-layer-toggle" onchange="toggleTopoLayer(this.checked)">
+                        <span class="control-label">Topographic Relief</span>
+                    </label>
+                    <div class="opacity-slider-container disabled" id="opacity-slider-container">
+                        <div class="slider-header">
+                            <span class="slider-label">Overlay Opacity</span>
+                            <span id="opacity-val" class="slider-value">60%</span>
+                        </div>
+                        <input type="range" id="topo-opacity" min="0" max="100" value="60" oninput="updateTopoOpacity(this.value)">
+                    </div>
+                    <hr class="control-divider">
+                    <label class="control-item">
+                        <input type="checkbox" id="water-layer-toggle" onchange="toggleWaterLayer(this.checked)">
+                        <span class="control-label">Kaveri Water Supply</span>
+                    </label>
+                </div>
+            </div>
 
             <div class="areas-section">
                 <h2>Explore Zones</h2>
@@ -62,19 +89,17 @@
                     </div>
                 </div>
 
-                <!-- Utilities Badges Panel -->
+                <!-- Utilities Badges Panel (No Emojis, Clean Layout) -->
                 <div class="utility-badges">
                     <div class="utility-badge water-badge">
-                        <span class="badge-icon">💧</span>
                         <div class="badge-details">
-                            <span class="badge-label">Kaveri Water Supply</span>
+                            <span class="badge-label">Kaveri Water Connection</span>
                             <span id="water-status-badge" class="badge-value">--</span>
                         </div>
                     </div>
                     <div class="utility-badge elevation-badge">
-                        <span class="badge-icon">🏔️</span>
                         <div class="badge-details">
-                            <span class="badge-label">Terrain & Flood Risk</span>
+                            <span class="badge-label">Terrain Profile</span>
                             <span id="elevation-status-badge" class="badge-value">--</span>
                         </div>
                     </div>
@@ -123,28 +148,10 @@
         <main class="map-container">
             <div id="map"></div>
             
-            <!-- Floating Map Layer Controls -->
-            <div class="map-overlay-controls glass-panel">
-                <h3>Map Layers</h3>
-                <div class="controls-list">
-                    <label class="control-item">
-                        <input type="checkbox" id="topo-layer-toggle" onchange="toggleTopoLayer(this.checked)">
-                        <span class="control-label">Topographic Overlay</span>
-                    </label>
-                    <div class="opacity-slider-container disabled" id="opacity-slider-container">
-                        <div class="slider-header">
-                            <span class="slider-label">Opacity</span>
-                            <span id="opacity-val" class="slider-value">60%</span>
-                        </div>
-                        <input type="range" id="topo-opacity" min="0" max="100" value="60" oninput="updateTopoOpacity(this.value)">
-                    </div>
-                    <hr class="control-divider">
-                    <label class="control-item">
-                        <input type="checkbox" id="water-layer-toggle" onchange="toggleWaterLayer(this.checked)">
-                        <span class="control-label">BWSSB Kaveri Water Supply</span>
-                    </label>
-                </div>
-            </div>
+            <!-- Floating Sidebar Expand Button (Appears only when sidebar is collapsed) -->
+            <button id="expand-sidebar-btn" class="expand-sidebar-btn hidden" onclick="toggleSidebar()" title="Expand Sidebar & Layers">
+                Explore & Overlays ☰
+            </button>
         </main>
     </div>
 
