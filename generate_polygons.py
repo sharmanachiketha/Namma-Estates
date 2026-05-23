@@ -21,7 +21,12 @@ coords = {
     "Basavanagudi": [12.9406, 77.5738],
     "Sarjapur Road": [12.9238, 77.6705],
     "KR Puram": [13.0084, 77.7001],
-    "Yeshwanthpur": [13.0285, 77.5409]
+    "Yeshwanthpur": [13.0285, 77.5409],
+    "Kalyan Nagar": [13.0274, 77.6411],
+    "Kammanahalli": [13.0092, 77.6368],
+    "Nagarabhaavi": [12.9719, 77.5093],
+    "Vijayanagar": [12.9696, 77.5360],
+    "RT Nagar": [13.0184, 77.5934]
 }
 
 def generate_polygon(lat, lon, radius_km=1.5, num_points=8):

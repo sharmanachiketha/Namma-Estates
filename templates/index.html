@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" data-theme="dark">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -21,7 +21,19 @@
         <!-- Sidebar / Control Panel -->
         <aside class="sidebar glass-panel">
             <header>
-                <h1>Namma<span class="highlight">Estates</span></h1>
+                <div class="header-main">
+                    <h1>Namma<span class="highlight">Estates</span></h1>
+                    <button id="theme-toggle" class="theme-toggle-btn" aria-label="Toggle Theme" onclick="toggleTheme()">
+                        <!-- Sun Icon (visible in Dark Theme) -->
+                        <svg class="sun-icon" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364-6.364l-.707.707M6.343 17.657l-.707.707m12.728 0l-.707-.707M6.343 6.364l-.707.707M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+                        </svg>
+                        <!-- Moon Icon (visible in Light Theme) -->
+                        <svg class="moon-icon hidden" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z" />
+                        </svg>
+                    </button>
+                </div>
                 <p>AI-Powered Real Estate Intelligence</p>
             </header>
 
@@ -50,6 +62,24 @@
                     </div>
                 </div>
 
+                <!-- Utilities Badges Panel -->
+                <div class="utility-badges">
+                    <div class="utility-badge water-badge">
+                        <span class="badge-icon">💧</span>
+                        <div class="badge-details">
+                            <span class="badge-label">Kaveri Water Supply</span>
+                            <span id="water-status-badge" class="badge-value">--</span>
+                        </div>
+                    </div>
+                    <div class="utility-badge elevation-badge">
+                        <span class="badge-icon">🏔️</span>
+                        <div class="badge-details">
+                            <span class="badge-label">Terrain & Flood Risk</span>
+                            <span id="elevation-status-badge" class="badge-value">--</span>
+                        </div>
+                    </div>
+                </div>
+
                 <div class="reasoning-box">
                     <h4>Market Outlook</h4>
                     <p id="reasoning-text">Select an area to view market predictions based on live news data.</p>
@@ -58,8 +88,15 @@
                 <!-- Tabs Section -->
                 <div class="tabs-container">
                     <div class="tabs-header">
-                        <button class="tab-btn active" onclick="switchTab('news')">News</button>
-                        <button class="tab-btn" onclick="switchTab('social')">Social Sentiment</button>
+                        <div class="tab-triggers">
+                            <button class="tab-btn active" onclick="switchTab('news', event)">News</button>
+                            <button class="tab-btn" onclick="switchTab('social', event)">Social Sentiment</button>
+                        </div>
+                        <button id="refresh-feed-btn" class="refresh-feed-btn" title="Refresh Live Data" onclick="refreshLiveData()">
+                            <svg class="refresh-svg" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 1121.21 8H17" />
+                            </svg>
+                        </button>
                     </div>
                     
                     <div id="tab-news" class="tab-content active">
@@ -85,6 +122,29 @@
         <!-- Main Map Area -->
         <main class="map-container">
             <div id="map"></div>
+            
+            <!-- Floating Map Layer Controls -->
+            <div class="map-overlay-controls glass-panel">
+                <h3>Map Layers</h3>
+                <div class="controls-list">
+                    <label class="control-item">
+                        <input type="checkbox" id="topo-layer-toggle" onchange="toggleTopoLayer(this.checked)">
+                        <span class="control-label">Topographic Overlay</span>
+                    </label>
+                    <div class="opacity-slider-container disabled" id="opacity-slider-container">
+                        <div class="slider-header">
+                            <span class="slider-label">Opacity</span>
+                            <span id="opacity-val" class="slider-value">60%</span>
+                        </div>
+                        <input type="range" id="topo-opacity" min="0" max="100" value="60" oninput="updateTopoOpacity(this.value)">
+                    </div>
+                    <hr class="control-divider">
+                    <label class="control-item">
+                        <input type="checkbox" id="water-layer-toggle" onchange="toggleWaterLayer(this.checked)">
+                        <span class="control-label">BWSSB Kaveri Water Supply</span>
+                    </label>
+                </div>
+            </div>
         </main>
     </div>
 

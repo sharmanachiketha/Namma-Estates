@@ -32,7 +32,12 @@ AREAS = [
     "Basavanagudi",
     "Sarjapur Road",
     "KR Puram",
-    "Yeshwanthpur"
+    "Yeshwanthpur",
+    "Kalyan Nagar",
+    "Kammanahalli",
+    "Nagarabhaavi",
+    "Vijayanagar",
+    "RT Nagar"
 ]
 
 BASE_PRICES = {
@@ -55,7 +60,12 @@ BASE_PRICES = {
     "Basavanagudi": 15000,
     "Sarjapur Road": 11000,
     "KR Puram": 8000,
-    "Yeshwanthpur": 9500
+    "Yeshwanthpur": 9500,
+    "Kalyan Nagar": 8500,
+    "Kammanahalli": 8000,
+    "Nagarabhaavi": 9000,
+    "Vijayanagar": 11500,
+    "RT Nagar": 10000
 }
 
 # Add coords for nearest neighbor calculation
@@ -79,7 +89,70 @@ COORDS = {
     "Basavanagudi": [12.9406, 77.5738],
     "Sarjapur Road": [12.9238, 77.6705],
     "KR Puram": [13.0084, 77.7001],
-    "Yeshwanthpur": [13.0285, 77.5409]
+    "Yeshwanthpur": [13.0285, 77.5409],
+    "Kalyan Nagar": [13.0274, 77.6411],
+    "Kammanahalli": [13.0092, 77.6368],
+    "Nagarabhaavi": [12.9719, 77.5093],
+    "Vijayanagar": [12.9696, 77.5360],
+    "RT Nagar": [13.0184, 77.5934]
+}
+
+# Verified BWSSB Stage-wise Cauvery Water Supply (High, Medium, Tanker Dependent)
+WATER_AVAILABILITY = {
+    "Jayanagar": "High (Cauvery Stage 1/2)",
+    "HSR Layout": "High-Medium (Cauvery Stage 4 Ph 1)",
+    "BTM Layout": "High-Medium (Cauvery Stage 4 Ph 1)",
+    "MG Road": "High (Cauvery Stage 1/3)",
+    "Rajajinagar": "High-Medium (Cauvery Stage 4 Ph 1)",
+    "Indiranagar": "High-Medium (Cauvery Stage 3/4 Ph 2)",
+    "Koramangala": "High-Medium (Cauvery Stage 1/4 Ph 1)",
+    "Whitefield": "Low (Tanker Dependent / Stage 5)",
+    "Electronic City": "High-Medium (Cauvery Stage 4 Ph 1)",
+    "Malleswaram": "High (Cauvery Stage 3)",
+    "Yelahanka": "Medium (Cauvery Stage 4 Ph 2)",
+    "Banashankari": "High (Cauvery Stage 2)",
+    "Bellandur": "Low (Tanker Dependent / Stage 4 Ph 1 Planning)",
+    "Marathahalli": "Medium (Cauvery Stage 4 Ph 2)",
+    "Hebbal": "Low (Tanker Dependent)",
+    "JP Nagar": "High-Medium (Cauvery Stage 2/4)",
+    "Basavanagudi": "High (Cauvery Stage 1/2)",
+    "Sarjapur Road": "Low (Tanker Dependent)",
+    "KR Puram": "Low (Tanker Dependent)",
+    "Yeshwanthpur": "High-Medium (Cauvery Stage 4 Ph 1)",
+    "Kalyan Nagar": "Medium (Cauvery Stage 4 Ph 2)",
+    "Kammanahalli": "Medium (Cauvery Stage 4 Ph 2)",
+    "Nagarabhaavi": "High-Medium (Cauvery Stage 4)",
+    "Vijayanagar": "High-Medium (Cauvery Stage 4 Ph 1)",
+    "RT Nagar": "High (Cauvery Stage 3)"
+}
+
+# Elevation terrain and flood risk classification
+ELEVATION_INFO = {
+    "Jayanagar": "High Ridge (Low Flood Risk)",
+    "HSR Layout": "Low Basin (Moderate Flood Risk)",
+    "BTM Layout": "Moderate Slope (Low Flood Risk)",
+    "MG Road": "High Plateau (Low Flood Risk)",
+    "Rajajinagar": "High Ridge (Low Flood Risk)",
+    "Indiranagar": "High Plateau (Low Flood Risk)",
+    "Koramangala": "Low Valley (High Flood Risk)",
+    "Whitefield": "Moderate Plateau (Low Flood Risk)",
+    "Electronic City": "Moderate Plateau (Low Flood Risk)",
+    "Malleswaram": "High Ridge (Low Flood Risk)",
+    "Yelahanka": "High Ridge (Low Flood Risk)",
+    "Banashankari": "High Terrain (Low Flood Risk)",
+    "Bellandur": "Lake Basin (High Flood Risk)",
+    "Marathahalli": "Moderate Basin (Low Flood Risk)",
+    "Hebbal": "Valley Basin (Moderate/High Flood Risk)",
+    "JP Nagar": "High Ridge (Low Flood Risk)",
+    "Basavanagudi": "High Ridge (Low Flood Risk)",
+    "Sarjapur Road": "Low Basin (Moderate Flood Risk)",
+    "KR Puram": "Lake Basin (Moderate Flood Risk)",
+    "Yeshwanthpur": "Moderate Slope (Low Flood Risk)",
+    "Kalyan Nagar": "Moderate Slope (Low Flood Risk)",
+    "Kammanahalli": "Moderate Slope (Low Flood Risk)",
+    "Nagarabhaavi": "High Terrain (Low Flood Risk)",
+    "Vijayanagar": "High Ridge (Low Flood Risk)",
+    "RT Nagar": "Moderate Plateau (Low Flood Risk)"
 }
 
 def fetch_geojson(area_name):
@@ -91,8 +164,8 @@ def fetch_geojson(area_name):
         print(f"Error loading static geojson: {e}")
         return None
 
-def fetch_news(area_name):
-    if area_name in news_cache and time.time() - news_cache[area_name]['time'] < 3600:
+def fetch_news(area_name, force_refresh=False):
+    if not force_refresh and area_name in news_cache and time.time() - news_cache[area_name]['time'] < 600:
         return news_cache[area_name]['data']
 
     query = f"{area_name} Bengaluru"
@@ -114,8 +187,8 @@ def fetch_news(area_name):
     news_cache[area_name] = {'time': time.time(), 'data': news_items}
     return news_items
 
-def fetch_social_sentiment(area_name):
-    if area_name in social_cache and time.time() - social_cache[area_name]['time'] < 3600:
+def fetch_social_sentiment(area_name, force_refresh=False):
+    if not force_refresh and area_name in social_cache and time.time() - social_cache[area_name]['time'] < 600:
         return social_cache[area_name]['data']
         
     url = "https://www.reddit.com/r/bangalore/search.json"
@@ -191,14 +264,18 @@ def index():
 def get_areas():
     return jsonify(AREAS)
 
+from flask import request
+
 @app.route('/api/area_data/<area_name>')
 def get_area_data(area_name):
     if area_name not in AREAS:
         return jsonify({"error": "Area not found"}), 404
         
+    force_refresh = request.args.get('refresh', 'false').lower() == 'true'
+    
     geojson = fetch_geojson(area_name)
-    news = fetch_news(area_name)
-    social = fetch_social_sentiment(area_name)
+    news = fetch_news(area_name, force_refresh=force_refresh)
+    social = fetch_social_sentiment(area_name, force_refresh=force_refresh)
     base_price = BASE_PRICES.get(area_name, 10000)
     
     prediction = analyze_sentiment_and_predict(base_price, news, social)
@@ -208,7 +285,9 @@ def get_area_data(area_name):
         'geojson': geojson,
         'news': news,
         'social': social,
-        'financials': prediction
+        'financials': prediction,
+        'water_availability': WATER_AVAILABILITY.get(area_name, "Low (Tanker Dependent)"),
+        'elevation_info': ELEVATION_INFO.get(area_name, "Moderate Slope")
     })
 
 import math
