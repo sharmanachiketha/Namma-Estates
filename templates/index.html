@@ -41,7 +41,7 @@
                 <p>AI-Powered Real Estate Intelligence</p>
             </header>
 
-            <!-- Map Overlays Control Panel (Moved to Sidebar!) -->
+            <!-- Map Overlays Control Panel -->
             <div class="layers-section">
                 <h2>Map Overlays</h2>
                 <div class="controls-list">
@@ -60,6 +60,11 @@
                     <label class="control-item">
                         <input type="checkbox" id="water-layer-toggle" onchange="toggleWaterLayer(this.checked)">
                         <span class="control-label">Kaveri Water Supply</span>
+                    </label>
+                    <hr class="control-divider">
+                    <label class="control-item">
+                        <input type="checkbox" id="metro-layer-toggle" onchange="toggleMetroLayer(this.checked)">
+                        <span class="control-label">Namma Metro Network</span>
                     </label>
                 </div>
             </div>
@@ -89,7 +94,7 @@
                     </div>
                 </div>
 
-                <!-- Utilities Badges Panel (No Emojis, Clean Layout) -->
+                <!-- Utilities Badges Panel -->
                 <div class="utility-badges">
                     <div class="utility-badge water-badge">
                         <div class="badge-details">
@@ -101,6 +106,12 @@
                         <div class="badge-details">
                             <span class="badge-label">Terrain Profile</span>
                             <span id="elevation-status-badge" class="badge-value">--</span>
+                        </div>
+                    </div>
+                    <div class="utility-badge metro-badge">
+                        <div class="badge-details">
+                            <span class="badge-label">Nearest Metro Station</span>
+                            <span id="metro-status-badge" class="badge-value">--</span>
                         </div>
                     </div>
                 </div>
@@ -148,7 +159,7 @@
         <main class="map-container">
             <div id="map"></div>
             
-            <!-- Floating Sidebar Expand Button (Appears only when sidebar is collapsed) -->
+            <!-- Floating Sidebar Expand Button -->
             <button id="expand-sidebar-btn" class="expand-sidebar-btn hidden" onclick="toggleSidebar()" title="Expand Sidebar & Layers">
                 Explore & Overlays ☰
             </button>

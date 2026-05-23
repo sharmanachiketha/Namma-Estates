@@ -26,7 +26,12 @@ coords = {
     "Kammanahalli": [13.0092, 77.6368],
     "Nagarabhaavi": [12.9719, 77.5093],
     "Vijayanagar": [12.9696, 77.5360],
-    "RT Nagar": [13.0184, 77.5934]
+    "RT Nagar": [13.0184, 77.5934],
+    "Bannerghatta Road / Arekere": [12.8966, 77.5975],
+    "Begur": [12.8806, 77.6244],
+    "Singasandra": [12.8860, 77.6540],
+    "RR Nagar": [12.9248, 77.5200],
+    "Puttenahalli": [12.8997, 77.5818]
 }
 
 def generate_polygon(lat, lon, radius_km=1.5, num_points=8):

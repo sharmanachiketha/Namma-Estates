@@ -26,7 +26,12 @@ const AREA_COORDS = {
     "Kammanahalli": [13.0092, 77.6368],
     "Nagarabhaavi": [12.9719, 77.5093],
     "Vijayanagar": [12.9696, 77.5360],
-    "RT Nagar": [13.0184, 77.5934]
+    "RT Nagar": [13.0184, 77.5934],
+    "Bannerghatta Road / Arekere": [12.8966, 77.5975],
+    "Begur": [12.8806, 77.6244],
+    "Singasandra": [12.8860, 77.6540],
+    "RR Nagar": [12.9248, 77.5200],
+    "Puttenahalli": [12.8997, 77.5818]
 };
 
 const WATER_LEVELS = {
@@ -34,15 +39,77 @@ const WATER_LEVELS = {
     "Rajajinagar": "medium", "Indiranagar": "medium", "Koramangala": "medium", "Yelahanka": "medium", "Banashankari": "high",
     "HSR Layout": "medium", "BTM Layout": "medium", "Electronic City": "medium", "Marathahalli": "medium", "Yeshwanthpur": "medium",
     "Kalyan Nagar": "medium", "Kammanahalli": "medium", "Nagarabhaavi": "medium", "Vijayanagar": "medium",
+    "Bannerghatta Road / Arekere": "medium", "Begur": "low", "Singasandra": "low", "RR Nagar": "medium", "Puttenahalli": "medium",
     "Whitefield": "low", "Bellandur": "low", "Sarjapur Road": "low", "KR Puram": "low", "Hebbal": "low"
 };
+
+// --- NAMMA METRO DATA TRACKS & STATIONS ---
+const METRO_STATIONS = [
+    { name: "Majestic (Interchange)", coord: [12.9756, 77.5728], line: "Purple & Green Line Interchange" },
+    { name: "Indiranagar", coord: [12.9783, 77.6408], line: "Purple Line" },
+    { name: "MG Road", coord: [12.9718, 77.6010], line: "Purple Line" },
+    { name: "Vijayanagar", coord: [12.9696, 77.5360], line: "Purple Line" },
+    { name: "Whitefield (Kadugodi)", coord: [12.9698, 77.7499], line: "Purple Line" },
+    { name: "KR Puram", coord: [13.0084, 77.7001], line: "Purple Line" },
+    { name: "Mysore Road", coord: [12.9535, 77.5250], line: "Purple Line" },
+    { name: "RR Nagar (Jnanabharathi)", coord: [12.9248, 77.5200], line: "Purple Line" },
+    { name: "Jayanagar", coord: [12.9250, 77.5938], line: "Green Line" },
+    { name: "JP Nagar", coord: [12.9063, 77.5857], line: "Green Line" },
+    { name: "Banashankari", coord: [12.9254, 77.5467], line: "Green Line" },
+    { name: "Yeshwanthpur", coord: [13.0285, 77.5409], line: "Green Line" },
+    { name: "Malleswaram (Sampige Road)", coord: [13.0011, 77.5630], line: "Green Line" },
+    { name: "BTM Layout", coord: [12.9165, 77.6101], line: "Yellow Line" },
+    { name: "Silk Board", coord: [12.9174, 77.6225], line: "Yellow Line" },
+    { name: "HSR Layout", coord: [12.9116, 77.6388], line: "Yellow Line" },
+    { name: "Electronic City", coord: [12.8399, 77.6770], line: "Yellow Line" }
+];
+
+const PURPLE_LINE_PATH = [
+    [12.9698, 77.7499], // Whitefield
+    [13.0084, 77.7001], // KR Puram
+    [12.9569, 77.7011], // Marathahalli
+    [12.9783, 77.6408], // Indiranagar
+    [12.9760, 77.6264], // Halasuru
+    [12.9718, 77.6010], // MG Road
+    [12.9756, 77.5728], // Majestic
+    [12.9733, 77.5640], // City Railway
+    [12.9696, 77.5360], // Vijayanagar
+    [12.9535, 77.5250], // Mysore Road
+    [12.9248, 77.5200], // RR Nagar
+    [12.9015, 77.4725]  // Challaghatta
+];
+
+const GREEN_LINE_PATH = [
+    [13.0285, 77.5409], // Yeshwanthpur
+    [13.0011, 77.5630], // Malleswaram
+    [12.9756, 77.5728], // Majestic
+    [12.9600, 77.5740], // KR Market
+    [12.9505, 77.5730], // National College
+    [12.9406, 77.5738], // Lalbagh / Basavanagudi
+    [12.9250, 77.5938], // Jayanagar
+    [12.9063, 77.5857], // JP Nagar
+    [12.9254, 77.5467], // Banashankari
+    [12.8735, 77.5735], // Konanakunte Cross
+    [12.8600, 77.5520]  // Silk Institute
+];
+
+const YELLOW_LINE_PATH = [
+    [12.9215, 77.5830], // RV Road
+    [12.9165, 77.6101], // BTM Layout
+    [12.9174, 77.6225], // Silk Board
+    [12.9116, 77.6388], // HSR Layout
+    [12.8860, 77.6540], // Singasandra
+    [12.8399, 77.6770], // Electronic City
+    [12.8160, 77.6930]  // Bommasandra
+];
 
 // --- INITIALIZE MAP & VARIABLES ---
 let activeAreaName = null;
 let currentGeoJsonLayer = null;
 let baseTileLayer = null;
 let topoLayer = null;
-let waterLayerGroup = null;
+let waterGeoJsonLayerGroup = null;
+let metroLayerGroup = null;
 
 const map = L.map('map', {
     zoomControl: false 
@@ -97,20 +164,20 @@ function toggleTheme() {
 updateMapTileLayer();
 updateThemeUI();
 
-// --- COLLAPSIBLE SIDEBAR MANAGER ---
+// --- COLLAPSIBLE SIDEBAR MANAGER (FIXED BOTTOM SHEET & 100vh RESIZING FOR MOBILE) ---
 function toggleSidebar() {
-    const sidebar = document.getElementById('sidebar');
+    const container = document.querySelector('.app-container');
     const expandBtn = document.getElementById('expand-sidebar-btn');
     
-    if (sidebar.classList.contains('collapsed')) {
-        sidebar.classList.remove('collapsed');
+    if (container.classList.contains('sidebar-collapsed')) {
+        container.classList.remove('sidebar-collapsed');
         expandBtn.classList.add('hidden');
     } else {
-        sidebar.classList.add('collapsed');
+        container.classList.add('sidebar-collapsed');
         expandBtn.classList.remove('hidden');
     }
     
-    // Smoothly invalidate Leaflet map size after transitions (400ms) 
+    // Smoothly invalidate Leaflet map size after height transition (400ms) 
     // so map tiles auto-realign correctly without distortion.
     setTimeout(() => {
         map.invalidateSize({ animate: true });
@@ -119,6 +186,7 @@ function toggleSidebar() {
 
 // --- MAP OVERLAYS CONTROLS ---
 
+// 1. Topographic Elevation Overlay
 function toggleTopoLayer(checked) {
     const sliderContainer = document.getElementById('opacity-slider-container');
     if (checked) {
@@ -146,42 +214,111 @@ function updateTopoOpacity(val) {
     }
 }
 
-function toggleWaterLayer(checked) {
+// 2. Verified BWSSB Kaveri Water Supply (Contiguous GeoJSON Overlay!)
+async function toggleWaterLayer(checked) {
     if (checked) {
-        if (!waterLayerGroup) {
-            waterLayerGroup = L.layerGroup();
-            Object.entries(AREA_COORDS).forEach(([area, latlng]) => {
-                const status = WATER_LEVELS[area];
-                let color = '#ef4444'; // Red (low / tanker)
-                let label = 'Low (Tanker Dependent)';
-                if (status === 'high') {
-                    color = '#10b981'; // Green
-                    label = 'High (Cauvery Connected)';
-                } else if (status === 'medium') {
-                    color = '#f59e0b'; // Orange/Yellow
-                    label = 'Medium (Cauvery Connected)';
-                }
+        if (!waterGeoJsonLayerGroup) {
+            waterGeoJsonLayerGroup = L.layerGroup();
+            
+            try {
+                // Fetch the complete procedurial boundaries
+                const response = await fetch('/api/all_geojsons');
+                const geojsons = await response.json();
                 
-                const circle = L.circle(latlng, {
-                    color: color,
+                Object.entries(geojsons).forEach(([areaName, geojson]) => {
+                    const status = WATER_LEVELS[areaName] || "low";
+                    let color = '#ef4444'; // Red (low / tanker)
+                    let label = 'Low (Tanker Dependent)';
+                    if (status === 'high') {
+                        color = '#10b981'; // Green
+                        label = 'High (Cauvery Connected)';
+                    } else if (status === 'medium') {
+                        color = '#f59e0b'; // Orange/Yellow
+                        label = 'Medium (Cauvery Connected)';
+                    }
+                    
+                    const geoJsonLayer = L.geoJSON(geojson, {
+                        style: {
+                            color: color,
+                            weight: 2,
+                            opacity: 0.8,
+                            fillColor: color,
+                            fillOpacity: 0.3
+                        }
+                    }).bindPopup(`
+                        <div style="font-family:'Outfit',sans-serif;padding:3px;">
+                            <b style="font-size:0.95rem;color:#111;">${areaName}</b><br>
+                            <span style="color:${color};font-weight:700;">${label}</span>
+                        </div>
+                    `);
+                    
+                    waterGeoJsonLayerGroup.addLayer(geoJsonLayer);
+                });
+            } catch (err) {
+                console.error("Failed to draw contiguous Kaveri overlay:", err);
+            }
+        }
+        waterGeoJsonLayerGroup.addTo(map);
+    } else {
+        if (waterGeoJsonLayerGroup) {
+            map.removeLayer(waterGeoJsonLayerGroup);
+        }
+    }
+}
+
+// 3. Namma Metro Network Tracks & Stations
+function toggleMetroLayer(checked) {
+    if (checked) {
+        if (!metroLayerGroup) {
+            metroLayerGroup = L.layerGroup();
+            
+            // Draw Purple Line
+            const purpleLine = L.polyline(PURPLE_LINE_PATH, {
+                color: '#a855f7',
+                weight: 5,
+                opacity: 0.85
+            }).bindPopup("<b>Namma Metro Purple Line</b> (East-West Corridor)");
+            metroLayerGroup.addLayer(purpleLine);
+            
+            // Draw Green Line
+            const greenLine = L.polyline(GREEN_LINE_PATH, {
+                color: '#10b981',
+                weight: 5,
+                opacity: 0.85
+            }).bindPopup("<b>Namma Metro Green Line</b> (North-South Corridor)");
+            metroLayerGroup.addLayer(greenLine);
+            
+            // Draw Yellow Line
+            const yellowLine = L.polyline(YELLOW_LINE_PATH, {
+                color: '#f59e0b',
+                weight: 5,
+                opacity: 0.85,
+                dashArray: '8, 8' // dotted overlay indicating Yellow Line/Silk Board corridor
+            }).bindPopup("<b>Namma Metro Yellow Line</b> (Silk Board - Electronic City Corridor)");
+            metroLayerGroup.addLayer(yellowLine);
+            
+            // Add Station Circle Markers
+            METRO_STATIONS.forEach(station => {
+                const color = station.line.includes("Purple") ? "#a855f7" : "#10b981";
+                const marker = L.circleMarker(station.coord, {
+                    radius: 6,
+                    color: '#ffffff',
+                    weight: 1.5,
                     fillColor: color,
-                    fillOpacity: 0.3,
-                    radius: 1200,
-                    weight: 1.5
+                    fillOpacity: 0.95
                 }).bindPopup(`
                     <div style="font-family:'Outfit',sans-serif;padding:3px;">
-                        <b style="font-size:0.95rem;color:#111;">${area}</b><br>
-                        <span style="color:${color};font-weight:700;">${label}</span>
+                        <b style="font-size:0.95rem;color:#111;">${station.name} Station</b><br>
+                        <span style="color:#666;font-size:0.78rem;">${station.line}</span>
                     </div>
                 `);
-                
-                waterLayerGroup.addLayer(circle);
+                metroLayerGroup.addLayer(marker);
             });
         }
-        waterLayerGroup.addTo(map);
+        metroLayerGroup.addTo(map);
     } else {
-        if (waterLayerGroup) {
-            map.removeLayer(waterLayerGroup);
+        if (metroLayerGroup) {
+            map.removeLayer(metroLayerGroup);
         }
     }
 }
@@ -224,6 +361,37 @@ const formatCurrency = (num) => {
         maximumFractionDigits: 0
     }).format(num);
 };
+
+// Precise Haversine distance calculator
+function getDistanceKm(lat1, lon1, lat2, lon2) {
+    const R = 6371; // Earth radius in km
+    const dLat = (lat2 - lat1) * Math.PI / 180;
+    const dLon = (lon2 - lon1) * Math.PI / 180;
+    const a = Math.sin(dLat/2) * Math.sin(dLat/2) +
+              Math.cos(lat1 * Math.PI / 180) * Math.cos(lat2 * Math.PI / 180) *
+              Math.sin(dLon/2) * Math.sin(dLon/2);
+    const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1-a));
+    return R * c;
+}
+
+// Find nearest metro station
+function findNearestMetro(areaLat, areaLon) {
+    let nearest = null;
+    let minDistance = Infinity;
+    
+    METRO_STATIONS.forEach(station => {
+        const dist = getDistanceKm(areaLat, areaLon, station.coord[0], station.coord[1]);
+        if (dist < minDistance) {
+            minDistance = dist;
+            nearest = station;
+        }
+    });
+    
+    return {
+        station: nearest,
+        distance: minDistance.toFixed(1)
+    };
+}
 
 async function initializeApp() {
     try {
@@ -335,9 +503,19 @@ function updateSidebar(data) {
     // Update water and elevation badges dynamically
     const waterBadge = document.getElementById('water-status-badge');
     const elevBadge = document.getElementById('elevation-status-badge');
+    const metroBadge = document.getElementById('metro-status-badge');
     
     waterBadge.innerText = data.water_availability;
     elevBadge.innerText = data.elevation_info;
+    
+    // Compute and display nearest Namma Metro station
+    const coords = AREA_COORDS[data.area];
+    if (coords) {
+        const nearestMetro = findNearestMetro(coords[0], coords[1]);
+        metroBadge.innerText = `${nearestMetro.station.name} (${nearestMetro.distance} km)`;
+    } else {
+        metroBadge.innerText = "No station found nearby";
+    }
     
     // Dynamically color-code the water badge based on stage
     if (data.water_availability.includes('High')) {

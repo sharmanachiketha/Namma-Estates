@@ -37,7 +37,12 @@ AREAS = [
     "Kammanahalli",
     "Nagarabhaavi",
     "Vijayanagar",
-    "RT Nagar"
+    "RT Nagar",
+    "Bannerghatta Road / Arekere",
+    "Begur",
+    "Singasandra",
+    "RR Nagar",
+    "Puttenahalli"
 ]
 
 BASE_PRICES = {
@@ -65,7 +70,12 @@ BASE_PRICES = {
     "Kammanahalli": 8000,
     "Nagarabhaavi": 9000,
     "Vijayanagar": 11500,
-    "RT Nagar": 10000
+    "RT Nagar": 10000,
+    "Bannerghatta Road / Arekere": 7500,
+    "Begur": 6500,
+    "Singasandra": 6000,
+    "RR Nagar": 8500,
+    "Puttenahalli": 9500
 }
 
 # Add coords for nearest neighbor calculation
@@ -94,7 +104,12 @@ COORDS = {
     "Kammanahalli": [13.0092, 77.6368],
     "Nagarabhaavi": [12.9719, 77.5093],
     "Vijayanagar": [12.9696, 77.5360],
-    "RT Nagar": [13.0184, 77.5934]
+    "RT Nagar": [13.0184, 77.5934],
+    "Bannerghatta Road / Arekere": [12.8966, 77.5975],
+    "Begur": [12.8806, 77.6244],
+    "Singasandra": [12.8860, 77.6540],
+    "RR Nagar": [12.9248, 77.5200],
+    "Puttenahalli": [12.8997, 77.5818]
 }
 
 # Verified BWSSB Stage-wise Cauvery Water Supply (High, Medium, Tanker Dependent)
@@ -123,7 +138,12 @@ WATER_AVAILABILITY = {
     "Kammanahalli": "Medium (Cauvery Stage 4 Ph 2)",
     "Nagarabhaavi": "High-Medium (Cauvery Stage 4)",
     "Vijayanagar": "High-Medium (Cauvery Stage 4 Ph 1)",
-    "RT Nagar": "High (Cauvery Stage 3)"
+    "RT Nagar": "High (Cauvery Stage 3)",
+    "Bannerghatta Road / Arekere": "Medium (Cauvery Stage 4 Ph 2)",
+    "Begur": "Low (Tanker Dependent / Stage 5 Planning)",
+    "Singasandra": "Low (Tanker Dependent / Stage 5 Planning)",
+    "RR Nagar": "High-Medium (Cauvery Stage 4 Ph 1)",
+    "Puttenahalli": "High-Medium (Cauvery Stage 4 Ph 1)"
 }
 
 # Elevation terrain and flood risk classification
@@ -152,7 +172,12 @@ ELEVATION_INFO = {
     "Kammanahalli": "Moderate Slope (Low Flood Risk)",
     "Nagarabhaavi": "High Terrain (Low Flood Risk)",
     "Vijayanagar": "High Ridge (Low Flood Risk)",
-    "RT Nagar": "Moderate Plateau (Low Flood Risk)"
+    "RT Nagar": "Moderate Plateau (Low Flood Risk)",
+    "Bannerghatta Road / Arekere": "High Terrain (Low Flood Risk)",
+    "Begur": "Moderate Slope (Low Flood Risk)",
+    "Singasandra": "Moderate Basin (Low Flood Risk)",
+    "RR Nagar": "High Ridge (Low Flood Risk)",
+    "Puttenahalli": "Moderate Slope (Low Flood Risk)"
 }
 
 def fetch_geojson(area_name):
@@ -263,6 +288,14 @@ def index():
 @app.route('/api/areas')
 def get_areas():
     return jsonify(AREAS)
+
+@app.route('/api/all_geojsons')
+def get_all_geojsons():
+    try:
+        with open('static_geojsons.json', 'r') as f:
+            return jsonify(json.load(f))
+    except Exception as e:
+        return jsonify({"error": str(e)}), 500
 
 from flask import request
 
