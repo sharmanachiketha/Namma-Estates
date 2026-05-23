@@ -27,7 +27,7 @@ coords = {
     "Nagarabhaavi": [12.9719, 77.5093],
     "Vijayanagar": [12.9696, 77.5360],
     "RT Nagar": [13.0184, 77.5934],
-    "Bannerghatta Road / Arekere": [12.8966, 77.5975],
+    "Bannerghatta Road": [12.8966, 77.5975],
     "Begur": [12.8806, 77.6244],
     "Singasandra": [12.8860, 77.6540],
     "RR Nagar": [12.9248, 77.5200],
