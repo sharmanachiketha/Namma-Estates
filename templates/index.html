@@ -61,6 +61,11 @@
                         <input type="checkbox" id="water-layer-toggle" onchange="toggleWaterLayer(this.checked)">
                         <span class="control-label">Kaveri Water Supply</span>
                     </label>
+                    <hr class="control-divider">
+                    <label class="control-item">
+                        <input type="checkbox" id="green-layer-toggle" onchange="toggleGreenCoverLayer(this.checked)">
+                        <span class="control-label">BBMP Green Canopy</span>
+                    </label>
                 </div>
             </div>
 
@@ -86,6 +91,18 @@
                             <span id="trend-icon"></span>
                             <span id="trend-percent">--%</span>
                         </div>
+                    </div>
+                </div>
+
+                <!-- Overview Highlights (Liveability & Green Cover) -->
+                <div class="overview-cards">
+                    <div class="overview-card liveability-highlight">
+                        <span class="label">Liveability Score</span>
+                        <h3 id="overview-liveability">-- / 10</h3>
+                    </div>
+                    <div class="overview-card green-highlight">
+                        <span class="label">Green Canopy</span>
+                        <h3 id="overview-green">--%</h3>
                     </div>
                 </div>
 
@@ -115,7 +132,8 @@
                     <div class="tabs-header">
                         <div class="tab-triggers">
                             <button class="tab-btn active" onclick="switchTab('news', event)">News</button>
-                            <button class="tab-btn" onclick="switchTab('social', event)">Social Sentiment</button>
+                            <button class="tab-btn" onclick="switchTab('social', event)">Social</button>
+                            <button class="tab-btn" onclick="switchTab('liveability', event)">Liveability</button>
                         </div>
                         <button id="refresh-feed-btn" class="refresh-feed-btn" title="Refresh Live Data" onclick="refreshLiveData()">
                             <svg class="refresh-svg" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -134,6 +152,10 @@
                         <ul id="social-list" class="data-list">
                             <!-- Social items injected via JS -->
                         </ul>
+                    </div>
+                    
+                    <div id="tab-liveability" class="tab-content">
+                        <!-- Content will be injected dynamically -->
                     </div>
                 </div>
             </div>
@@ -157,6 +179,8 @@
 
     <!-- Leaflet JS -->
     <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=" crossorigin=""></script>
+    <!-- Leaflet Heatmap Plugin -->
+    <script src="https://unpkg.com/leaflet.heat@0.2.0/dist/leaflet-heat.js"></script>
     <!-- Custom JS -->
     <script src="{{ url_for('static', filename='js/main.js') }}?v=2.0.0"></script>
 </body>
