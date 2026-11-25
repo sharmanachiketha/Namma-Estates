@@ -406,6 +406,34 @@ header p {
     line-height: 1.45;
 }
 
+
+/* COLLAPSIBLE CALCULATION DETAILS */
+.calc-details {
+    margin-bottom: 1rem;
+    border: 1px solid var(--glass-border);
+    border-radius: 8px;
+    background: var(--card-bg);
+}
+
+.calc-details summary {
+    cursor: pointer;
+    padding: 0.7rem 0.85rem;
+    font-size: 0.85rem;
+    font-weight: 600;
+    color: var(--accent-primary);
+    letter-spacing: 0.3px;
+    user-select: none;
+}
+
+.calc-details .price-sources {
+    margin: 0;
+    padding: 0 0.85rem 0.5rem;
+}
+
+.calc-details .reasoning-box {
+    margin: 0 0.85rem 0.85rem;
+}
+
 /* TABS CONTAINER & REFRESH FEED */
 .tabs-container {
     margin-top: 1rem;
