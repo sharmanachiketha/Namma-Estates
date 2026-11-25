@@ -720,9 +720,13 @@ function updateSidebar(data) {
     document.getElementById('info-title').innerText = data.area;
     
     const fin = data.financials;
-    document.getElementById('current-price').innerText = formatCurrency(fin.current_price_sqft) + ' / sqft';
-    document.getElementById('predicted-price').innerText = formatCurrency(fin.predicted_price_sqft) + ' / sqft';
-    
+    const apt = fin.apartment, plot = fin.plot;
+    const fmt = (n) => formatCurrency(n);
+    document.getElementById('current-price').innerText = apt.low === null ? 'No figure found'
+        : (apt.low === apt.high ? fmt(apt.low) + ' / sqft' : fmt(apt.low) + ' to ' + fmt(apt.high) + ' / sqft');
+    document.getElementById('apt-note').innerText = apt.note;
+    document.getElementById('predicted-price').innerText = (fin.zone_trend_percent > 0 ? '+' : '') + fin.zone_trend_percent + '% (' + fin.zone + ' zone)';
+    document.getElementById('zone-note').innerText = fin.zone_trend_note;
     // Update overview Highlights (Liveability & Green Cover)
     if (data.liveability) {
         const scoreEl = document.getElementById('overview-liveability');
@@ -749,12 +753,16 @@ function updateSidebar(data) {
     
     const landEl = document.getElementById('land-price');
     const landNote = document.getElementById('land-note');
-    if (fin.land) {
-        landEl.innerText = formatCurrency(fin.land.price_sqft) + ' / sqft';
-        landNote.innerText = fin.land.samples + ' sampled listings, ' + formatCurrency(fin.land.low) + ' to ' + formatCurrency(fin.land.high) + '. Low confidence.';
-    } else {
-        landEl.innerText = 'Not enough listings';
-        landNote.innerText = 'Fewer than 3 distinct plot listings found.';
+    landEl.innerText = plot.shown ? fmt(plot.low) + ' to ' + fmt(plot.high) + ' / sqft' : 'Too few listings';
+    landNote.innerText = plot.note;
+    const srcBox = document.getElementById('price-sources');
+    srcBox.innerHTML = '';
+    const mk = (tag, text, parent, href) => { const e = document.createElement(tag); e.textContent = text; if (href) { e.href = href; e.target = '_blank'; e.rel = 'noopener'; } parent.appendChild(e); return e; };
+    mk('h4', 'Sources, asking prices, ' + fin.data_date, srcBox);
+    apt.sources.forEach(s => { const p = mk('p', '', srcBox); mk('a', s.source + ', ' + s.period + ': ' + fmt(s.value) + ' / sqft', p, s.url); });
+    if (plot.listings && plot.listings.length) {
+        const det = mk('details', '', srcBox); mk('summary', plot.listings.length + ' plot listings checked', det);
+        plot.listings.forEach(l => { const p = mk('p', '', det); mk('a', fmt(l.psf) + ' / sqft, ' + l.plot_sqft + ' sqft, ' + (l.locality || ''), p, l.url); });
     }
     const trendInd = document.getElementById('trend-indicator');
     const trendIcon = document.getElementById('trend-icon');
@@ -775,7 +783,7 @@ function updateSidebar(data) {
         trendPercent.innerText = `0%`;
     }
     
-    document.getElementById('reasoning-text').innerText = 'Apartment price: average of public portal asking prices, ' + fin.data_date + ', confidence ' + fin.confidence + '. ' + fin.reason + (data.headlines_fetched ? ' Headlines cached ' + data.headlines_fetched + '.' : '');
+    document.getElementById('reasoning-text').innerText = 'Prices are asking prices copied from two public portals on ' + fin.data_date + ', not recorded sale prices, and they are not averaged. Plot figures are the range of listings that passed the checks in About data. The only trend shown is the past zone figure above; the app does not forecast a future price.' + (data.headlines_fetched ? ' Headlines cached ' + data.headlines_fetched + ' (they only feed the small liveability signal).' : '');
     
     // Update water and elevation badges dynamically
     const waterBadge = document.getElementById('water-status-badge');
