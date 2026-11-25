@@ -691,18 +691,18 @@ MARKET = {'Jayanagar': {'zone': 'South',
 # Areas with no portal page of their own are estimated from the parent locality (disclosed in the app).
 PROXY_PARENT = {'Puttenahalli': 'JP Nagar'}
 
-# Annual (12 months to June 2026) price change by micro-market, Knight Frank H1 2026 as relayed by mypropertypoint.com (30 Oct 2026).
+# Annual (12 months to H1 2026) price change by micro-market, from the Knight Frank H1 2026 PDF table "Residential price movement in select locations".
 KF_ANNUAL = {"KR Puram": 20, "Yelahanka": 18, "Marathahalli": 15, "Whitefield": 14, "Malleswaram": 13, "Hebbal": 11,
-             "Electronic City": 10, "Bannerghatta Road": 7, "Sarjapur Road": 3}
-KF_URL = "https://mypropertypoint.com/blog/bangalore-property-prices-up-14-5-percent-areas-gained-most-2026"
+             "Electronic City": 10, "Bannerghatta Road": 7, "Sarjapur Road": 3, "Yeshwanthpur": 9, "Rajajinagar": 9}
+KF_URL = "https://content.knightfrank.com/research/3116/documents/en/india-real-estate-office-and-residential-market-h1-2026-12927.pdf"
 # City-wide fallback: ANAROCK Q3 2026, base selling price up 8% in the year (other reports: Knight Frank 11%, NoBroker 14.5%).
 CITY_YOY = 8.0
 
 
 def baseline_for(area):
     if area in KF_ANNUAL:
-        return float(KF_ANNUAL[area]), 'Knight Frank, price change over the 12 months to June 2026 for this micro-market (reported by mypropertypoint.com, 30 Oct 2026). Past change assumed to repeat, which is a scenario assumption.'
-    return CITY_YOY, 'No area figure found, so the Bengaluru city-wide annual change is used: ANAROCK Q3 2026, +8% in the year (Knight Frank reports 11% and NoBroker 14.5% for the city, so reports differ). It is not specific to this area.'
+        return float(KF_ANNUAL[area]), 'Knight Frank India Real Estate H1 2026 report, 12-month price change to H1 2026 for this micro-market (primary table checked in the PDF). Past change assumed to repeat, which is a scenario assumption.'
+    return CITY_YOY, 'No Knight Frank micro-market figure for this area, so the Bengaluru city-wide annual change is used: ANAROCK Q3 2026, +8% in the year (Knight Frank city figures are 9% for H1 and 11% for Q3, so reports differ). Not specific to this area.'
 
 
 import statistics as _st
@@ -1123,6 +1123,26 @@ AMENITIES_DATA = {
     }
 }
 
+# MEASURED: OpenStreetMap points of interest within 1.5 km of each area's centre point, counted from the Geofabrik southern-zone
+# extract dated 24 Nov 2026 (https://download.geofabrik.de/asia/india/southern-zone.html). Order: education (school, college,
+# kindergarten), health (hospital, clinic, doctors), parks, shops (supermarket, mall, department store), transit (bus stop, metro station).
+# Only features mapped as single points are counted (area-mapped parks, schools and malls are missed), so these are undercounts and
+# parks are NOT used in the score. The centre point is a typed coordinate, not the area outline.
+AMEN_OSM = {"Jayanagar": [38, 64, 1, 18, 60], "HSR Layout": [24, 43, 2, 27, 43], "BTM Layout": [48, 57, 3, 20, 59], "MG Road": [13, 33, 2, 23, 86], "Rajajinagar": [20, 58, 0, 10, 89], "Indiranagar": [31, 90, 2, 23, 48], "Koramangala": [33, 46, 3, 22, 87], "Whitefield": [13, 15, 3, 6, 20], "Electronic City": [1, 5, 0, 4, 20], "Malleswaram": [28, 73, 4, 24, 74], "Yelahanka": [3, 32, 1, 5, 28], "Banashankari": [7, 42, 3, 8, 39], "Bellandur": [5, 11, 0, 10, 13], "Marathahalli": [6, 19, 1, 18, 24], "Hebbal": [8, 25, 0, 20, 39], "JP Nagar": [29, 45, 1, 22, 44], "Basavanagudi": [24, 93, 0, 13, 64], "Sarjapur Road": [8, 19, 1, 19, 18], "KR Puram": [0, 45, 0, 3, 14], "Yeshwanthpur": [0, 8, 1, 2, 37], "Kalyan Nagar": [20, 46, 0, 18, 46], "Kammanahalli": [11, 34, 0, 14, 39], "Nagarabhaavi": [6, 20, 1, 3, 44], "Vijayanagar": [19, 110, 2, 15, 61], "RT Nagar": [4, 18, 0, 15, 67], "Bannerghatta Road": [28, 27, 0, 24, 25], "Begur": [16, 9, 0, 4, 10], "Singasandra": [7, 10, 0, 4, 7], "RR Nagar": [6, 6, 1, 6, 28], "Puttenahalli": [34, 38, 2, 25, 34]}
+import math as _m
+def _amen_total(a):
+    v = AMEN_OSM.get(a)
+    return (v[0] + v[1] + v[3] + v[4]) if v else None
+def amen_measure(a):
+    """Percentile rank (0..1) of log(1+POI count) across all areas, and the raw counts."""
+    t = _amen_total(a)
+    if t is None:
+        return None
+    allv = sorted(_m.log(1 + _amen_total(x)) for x in AMEN_OSM)
+    rank = sum(1 for x in allv if x <= _m.log(1 + t) + 1e-9) / float(len(allv))
+    return {'total': t, 'rank': round(rank, 2), 'counts': dict(zip(['education', 'health', 'parks', 'shops', 'transit'], AMEN_OSM[a]))}
+
+
 def calculate_liveability_score(area_name, sentiment_change_percent):
     score = 5.0
     
@@ -1155,13 +1175,12 @@ def calculate_liveability_score(area_name, sentiment_change_percent):
         score -= 0.5
         
     # 4. Public Amenities Access (Schools, Parks, Hospitals, Malls) (Weight: 15% / up to 1.5 points)
-    if area_name in ["Jayanagar", "Basavanagudi", "Malleswaram", "MG Road", "Indiranagar", "Koramangala", "Rajajinagar"]:
-        score += 1.5
-    elif area_name in ["Whitefield", "Electronic City", "HSR Layout", "JP Nagar", "RT Nagar", "RR Nagar", "Puttenahalli"]:
-        score += 1.0
+    am = amen_measure(area_name)
+    if am:
+        score += 0.5 + 1.0 * am['rank']  # 0.5 to 1.5 points, from measured counts
     else:
         score += 0.5
-        
+
     # 5. Dynamic Sentiment Score (Weight: 10% / up to 1.0 point)
     # Caps sentiment contribution between -1.0 and +1.0
     sentiment_bonus = max(-1.0, min(1.0, sentiment_change_percent * 0.15))
@@ -1174,7 +1193,8 @@ def calculate_liveability_score(area_name, sentiment_change_percent):
         "water_rating": 9 if "High" in water_status else (6 if "Medium" in water_status else 3),
         "topo_rating": 9 if "Low Flood Risk" in topo_status else (6 if "Moderate Flood Risk" in topo_status else 3),
         "green_rating": 9 if canopy >= 30 else (6 if canopy >= 15 else 3),
-        "amenities_rating": 9 if area_name in ["Jayanagar", "Basavanagudi", "Malleswaram", "MG Road", "Indiranagar", "Koramangala", "Rajajinagar"] else (7 if area_name in ["Whitefield", "Electronic City", "HSR Layout", "JP Nagar", "RT Nagar", "RR Nagar", "Puttenahalli"] else 5),
+        "amenities_rating": (round(1 + 9 * amen_measure(area_name)["rank"]) if amen_measure(area_name) else 5),
+        "amenities_measured": amen_measure(area_name),
         "sentiment_rating": int(max(1, min(10, 5 + (sentiment_change_percent / 1.5))))
     }
 
@@ -1376,7 +1396,7 @@ def outlook(area, sent):
         'components': {
             'zone_trend': {'value': zy, 'note': zy_note},
             'baseline': {'value': base, 'note': zy_note},
-            'liveability': {'value': live_tilt, 'score': live, 'note': 'liveability score ' + str(live) + ' vs a neutral 6.0, 0.35 points per score point. The score is built from FIXED ratings typed into the code (water, flood risk, canopy and a 3-tier amenities list), not live measurements'},
+            'liveability': {'value': live_tilt, 'score': live, 'note': 'liveability score ' + str(live) + ' vs a neutral 6.0, 0.35 points per score point. Water, flood risk and canopy are FIXED ratings typed into the code. Amenities is MEASURED: OpenStreetMap points within 1.5 km (education, health, shops, transit; point-mapped features only, so undercounts), ranked across the 30 areas'},
             'sentiment': {'value': sent_tilt, 'status': sent.get('status')},
         },
         'confidence': conf,
@@ -1501,7 +1521,7 @@ def get_methodology():
             {'name': 'Recorded sale prices', 'kind': 'not available',
              'how': 'No recorded-sale dataset (for example Karnataka registration data) was verified for this update, so the app shows none. Everything above is asking prices.'},
             {'name': '12-month outlook', 'kind': 'indicative formula',
-             'how': 'Outlook % = past 12-month change + liveability tilt + sentiment tilt. Baseline: the past 12-month change, assumed to repeat. Where Knight Frank published a figure for the micro-market (12 months to June 2026, relayed by mypropertypoint.com on 30 Oct 2026) that is used; otherwise the city-wide ANAROCK Q3 2026 figure of +8% in the year (other city reports say 11% and 14.5%, so the reports differ). Area-level change percentages from Square Yards are not used because their period is unclear. Liveability tilt = (liveability score - 6) x 0.35 points. The liveability score rests on fixed ratings typed into the code for water, flood risk, canopy and a 3-tier amenities list (not measured counts), so this input is an assumption. Amenities is a real input, but a fixed-assumption one: I could not obtain measured counts (OpenStreetMap Overpass was down and its mirrors refused access). Sentiment tilt: see next item. The projected price is the estimate times (1 + outlook). The low-high figures are a sensitivity band whose width grows with source disagreement and single-source data; it is my judgement, not a calibrated or statistical prediction interval. No backtest has been run, so no accuracy is claimed. Compare and Find show the baseline outlook without live sentiment; the area panel adds sentiment when enough fresh items exist.'},
+             'how': 'Outlook % = past 12-month change + liveability tilt + sentiment tilt. Baseline: the past 12-month change, assumed to repeat. Where Knight Frank published a figure for the micro-market (Knight Frank India Real Estate H1 2026 report, table Residential price movement in select locations, 12-month change to H1 2026) that is used; otherwise the city-wide ANAROCK Q3 2026 figure of +8% in the year (ANAROCK Residential Market Viewpoints Q3 2026, Bengaluru average 9,600 per sq ft). Knight Frank city figures are 9% (H1 2026) and 11% (Q3 2026, which it says partly reflects dearer stock entering its sample), so reports differ. Area-level change percentages from Square Yards are not used because their period is unclear. Liveability tilt = (liveability score - 6) x 0.35 points. Water, flood risk and canopy in the liveability score are fixed ratings typed into the code, so those parts are assumptions. Amenities is measured: counts of OpenStreetMap schools, colleges, kindergartens, hospitals, clinics, doctors, supermarkets, malls, department stores, bus stops and metro stations within 1.5 km of the centre point of the area, from the Geofabrik southern-zone extract of 24 Nov 2026, converted to a 0.5 to 1.5 point score by rank across the 30 areas (log scale). Only features mapped as points are counted, so counts are undercounts and uneven by area, parks are excluded for that reason, and the centre point is not the area boundary. Sentiment tilt: see next item. The projected price is the estimate times (1 + outlook). The low-high figures are a sensitivity band whose width grows with source disagreement and single-source data; it is my judgement, not a calibrated or statistical prediction interval. No backtest has been run, so no accuracy is claimed. Compare and Find show the baseline outlook without live sentiment; the area panel adds sentiment when enough fresh items exist.'},
             {'name': 'News and social sentiment', 'kind': 'live signal, often missing',
              'how': 'Google News RSS headlines and r/bangalore search results for the area. An item counts only if its title names the area and it is under 90 days old by its own timestamp (news pubDate, reddit created time). Items without a timestamp are dropped. De-duplicated, then scored with a keyword list (metro, flood, water logging, crime and similar, each weighted). At least 3 usable items are needed. Below that the status is insufficient and sentiment adds exactly 0: no data, not a neutral reading. With enough items the tilt is net sentiment x 1.5 points, capped at +/-1. Keyword scoring misses context and sarcasm, so the weight is small. The reddit feed may be blocked from the server, in which case only news is used. Past cached posts without a creation time are treated as stale.'},
             {'name': 'Kaveri water supply', 'kind': 'fixed',
