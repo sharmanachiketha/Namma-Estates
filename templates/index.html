@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Bengaluru Real Estate | Smart Predictive Mapping</title>
-    <meta name="description" content="Interactive predictive real estate mapping for Bengaluru with apartment and plot asking prices from public portals and a past zone trend. Forecasts are withheld.">
+    <meta name="description" content="Interactive predictive real estate mapping for Bengaluru: apartment and plot price estimates from public portals, and an indicative 12-month outlook from past trend, liveability and news and social sentiment.">
     <!-- Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -89,12 +89,12 @@
                 
                 <div class="price-cards">
                     <div class="card current-price">
-                        <span class="label">Apartments, asking price</span>
+                        <span class="label">Apartments, asking price (estimate)</span>
                         <h3 id="current-price">₹-- / sqft</h3>
                         <small id="apt-note" class="price-note"></small>
                     </div>
                     <div class="card predicted-price">
-                        <span class="label">Zone trend, last 12 months (not a forecast)</span>
+                        <span class="label">12-month outlook (indicative, not validated)</span>
                         <h3 id="predicted-price">--</h3>
                         <small id="zone-note" class="price-note"></small>
                         <div id="trend-indicator" class="trend-indicator">
@@ -103,7 +103,7 @@
                         </div>
                     </div>
                     <div class="card land-price">
-                        <span class="label">Plots, asking price</span>
+                        <span class="label">Plots, asking price (estimate)</span>
                         <h3 id="land-price">--</h3>
                         <small id="land-note" class="price-note"></small>
                     </div>
@@ -140,8 +140,9 @@
                 <div id="price-sources" class="price-sources"></div>
 
                 <div class="reasoning-box">
-                    <h4>How the prices are worked out (no forecast shown)</h4>
-                    <p id="reasoning-text">Select an area to see its sourced prices and 12-month trend.</p>
+                    <h4>How the estimates and outlook are worked out</h4>
+                    <div id="outlook-detail" class="outlook-detail"></div>
+                    <p id="reasoning-text">Select an area to see its price estimates and 12-month outlook.</p>
                 </div>
 
                 <!-- Tabs Section -->
