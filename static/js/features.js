@@ -168,7 +168,7 @@
         }
         const rows = [
             { label: 'Apartment asking price per sqft (estimate, portal range)', get: s => s.apt_est, show: s => s.apt_est === null ? 'no figure found' : '~' + inr(s.apt_est) + ' (' + (s.apt_low === s.apt_high ? 'one source' : inr(s.apt_low) + ' to ' + inr(s.apt_high)) + ', ' + s.apt_conf + ' confidence)', best: null },
-            { label: '12-month outlook, baseline (zone trend + liveability, excludes live news sentiment; the area panel adds it when enough fresh items exist)', get: s => s.outlook_percent, show: s => (s.outlook_percent > 0 ? '+' : '') + s.outlook_percent + '%', best: 'max' },
+            { label: '12-month outlook, baseline (past 12-month change + liveability, excludes live news sentiment; the area panel adds it when enough fresh items exist)', get: s => s.outlook_percent, show: s => (s.outlook_percent > 0 ? '+' : '') + s.outlook_percent + '%', best: 'max' },
             { label: 'Plot asking price per sqft (estimate, range)', get: s => null, show: s => s.plot && s.plot.est ? '~' + inr(s.plot.est) + ' (' + (s.plot.low === s.plot.high ? 'single source' : inr(s.plot.low) + ' to ' + inr(s.plot.high)) + ', ' + s.plot.confidence + ' confidence, ' + s.plot.method + ')' : 'no estimate', best: null },
             { label: 'Liveability', get: s => s.liveability, show: s => s.liveability + ' / 10', best: 'max' },
             { label: 'Water supply', get: s => s.water_level, show: s => waterLabel(s.water_level), best: 'max' },
