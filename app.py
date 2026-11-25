@@ -74,680 +74,756 @@ AREAS = [
     "Puttenahalli"
 ]
 
+# ---------------------------------------------------------------------------
+# Market data, fetched 25 Nov 2026. Every figure is an ASKING price from a public portal page.
+# mb  = MagicBricks locality page, Multistorey Apartment average per sqft (p = period shown on page)
+# sy  = Square Yards locality page, Apartment row (v = rate per sqft, chg = change % shown beside it)
+# mbp = MagicBricks locality page, Residential Plot average, quoted per sq yard; v = that figure / 9 per sqft
+# listings = Square Yards resale plot listings that passed the audit rules in About data
+# ---------------------------------------------------------------------------
 PRICE_DATA_DATE = "25 Nov 2026"
-# Per area: the two portal apartment figures exactly as read from each page (asking prices), and the
-# plot listings that passed the checks described in the About page. Nothing here is averaged.
-PRICE_DATA = {'Jayanagar': {'zone': 'South',
-               'mb': {'value': 14028,
-                      'period': 'Q3 2026',
-                      'page_updated': 'Oct-2026',
-                      'url': 'https://www.magicbricks.com/Property-Rates-Trends/Multistorey-Apartment-rates-Jayanagar-in-Bangalore'},
-               'sy': {'value': 19850,
-                      'page_date': 'Nov 2026',
-                      'url': 'https://www.squareyards.com/property-rates/jayanagar-bangalore',
-                      'headline_all_types': 18900},
-               'land_listings': [{'url': 'https://www.squareyards.com/resale-1200-sq-ft-plot-in-jayanagar/10624955',
-                                  'psf': 37500,
-                                  'plot_sqft': 1200,
-                                  'locality': 'Jayanagar, Central Bangalore, Jayanagar'},
-                                 {'url': 'https://www.squareyards.com/resale-1203-sq-ft-plot-in-jayanagar/10344124',
-                                  'psf': 2200,
-                                  'plot_sqft': 1203,
-                                  'locality': 'Jayanagar'},
-                                 {'url': 'https://www.squareyards.com/resale-1217-sq-ft-plot-in-jayanagar/10350339',
-                                  'psf': 6495,
-                                  'plot_sqft': 1217,
-                                  'locality': 'Jayanagar'},
-                                 {'url': 'https://www.squareyards.com/resale-2000-sq-ft-plot-in-jayanagar/10281932',
-                                  'psf': 45000,
-                                  'plot_sqft': 2000,
-                                  'locality': 'Jayanagar 7th Block, Jayanagar'}]},
+MARKET = {'Jayanagar': {'zone': 'South',
+               'mb': {'v': 14028, 'p': 'Q3 2026', 'u': 'https://www.magicbricks.com/Property-Rates-Trends/Multistorey-Apartment-rates-Jayanagar-in-Bangalore'},
+               'sy': {'v': 19850, 'chg': 5.1, 'u': 'https://www.squareyards.com/property-rates/jayanagar-bangalore'},
+               'mbp': {'v': 10530,
+                       'sqyd': 94769,
+                       'p': 'Q3 2026',
+                       'u': 'https://www.magicbricks.com/Property-Rates-Trends/Multistorey-Apartment-rates-Jayanagar-in-Bangalore'},
+               'listings': [{'url': 'https://www.squareyards.com/resale-1200-sq-ft-plot-in-jayanagar/10624955',
+                             'psf': 37500,
+                             'plot_sqft': 1200,
+                             'locality': 'Jayanagar, Central Bangalore, Jayanagar'},
+                            {'url': 'https://www.squareyards.com/resale-1203-sq-ft-plot-in-jayanagar/10344124',
+                             'psf': 2200,
+                             'plot_sqft': 1203,
+                             'locality': 'Jayanagar'},
+                            {'url': 'https://www.squareyards.com/resale-1217-sq-ft-plot-in-jayanagar/10350339',
+                             'psf': 6495,
+                             'plot_sqft': 1217,
+                             'locality': 'Jayanagar'},
+                            {'url': 'https://www.squareyards.com/resale-2000-sq-ft-plot-in-jayanagar/10281932',
+                             'psf': 45000,
+                             'plot_sqft': 2000,
+                             'locality': 'Jayanagar 7th Block, Jayanagar'}]},
  'HSR Layout': {'zone': 'South',
-                'mb': {'value': 9486,
-                       'period': 'Q3 2026',
-                       'page_updated': 'Oct-2026',
-                       'url': 'https://www.magicbricks.com/Property-Rates-Trends/Multistorey-Apartment-rates-HSR-Layout-in-Bangalore'},
-                'sy': {'value': 17638,
-                       'page_date': 'Nov 2026',
-                       'url': 'https://www.squareyards.com/property-rates/hsr-layout-bangalore',
-                       'headline_all_types': 17638},
-                'land_listings': [{'url': 'https://www.squareyards.com/resale-1200-sq-ft-plot-in-hsr-layout/10664851',
-                                   'psf': 37167,
-                                   'plot_sqft': 1200,
-                                   'locality': 'Hsr Layout'},
-                                  {'url': 'https://www.squareyards.com/resale-1200-sq-ft-plot-in-hsr-layout/10665065',
-                                   'psf': 38000,
-                                   'plot_sqft': 1200,
-                                   'locality': 'Hsr Layout'},
-                                  {'url': 'https://www.squareyards.com/resale-1500-sq-ft-plot-in-hsr-layout/10649109',
-                                   'psf': 18000,
-                                   'plot_sqft': 1500,
-                                   'locality': 'Hsr Layout'},
-                                  {'url': 'https://www.squareyards.com/resale-2400-sq-ft-plot-in-hsr-layout-sector-2/10665014',
-                                   'psf': 37500,
-                                   'plot_sqft': 2400,
-                                   'locality': 'Hsr Layout Sector 2'},
-                                  {'url': 'https://www.squareyards.com/resale-2400-sq-ft-plot-in-hsr-layout-sector-3/10664898',
-                                   'psf': 37500,
-                                   'plot_sqft': 2400,
-                                   'locality': 'Hsr Layout Sector 3'},
-                                  {'url': 'https://www.squareyards.com/resale-2400-sq-ft-plot-in-hsr-layout/10673722',
-                                   'psf': 4500,
-                                   'plot_sqft': 2400,
-                                   'locality': 'Hsr Layout'},
-                                  {'url': 'https://www.squareyards.com/resale-3300-sq-ft-plot-in-hsr-layout/9909766',
-                                   'psf': 40000,
-                                   'plot_sqft': 3300,
-                                   'locality': 'Hsr Layout'},
-                                  {'url': 'https://www.squareyards.com/resale-3690-sq-ft-plot-in-hsr-layout/9910409',
-                                   'psf': 40000,
-                                   'plot_sqft': 3690,
-                                   'locality': 'Hsr Layout'},
-                                  {'url': 'https://www.squareyards.com/resale-3725-sq-ft-plot-in-hsr-layout/9910418',
-                                   'psf': 40000,
-                                   'plot_sqft': 3725,
-                                   'locality': 'Hsr Layout'},
-                                  {'url': 'https://www.squareyards.com/resale-4220-sq-ft-plot-in-hsr-layout/9857297',
-                                   'psf': 40000,
-                                   'plot_sqft': 4220,
-                                   'locality': 'Hsr Layout'},
-                                  {'url': 'https://www.squareyards.com/resale-4271-sq-ft-plot-in-hsr-layout/9857716',
-                                   'psf': 39991,
-                                   'plot_sqft': 4271,
-                                   'locality': 'Hsr Layout'},
-                                  {'url': 'https://www.squareyards.com/resale-4373-sq-ft-plot-in-hsr-layout/9857722',
-                                   'psf': 39995,
-                                   'plot_sqft': 4373,
-                                   'locality': 'Hsr Layout'}]},
+                'mb': {'v': 9486, 'p': 'Q3 2026', 'u': 'https://www.magicbricks.com/Property-Rates-Trends/Multistorey-Apartment-rates-HSR-Layout-in-Bangalore'},
+                'sy': {'v': 17638, 'chg': 41.5, 'u': 'https://www.squareyards.com/property-rates/hsr-layout-bangalore'},
+                'mbp': {'v': 17127,
+                        'sqyd': 154144,
+                        'p': 'Q3 2026',
+                        'u': 'https://www.magicbricks.com/Property-Rates-Trends/Multistorey-Apartment-rates-HSR-Layout-in-Bangalore'},
+                'listings': [{'url': 'https://www.squareyards.com/resale-1200-sq-ft-plot-in-hsr-layout/10664851',
+                              'psf': 37167,
+                              'plot_sqft': 1200,
+                              'locality': 'Hsr Layout'},
+                             {'url': 'https://www.squareyards.com/resale-1200-sq-ft-plot-in-hsr-layout/10665065',
+                              'psf': 38000,
+                              'plot_sqft': 1200,
+                              'locality': 'Hsr Layout'},
+                             {'url': 'https://www.squareyards.com/resale-1500-sq-ft-plot-in-hsr-layout/10649109',
+                              'psf': 18000,
+                              'plot_sqft': 1500,
+                              'locality': 'Hsr Layout'},
+                             {'url': 'https://www.squareyards.com/resale-2400-sq-ft-plot-in-hsr-layout-sector-2/10665014',
+                              'psf': 37500,
+                              'plot_sqft': 2400,
+                              'locality': 'Hsr Layout Sector 2'},
+                             {'url': 'https://www.squareyards.com/resale-2400-sq-ft-plot-in-hsr-layout-sector-3/10664898',
+                              'psf': 37500,
+                              'plot_sqft': 2400,
+                              'locality': 'Hsr Layout Sector 3'},
+                             {'url': 'https://www.squareyards.com/resale-2400-sq-ft-plot-in-hsr-layout/10673722',
+                              'psf': 4500,
+                              'plot_sqft': 2400,
+                              'locality': 'Hsr Layout'},
+                             {'url': 'https://www.squareyards.com/resale-3300-sq-ft-plot-in-hsr-layout/9909766',
+                              'psf': 40000,
+                              'plot_sqft': 3300,
+                              'locality': 'Hsr Layout'},
+                             {'url': 'https://www.squareyards.com/resale-3690-sq-ft-plot-in-hsr-layout/9910409',
+                              'psf': 40000,
+                              'plot_sqft': 3690,
+                              'locality': 'Hsr Layout'},
+                             {'url': 'https://www.squareyards.com/resale-3725-sq-ft-plot-in-hsr-layout/9910418',
+                              'psf': 40000,
+                              'plot_sqft': 3725,
+                              'locality': 'Hsr Layout'},
+                             {'url': 'https://www.squareyards.com/resale-4220-sq-ft-plot-in-hsr-layout/9857297',
+                              'psf': 40000,
+                              'plot_sqft': 4220,
+                              'locality': 'Hsr Layout'},
+                             {'url': 'https://www.squareyards.com/resale-4271-sq-ft-plot-in-hsr-layout/9857716',
+                              'psf': 39991,
+                              'plot_sqft': 4271,
+                              'locality': 'Hsr Layout'},
+                             {'url': 'https://www.squareyards.com/resale-4373-sq-ft-plot-in-hsr-layout/9857722',
+                              'psf': 39995,
+                              'plot_sqft': 4373,
+                              'locality': 'Hsr Layout'}]},
  'BTM Layout': {'zone': 'South',
-                'mb': {'value': 10550,
-                       'period': 'Q3 2026',
-                       'page_updated': 'Oct-2026',
-                       'url': 'https://www.magicbricks.com/Property-Rates-Trends/Multistorey-Apartment-rates-Btm-Layout-in-Bangalore'},
-                'sy': {'value': 14150,
-                       'page_date': 'Nov 2026',
-                       'url': 'https://www.squareyards.com/property-rates/btm-layout-bangalore',
-                       'headline_all_types': 13850},
-                'land_listings': [{'url': 'https://www.squareyards.com/resale-1200-sq-ft-plot-in-btm-layout/9318622',
-                                   'psf': 30000,
-                                   'plot_sqft': 1200,
-                                   'locality': 'Btm Layout'},
-                                  {'url': 'https://www.squareyards.com/resale-2400-sq-ft-plot-in-btm-layout-1/10524667',
-                                   'psf': 33750,
-                                   'plot_sqft': 2400,
-                                   'locality': 'Btm Layout 1'},
-                                  {'url': 'https://www.squareyards.com/resale-2400-sq-ft-plot-in-btm-layout-stage-2/10589404',
-                                   'psf': 32000,
-                                   'plot_sqft': 2400,
-                                   'locality': 'Btm Layout Stage 2, Btm Layout, Btm Layout Stage 2'},
-                                  {'url': 'https://www.squareyards.com/resale-2400-sq-ft-plot-in-btm-layout-stage-2/9890215',
-                                   'psf': 26000,
-                                   'plot_sqft': 2400,
-                                   'locality': 'Btm Layout Stage 2'},
-                                  {'url': 'https://www.squareyards.com/resale-6700-sq-ft-plot-in-btm-layout-stage-2/9541068',
-                                   'psf': 20000,
-                                   'plot_sqft': 6700,
-                                   'locality': 'Ashok Plot, Btm Layout Stage 2'}]},
+                'mb': {'v': 10550,
+                       'p': 'Q3 2026',
+                       'u': 'https://www.magicbricks.com/Property-Rates-Trends/Multistorey-Apartment-rates-Btm-Layout-in-Bangalore'},
+                'sy': {'v': 14150, 'chg': 2.1, 'u': 'https://www.squareyards.com/property-rates/btm-layout-bangalore'},
+                'mbp': {'v': 8185,
+                        'sqyd': 73664,
+                        'p': 'Q3 2026',
+                        'u': 'https://www.magicbricks.com/Property-Rates-Trends/Multistorey-Apartment-rates-Btm-Layout-in-Bangalore'},
+                'listings': [{'url': 'https://www.squareyards.com/resale-1200-sq-ft-plot-in-btm-layout/9318622',
+                              'psf': 30000,
+                              'plot_sqft': 1200,
+                              'locality': 'Btm Layout'},
+                             {'url': 'https://www.squareyards.com/resale-2400-sq-ft-plot-in-btm-layout-1/10524667',
+                              'psf': 33750,
+                              'plot_sqft': 2400,
+                              'locality': 'Btm Layout 1'},
+                             {'url': 'https://www.squareyards.com/resale-2400-sq-ft-plot-in-btm-layout-stage-2/10589404',
+                              'psf': 32000,
+                              'plot_sqft': 2400,
+                              'locality': 'Btm Layout Stage 2, Btm Layout, Btm Layout Stage 2'},
+                             {'url': 'https://www.squareyards.com/resale-2400-sq-ft-plot-in-btm-layout-stage-2/9890215',
+                              'psf': 26000,
+                              'plot_sqft': 2400,
+                              'locality': 'Btm Layout Stage 2'},
+                             {'url': 'https://www.squareyards.com/resale-6700-sq-ft-plot-in-btm-layout-stage-2/9541068',
+                              'psf': 20000,
+                              'plot_sqft': 6700,
+                              'locality': 'Ashok Plot, Btm Layout Stage 2'}]},
  'MG Road': {'zone': 'Central',
-             'mb': {'value': 16222,
-                    'period': 'Q3 2026',
-                    'page_updated': 'Oct-2026',
-                    'url': 'https://www.magicbricks.com/Property-Rates-Trends/Multistorey-Apartment-rates-Mahatma-Gandhi-Road-in-Bangalore'},
-             'sy': {'value': 20100,
-                    'page_date': 'Nov 2026',
-                    'url': 'https://www.squareyards.com/property-rates/mg-road-bangalore',
-                    'headline_all_types': 20100},
-             'land_listings': []},
+             'mb': {'v': 16222,
+                    'p': 'Q3 2026',
+                    'u': 'https://www.magicbricks.com/Property-Rates-Trends/Multistorey-Apartment-rates-Mahatma-Gandhi-Road-in-Bangalore'},
+             'sy': {'v': 20100, 'chg': -1.1, 'u': 'https://www.squareyards.com/property-rates/mg-road-bangalore'},
+             'listings': []},
  'Rajajinagar': {'zone': 'West',
-                 'mb': {'value': 23414,
-                        'period': 'Q3 2026',
-                        'page_updated': 'Oct-2026',
-                        'url': 'https://www.magicbricks.com/Property-Rates-Trends/Multistorey-Apartment-rates-Rajajinagar-in-Bangalore'},
-                 'sy': {'value': 13714,
-                        'page_date': 'Nov 2026',
-                        'url': 'https://www.squareyards.com/property-rates/rajajinagar-bangalore',
-                        'headline_all_types': 13714},
-                 'land_listings': []},
+                 'mb': {'v': 23414,
+                        'p': 'Q3 2026',
+                        'u': 'https://www.magicbricks.com/Property-Rates-Trends/Multistorey-Apartment-rates-Rajajinagar-in-Bangalore'},
+                 'sy': {'v': 13714, 'chg': -16.4, 'u': 'https://www.squareyards.com/property-rates/rajajinagar-bangalore'},
+                 'mbp': {'v': 16735,
+                         'sqyd': 150614,
+                         'p': 'Q3 2026',
+                         'u': 'https://www.magicbricks.com/Property-Rates-Trends/Multistorey-Apartment-rates-Rajajinagar-in-Bangalore'},
+                 'listings': []},
  'Indiranagar': {'zone': 'Central',
-                 'mb': {'value': 18753,
-                        'period': 'Q3 2026',
-                        'page_updated': 'Oct-2026',
-                        'url': 'https://www.magicbricks.com/Property-Rates-Trends/Multistorey-Apartment-rates-Indiranagar-in-Bangalore'},
-                 'sy': {'value': 18750,
-                        'page_date': 'Nov 2026',
-                        'url': 'https://www.squareyards.com/property-rates/indiranagar-bangalore',
-                        'headline_all_types': 18750},
-                 'land_listings': [{'url': 'https://www.squareyards.com/resale-8000-sq-ft-plot-in-indiranagar/10469142',
-                                    'psf': 62500,
-                                    'plot_sqft': 8000,
-                                    'locality': 'Indiranagar, Central Bangalore, Indiranagar'}]},
+                 'mb': {'v': 18753,
+                        'p': 'Q3 2026',
+                        'u': 'https://www.magicbricks.com/Property-Rates-Trends/Multistorey-Apartment-rates-Indiranagar-in-Bangalore'},
+                 'sy': {'v': 18750, 'chg': 7.6, 'u': 'https://www.squareyards.com/property-rates/indiranagar-bangalore'},
+                 'mbp': {'v': 13355,
+                         'sqyd': 120198,
+                         'p': 'Q3 2026',
+                         'u': 'https://www.magicbricks.com/Property-Rates-Trends/Multistorey-Apartment-rates-Indiranagar-in-Bangalore'},
+                 'listings': [{'url': 'https://www.squareyards.com/resale-8000-sq-ft-plot-in-indiranagar/10469142',
+                               'psf': 62500,
+                               'plot_sqft': 8000,
+                               'locality': 'Indiranagar, Central Bangalore, Indiranagar'}]},
  'Koramangala': {'zone': 'South',
-                 'mb': {'value': 15253,
-                        'period': 'Q3 2026',
-                        'page_updated': 'Oct-2026',
-                        'url': 'https://www.magicbricks.com/Property-Rates-Trends/Multistorey-Apartment-rates-Koramangala-in-Bangalore'},
-                 'sy': {'value': 18750,
-                        'page_date': 'Nov 2026',
-                        'url': 'https://www.squareyards.com/property-rates/koramangala-bangalore',
-                        'headline_all_types': 18750},
-                 'land_listings': [{'url': 'https://www.squareyards.com/resale-1800-sq-ft-plot-in-koramangala/10786732',
-                                    'psf': 10278,
-                                    'plot_sqft': 1800,
-                                    'locality': 'Koramangala'},
-                                   {'url': 'https://www.squareyards.com/resale-2440-sq-ft-plot-in-koramangala/9866500',
-                                    'psf': 35984,
-                                    'plot_sqft': 2440,
-                                    'locality': 'Koramangala'},
-                                   {'url': 'https://www.squareyards.com/resale-2500-sq-ft-plot-in-koramangala/9868693',
-                                    'psf': 34000,
-                                    'plot_sqft': 2500,
-                                    'locality': 'Koramangala'},
-                                   {'url': 'https://www.squareyards.com/resale-3300-sq-ft-plot-in-koramangala/9972699',
-                                    'psf': 30303,
-                                    'plot_sqft': 3300,
-                                    'locality': 'Koramangala'},
-                                   {'url': 'https://www.squareyards.com/resale-3325-sq-ft-plot-in-koramangala/9996866',
-                                    'psf': 32000,
-                                    'plot_sqft': 3325,
-                                    'locality': 'Koramangala, Central Bangalore, Koramangala'},
-                                   {'url': 'https://www.squareyards.com/resale-3355-sq-ft-plot-in-koramangala/9996867',
-                                    'psf': 31982,
-                                    'plot_sqft': 3355,
-                                    'locality': 'Koramangala, Central Bangalore, Koramangala'},
-                                   {'url': 'https://www.squareyards.com/resale-3500-sq-ft-plot-in-koramangala/9894813',
-                                    'psf': 45714,
-                                    'plot_sqft': 3500,
-                                    'locality': 'Koramangala, Central Bangalore, Koramangala'},
-                                   {'url': 'https://www.squareyards.com/resale-4220-sq-ft-plot-in-koramangala/9862968',
-                                    'psf': 35521,
-                                    'plot_sqft': 4220,
-                                    'locality': 'Koramangala'},
-                                   {'url': 'https://www.squareyards.com/resale-4322-sq-ft-plot-in-koramangala/9862994',
-                                    'psf': 35516,
-                                    'plot_sqft': 4322,
-                                    'locality': 'Koramangala'},
-                                   {'url': 'https://www.squareyards.com/resale-4373-sq-ft-plot-in-koramangala/9862997',
-                                    'psf': 35536,
-                                    'plot_sqft': 4373,
-                                    'locality': 'Koramangala'}]},
+                 'mb': {'v': 15253,
+                        'p': 'Q3 2026',
+                        'u': 'https://www.magicbricks.com/Property-Rates-Trends/Multistorey-Apartment-rates-Koramangala-in-Bangalore'},
+                 'sy': {'v': 18750, 'chg': -3.8, 'u': 'https://www.squareyards.com/property-rates/koramangala-bangalore'},
+                 'mbp': {'v': 7695,
+                         'sqyd': 69252,
+                         'p': 'Q3 2026',
+                         'u': 'https://www.magicbricks.com/Property-Rates-Trends/Multistorey-Apartment-rates-Koramangala-in-Bangalore'},
+                 'listings': [{'url': 'https://www.squareyards.com/resale-1800-sq-ft-plot-in-koramangala/10786732',
+                               'psf': 10278,
+                               'plot_sqft': 1800,
+                               'locality': 'Koramangala'},
+                              {'url': 'https://www.squareyards.com/resale-2440-sq-ft-plot-in-koramangala/9866500',
+                               'psf': 35984,
+                               'plot_sqft': 2440,
+                               'locality': 'Koramangala'},
+                              {'url': 'https://www.squareyards.com/resale-2500-sq-ft-plot-in-koramangala/9868693',
+                               'psf': 34000,
+                               'plot_sqft': 2500,
+                               'locality': 'Koramangala'},
+                              {'url': 'https://www.squareyards.com/resale-3300-sq-ft-plot-in-koramangala/9972699',
+                               'psf': 30303,
+                               'plot_sqft': 3300,
+                               'locality': 'Koramangala'},
+                              {'url': 'https://www.squareyards.com/resale-3325-sq-ft-plot-in-koramangala/9996866',
+                               'psf': 32000,
+                               'plot_sqft': 3325,
+                               'locality': 'Koramangala, Central Bangalore, Koramangala'},
+                              {'url': 'https://www.squareyards.com/resale-3355-sq-ft-plot-in-koramangala/9996867',
+                               'psf': 31982,
+                               'plot_sqft': 3355,
+                               'locality': 'Koramangala, Central Bangalore, Koramangala'},
+                              {'url': 'https://www.squareyards.com/resale-3500-sq-ft-plot-in-koramangala/9894813',
+                               'psf': 45714,
+                               'plot_sqft': 3500,
+                               'locality': 'Koramangala, Central Bangalore, Koramangala'},
+                              {'url': 'https://www.squareyards.com/resale-4220-sq-ft-plot-in-koramangala/9862968',
+                               'psf': 35521,
+                               'plot_sqft': 4220,
+                               'locality': 'Koramangala'},
+                              {'url': 'https://www.squareyards.com/resale-4322-sq-ft-plot-in-koramangala/9862994',
+                               'psf': 35516,
+                               'plot_sqft': 4322,
+                               'locality': 'Koramangala'},
+                              {'url': 'https://www.squareyards.com/resale-4373-sq-ft-plot-in-koramangala/9862997',
+                               'psf': 35536,
+                               'plot_sqft': 4373,
+                               'locality': 'Koramangala'}]},
  'Whitefield': {'zone': 'East',
-                'mb': {'value': 13394,
-                       'period': 'Q3 2026',
-                       'page_updated': 'Oct-2026',
-                       'url': 'https://www.magicbricks.com/Property-Rates-Trends/Multistorey-Apartment-rates-Whitefield-in-Bangalore'},
-                'sy': {'value': 14500,
-                       'page_date': 'Nov 2026',
-                       'url': 'https://www.squareyards.com/property-rates/whitefield-bangalore',
-                       'headline_all_types': 14500},
-                'land_listings': [{'url': 'https://www.squareyards.com/resale-1500-sq-ft-plot-in-whitefield/10346998',
-                                   'psf': 2699,
-                                   'plot_sqft': 1500,
-                                   'locality': 'Whitefield'}]},
+                'mb': {'v': 13394,
+                       'p': 'Q3 2026',
+                       'u': 'https://www.magicbricks.com/Property-Rates-Trends/Multistorey-Apartment-rates-Whitefield-in-Bangalore'},
+                'sy': {'v': 14500, 'chg': -0.7, 'u': 'https://www.squareyards.com/property-rates/whitefield-bangalore'},
+                'mbp': {'v': 7512,
+                        'sqyd': 67612,
+                        'p': 'Q3 2026',
+                        'u': 'https://www.magicbricks.com/Property-Rates-Trends/Multistorey-Apartment-rates-Whitefield-in-Bangalore'},
+                'listings': [{'url': 'https://www.squareyards.com/resale-1500-sq-ft-plot-in-whitefield/10346998',
+                              'psf': 2699,
+                              'plot_sqft': 1500,
+                              'locality': 'Whitefield'}]},
  'Electronic City': {'zone': 'South',
-                     'mb': {'value': 8732,
-                            'period': 'Q3 2026',
-                            'page_updated': 'Oct-2026',
-                            'url': 'https://www.magicbricks.com/Property-Rates-Trends/Multistorey-Apartment-rates-Electronic-City-in-Bangalore'},
-                     'sy': {'value': 9350,
-                            'page_date': 'Nov 2026',
-                            'url': 'https://www.squareyards.com/property-rates/electronic-city-bangalore',
-                            'headline_all_types': 9300},
-                     'land_listings': [{'url': 'https://www.squareyards.com/resale-1200-sq-ft-plot-in-electronic-city-phase-i/9723984',
-                                        'psf': 5938,
-                                        'plot_sqft': 1200,
-                                        'locality': 'Electronic City Phase i, Electronic City Phase I'},
-                                       {'url': 'https://www.squareyards.com/resale-1200-sq-ft-plot-in-electronic-city-phase-i/9762882',
-                                        'psf': 5777,
-                                        'plot_sqft': 1200,
-                                        'locality': 'Electronic City Phase I'},
-                                       {'url': 'https://www.squareyards.com/resale-1200-sq-ft-plot-in-electronic-city-phase-ii/10093554',
-                                        'psf': 4667,
-                                        'plot_sqft': 1200,
-                                        'locality': 'Ranjith Luxury Plots, Electronic City Phase ii'},
-                                       {'url': 'https://www.squareyards.com/resale-1200-sq-ft-plot-in-electronic-city-phase-ii/10093994',
-                                        'psf': 4000,
-                                        'plot_sqft': 1200,
-                                        'locality': 'Rj Villa Plot, Electronic City Phase ii'},
-                                       {'url': 'https://www.squareyards.com/resale-1200-sq-ft-plot-in-electronic-city-phase-ii/10103620',
-                                        'psf': 4558,
-                                        'plot_sqft': 1200,
-                                        'locality': 'Rj Premium Villa Plot, Electronic City Phase ii'},
-                                       {'url': 'https://www.squareyards.com/resale-1200-sq-ft-plot-in-electronic-city-phase-ii/10110024',
-                                        'psf': 4583,
-                                        'plot_sqft': 1200,
-                                        'locality': 'Ranjith Villa Plot, Electronic City Phase ii'},
-                                       {'url': 'https://www.squareyards.com/resale-1200-sq-ft-plot-in-electronic-city/10150689',
-                                        'psf': 5499,
-                                        'plot_sqft': 1200,
-                                        'locality': 'Electronic City, Electronic City'}]},
- 'Malleshwaram': {'zone': 'Central',
-                  'mb': {'value': 15218,
-                         'period': 'Q3 2026',
-                         'page_updated': 'Oct-2026',
-                         'url': 'https://www.magicbricks.com/Property-Rates-Trends/Multistorey-Apartment-rates-Malleshwaram-in-Bangalore'},
-                  'land_listings': [{'url': 'https://www.squareyards.com/resale-3420-sq-ft-plot-in-abhishek-apartments-malleshwaram/10429331',
-                                     'psf': 30994,
-                                     'plot_sqft': 3420,
-                                     'locality': 'Abhishek Apartments Malleshwaram, Malleswaram'}]},
+                     'mb': {'v': 8732,
+                            'p': 'Q3 2026',
+                            'u': 'https://www.magicbricks.com/Property-Rates-Trends/Multistorey-Apartment-rates-Electronic-City-in-Bangalore'},
+                     'sy': {'v': 9350, 'chg': 0.6, 'u': 'https://www.squareyards.com/property-rates/electronic-city-bangalore'},
+                     'mbp': {'v': 6218,
+                             'sqyd': 55964,
+                             'p': 'Q3 2026',
+                             'u': 'https://www.magicbricks.com/Property-Rates-Trends/Multistorey-Apartment-rates-Electronic-City-in-Bangalore'},
+                     'listings': [{'url': 'https://www.squareyards.com/resale-1200-sq-ft-plot-in-electronic-city-phase-i/9723984',
+                                   'psf': 5938,
+                                   'plot_sqft': 1200,
+                                   'locality': 'Electronic City Phase i, Electronic City Phase I'},
+                                  {'url': 'https://www.squareyards.com/resale-1200-sq-ft-plot-in-electronic-city-phase-i/9762882',
+                                   'psf': 5777,
+                                   'plot_sqft': 1200,
+                                   'locality': 'Electronic City Phase I'},
+                                  {'url': 'https://www.squareyards.com/resale-1200-sq-ft-plot-in-electronic-city-phase-ii/10093554',
+                                   'psf': 4667,
+                                   'plot_sqft': 1200,
+                                   'locality': 'Ranjith Luxury Plots, Electronic City Phase ii'},
+                                  {'url': 'https://www.squareyards.com/resale-1200-sq-ft-plot-in-electronic-city-phase-ii/10093994',
+                                   'psf': 4000,
+                                   'plot_sqft': 1200,
+                                   'locality': 'Rj Villa Plot, Electronic City Phase ii'},
+                                  {'url': 'https://www.squareyards.com/resale-1200-sq-ft-plot-in-electronic-city-phase-ii/10103620',
+                                   'psf': 4558,
+                                   'plot_sqft': 1200,
+                                   'locality': 'Rj Premium Villa Plot, Electronic City Phase ii'},
+                                  {'url': 'https://www.squareyards.com/resale-1200-sq-ft-plot-in-electronic-city-phase-ii/10110024',
+                                   'psf': 4583,
+                                   'plot_sqft': 1200,
+                                   'locality': 'Ranjith Villa Plot, Electronic City Phase ii'},
+                                  {'url': 'https://www.squareyards.com/resale-1200-sq-ft-plot-in-electronic-city/10150689',
+                                   'psf': 5499,
+                                   'plot_sqft': 1200,
+                                   'locality': 'Electronic City, Electronic City'}]},
+ 'Malleswaram': {'zone': 'Central',
+                 'mb': {'v': 15218,
+                        'p': 'Q3 2026',
+                        'u': 'https://www.magicbricks.com/Property-Rates-Trends/Multistorey-Apartment-rates-Malleshwaram-in-Bangalore'},
+                 'sy': {'v': 13050, 'chg': -10.0, 'u': 'https://www.squareyards.com/property-rates/malleswaram-bangalore'},
+                 'mbp': {'v': 10033,
+                         'sqyd': 90296,
+                         'p': 'Q3 2026',
+                         'u': 'https://www.magicbricks.com/Property-Rates-Trends/Multistorey-Apartment-rates-Malleshwaram-in-Bangalore'},
+                 'listings': [{'url': 'https://www.squareyards.com/resale-3420-sq-ft-plot-in-abhishek-apartments-malleshwaram/10429331',
+                               'psf': 30994,
+                               'plot_sqft': 3420,
+                               'locality': 'Abhishek Apartments Malleshwaram, Malleswaram'}]},
  'Yelahanka': {'zone': 'North',
-               'mb': {'value': 10164,
-                      'period': 'Q3 2026',
-                      'page_updated': 'Oct-2026',
-                      'url': 'https://www.magicbricks.com/Property-Rates-Trends/Multistorey-Apartment-rates-Yelahanka-in-Bangalore'},
-               'sy': {'value': 10100,
-                      'page_date': 'Nov 2026',
-                      'url': 'https://www.squareyards.com/property-rates/yelahanka-bangalore',
-                      'headline_all_types': 10100},
-               'land_listings': [{'url': 'https://www.squareyards.com/resale-1200-sq-ft-plot-in-yelahanka/10326754',
-                                  'psf': 2000,
-                                  'plot_sqft': 1200,
-                                  'locality': 'Yelahanka'},
-                                 {'url': 'https://www.squareyards.com/resale-1200-sq-ft-plot-in-yelahanka/10595882',
-                                  'psf': 6167,
-                                  'plot_sqft': 1200,
-                                  'locality': 'Yelahanka, North Bangalore, Yelahanka'},
-                                 {'url': 'https://www.squareyards.com/resale-1200-sq-ft-plot-in-yelahanka/9464438',
-                                  'psf': 2898,
-                                  'plot_sqft': 1200,
-                                  'locality': 'Rera And Bmrda Approved P, Yelahanka'},
-                                 {'url': 'https://www.squareyards.com/resale-1200-sq-ft-plot-in-yelahanka/9465364',
-                                  'psf': 2876,
-                                  'plot_sqft': 1200,
-                                  'locality': 'Rera And Bmrda Approved P, Yelahanka'},
-                                 {'url': 'https://www.squareyards.com/resale-1200-sq-ft-plot-in-yelahanka/9465452',
-                                  'psf': 2906,
-                                  'plot_sqft': 1200,
-                                  'locality': 'Rera And Bmrda Approved P, Yelahanka'},
-                                 {'url': 'https://www.squareyards.com/resale-1500-sq-ft-plot-in-yelahanka/9840299',
-                                  'psf': 25000,
-                                  'plot_sqft': 1500,
-                                  'locality': 'Yelahanka'},
-                                 {'url': 'https://www.squareyards.com/resale-2400-sq-ft-plot-in-yelahanka/10212545',
-                                  'psf': 13000,
-                                  'plot_sqft': 2400,
-                                  'locality': 'A G Akshay Site, Yelahanka'},
-                                 {'url': 'https://www.squareyards.com/resale-880-sq-ft-plot-in-yelahanka-new-town/10602415',
-                                  'psf': 15909,
-                                  'plot_sqft': 880,
-                                  'locality': 'Yelahanka New Town, North Bangalore, Yelahanka New Town'}]},
+               'mb': {'v': 10164, 'p': 'Q3 2026', 'u': 'https://www.magicbricks.com/Property-Rates-Trends/Multistorey-Apartment-rates-Yelahanka-in-Bangalore'},
+               'sy': {'v': 10100, 'chg': 0.7, 'u': 'https://www.squareyards.com/property-rates/yelahanka-bangalore'},
+               'mbp': {'v': 8146,
+                       'sqyd': 73312,
+                       'p': 'Q3 2026',
+                       'u': 'https://www.magicbricks.com/Property-Rates-Trends/Multistorey-Apartment-rates-Yelahanka-in-Bangalore'},
+               'listings': [{'url': 'https://www.squareyards.com/resale-1200-sq-ft-plot-in-yelahanka/10326754',
+                             'psf': 2000,
+                             'plot_sqft': 1200,
+                             'locality': 'Yelahanka'},
+                            {'url': 'https://www.squareyards.com/resale-1200-sq-ft-plot-in-yelahanka/10595882',
+                             'psf': 6167,
+                             'plot_sqft': 1200,
+                             'locality': 'Yelahanka, North Bangalore, Yelahanka'},
+                            {'url': 'https://www.squareyards.com/resale-1200-sq-ft-plot-in-yelahanka/9464438',
+                             'psf': 2898,
+                             'plot_sqft': 1200,
+                             'locality': 'Rera And Bmrda Approved P, Yelahanka'},
+                            {'url': 'https://www.squareyards.com/resale-1200-sq-ft-plot-in-yelahanka/9465364',
+                             'psf': 2876,
+                             'plot_sqft': 1200,
+                             'locality': 'Rera And Bmrda Approved P, Yelahanka'},
+                            {'url': 'https://www.squareyards.com/resale-1200-sq-ft-plot-in-yelahanka/9465452',
+                             'psf': 2906,
+                             'plot_sqft': 1200,
+                             'locality': 'Rera And Bmrda Approved P, Yelahanka'},
+                            {'url': 'https://www.squareyards.com/resale-1500-sq-ft-plot-in-yelahanka/9840299',
+                             'psf': 25000,
+                             'plot_sqft': 1500,
+                             'locality': 'Yelahanka'},
+                            {'url': 'https://www.squareyards.com/resale-2400-sq-ft-plot-in-yelahanka/10212545',
+                             'psf': 13000,
+                             'plot_sqft': 2400,
+                             'locality': 'A G Akshay Site, Yelahanka'},
+                            {'url': 'https://www.squareyards.com/resale-880-sq-ft-plot-in-yelahanka-new-town/10602415',
+                             'psf': 15909,
+                             'plot_sqft': 880,
+                             'locality': 'Yelahanka New Town, North Bangalore, Yelahanka New Town'}]},
  'Banashankari': {'zone': 'South',
-                  'mb': {'value': 11120,
-                         'period': 'Q3 2026',
-                         'page_updated': 'Oct-2026',
-                         'url': 'https://www.magicbricks.com/Property-Rates-Trends/Multistorey-Apartment-rates-Banashankari-in-Bangalore'},
-                  'sy': {'value': 13500,
-                         'page_date': 'Nov 2026',
-                         'url': 'https://www.squareyards.com/property-rates/banashankari-bangalore',
-                         'headline_all_types': 13450},
-                  'land_listings': [{'url': 'https://www.squareyards.com/resale-1200-sq-ft-plot-in-banashankari-6th-stage/9800531',
-                                     'psf': 16667,
-                                     'plot_sqft': 1200,
-                                     'locality': 'Banashankari 6th Stage'},
-                                    {'url': 'https://www.squareyards.com/resale-1200-sq-ft-plot-in-banashankari/9765585',
-                                     'psf': 12500,
-                                     'plot_sqft': 1200,
-                                     'locality': 'Star City, Banashankari'},
-                                    {'url': 'https://www.squareyards.com/resale-1200-sq-ft-plot-in-banashankari/9801340',
-                                     'psf': 12500,
-                                     'plot_sqft': 1200,
-                                     'locality': 'Vr Star Plots, Banashankari'},
-                                    {'url': 'https://www.squareyards.com/resale-1500-sq-ft-plot-in-banashankari/9760180',
-                                     'psf': 12467,
-                                     'plot_sqft': 1500,
-                                     'locality': 'Star City, Banashankari'},
-                                    {'url': 'https://www.squareyards.com/resale-1800-sq-ft-plot-in-banashankari-3rd-stage/10732732',
-                                     'psf': 14500,
-                                     'plot_sqft': 1800,
-                                     'locality': 'Banashankari 3rd Stage'},
-                                    {'url': 'https://www.squareyards.com/resale-1892-sq-ft-plot-in-banashankari/9984595',
-                                     'psf': 12474,
-                                     'plot_sqft': 1892,
-                                     'locality': 'Banashankari, Central Bangalore, Banashankari'},
-                                    {'url': 'https://www.squareyards.com/resale-1999-sq-ft-plot-in-banashankari/9765246',
-                                     'psf': 12456,
-                                     'plot_sqft': 1999,
-                                     'locality': 'Star City Plots, Banashankari'},
-                                    {'url': 'https://www.squareyards.com/resale-2400-sq-ft-plot-in-banashankari/9801352',
-                                     'psf': 12500,
-                                     'plot_sqft': 2400,
-                                     'locality': 'Star Lands, Banashankari'},
-                                    {'url': 'https://www.squareyards.com/resale-2400-sq-ft-plot-in-banashankari/9801375',
-                                     'psf': 12500,
-                                     'plot_sqft': 2400,
-                                     'locality': 'Star Plots, Banashankari'}]},
+                  'mb': {'v': 11120,
+                         'p': 'Q3 2026',
+                         'u': 'https://www.magicbricks.com/Property-Rates-Trends/Multistorey-Apartment-rates-Banashankari-in-Bangalore'},
+                  'sy': {'v': 13500, 'chg': 0.4, 'u': 'https://www.squareyards.com/property-rates/banashankari-bangalore'},
+                  'mbp': {'v': 12360,
+                          'sqyd': 111239,
+                          'p': 'Q3 2026',
+                          'u': 'https://www.magicbricks.com/Property-Rates-Trends/Multistorey-Apartment-rates-Banashankari-in-Bangalore'},
+                  'listings': [{'url': 'https://www.squareyards.com/resale-1200-sq-ft-plot-in-banashankari-6th-stage/9800531',
+                                'psf': 16667,
+                                'plot_sqft': 1200,
+                                'locality': 'Banashankari 6th Stage'},
+                               {'url': 'https://www.squareyards.com/resale-1200-sq-ft-plot-in-banashankari/9765585',
+                                'psf': 12500,
+                                'plot_sqft': 1200,
+                                'locality': 'Star City, Banashankari'},
+                               {'url': 'https://www.squareyards.com/resale-1200-sq-ft-plot-in-banashankari/9801340',
+                                'psf': 12500,
+                                'plot_sqft': 1200,
+                                'locality': 'Vr Star Plots, Banashankari'},
+                               {'url': 'https://www.squareyards.com/resale-1500-sq-ft-plot-in-banashankari/9760180',
+                                'psf': 12467,
+                                'plot_sqft': 1500,
+                                'locality': 'Star City, Banashankari'},
+                               {'url': 'https://www.squareyards.com/resale-1800-sq-ft-plot-in-banashankari-3rd-stage/10732732',
+                                'psf': 14500,
+                                'plot_sqft': 1800,
+                                'locality': 'Banashankari 3rd Stage'},
+                               {'url': 'https://www.squareyards.com/resale-1892-sq-ft-plot-in-banashankari/9984595',
+                                'psf': 12474,
+                                'plot_sqft': 1892,
+                                'locality': 'Banashankari, Central Bangalore, Banashankari'},
+                               {'url': 'https://www.squareyards.com/resale-1999-sq-ft-plot-in-banashankari/9765246',
+                                'psf': 12456,
+                                'plot_sqft': 1999,
+                                'locality': 'Star City Plots, Banashankari'},
+                               {'url': 'https://www.squareyards.com/resale-2400-sq-ft-plot-in-banashankari/9801352',
+                                'psf': 12500,
+                                'plot_sqft': 2400,
+                                'locality': 'Star Lands, Banashankari'},
+                               {'url': 'https://www.squareyards.com/resale-2400-sq-ft-plot-in-banashankari/9801375',
+                                'psf': 12500,
+                                'plot_sqft': 2400,
+                                'locality': 'Star Plots, Banashankari'}]},
  'Bellandur': {'zone': 'East',
-               'mb': {'value': 15521,
-                      'period': 'Q3 2026',
-                      'page_updated': 'Oct-2026',
-                      'url': 'https://www.magicbricks.com/Property-Rates-Trends/Multistorey-Apartment-rates-Bellandur-in-Bangalore'},
-               'sy': {'value': 16050,
-                      'page_date': 'Nov 2026',
-                      'url': 'https://www.squareyards.com/property-rates/bellandur-bangalore',
-                      'headline_all_types': 16050},
-               'land_listings': []},
+               'mb': {'v': 15521, 'p': 'Q3 2026', 'u': 'https://www.magicbricks.com/Property-Rates-Trends/Multistorey-Apartment-rates-Bellandur-in-Bangalore'},
+               'sy': {'v': 16050, 'chg': 0.0, 'u': 'https://www.squareyards.com/property-rates/bellandur-bangalore'},
+               'listings': []},
  'Marathahalli': {'zone': 'East',
-                  'mb': {'value': 8192,
-                         'period': 'Q3 2026',
-                         'page_updated': 'Oct-2026',
-                         'url': 'https://www.magicbricks.com/Property-Rates-Trends/Multistorey-Apartment-rates-Marathahalli-in-Bangalore'},
-                  'sy': {'value': 17050,
-                         'page_date': 'Nov 2026',
-                         'url': 'https://www.squareyards.com/property-rates/marathahalli-bangalore',
-                         'headline_all_types': 15300},
-                  'land_listings': []},
+                  'mb': {'v': 8192,
+                         'p': 'Jul-Sep 2025 (older version of page)',
+                         'u': 'https://www.magicbricks.com/Property-Rates-Trends/Multistorey-Apartment-rates-Marathahalli-in-Bangalore'},
+                  'sy': {'v': 17050, 'chg': 11.4, 'u': 'https://www.squareyards.com/property-rates/marathahalli-bangalore'},
+                  'mbp': {'v': 12624,
+                          'sqyd': 113619,
+                          'p': 'Jul-Sep 2025 (older version of page)',
+                          'u': 'https://www.magicbricks.com/Property-Rates-Trends/Multistorey-Apartment-rates-Marathahalli-in-Bangalore'},
+                  'listings': []},
  'Hebbal': {'zone': 'North',
-            'mb': {'value': 16103,
-                   'period': 'Q3 2026',
-                   'page_updated': 'Oct-2026',
-                   'url': 'https://www.magicbricks.com/Property-Rates-Trends/Multistorey-Apartment-rates-Hebbal-in-Bangalore'},
-            'sy': {'value': 17350,
-                   'page_date': 'Nov 2026',
-                   'url': 'https://www.squareyards.com/property-rates/hebbal-bangalore',
-                   'headline_all_types': 17100},
-            'land_listings': [{'url': 'https://www.squareyards.com/resale-1200-sq-ft-plot-in-hebbal/10608342',
-                               'psf': 7500,
-                               'plot_sqft': 1200,
-                               'locality': 'Hebbal, Central Bangalore, Hebbal'},
-                              {'url': 'https://www.squareyards.com/resale-1200-sq-ft-plot-in-hebbal/9464516',
-                               'psf': 3938,
-                               'plot_sqft': 1200,
-                               'locality': 'Ready For Construction, Hebbal'},
-                              {'url': 'https://www.squareyards.com/resale-1200-sq-ft-plot-in-hebbal/9834193',
-                               'psf': 25000,
-                               'plot_sqft': 1200,
-                               'locality': 'Hebbal'},
-                              {'url': 'https://www.squareyards.com/resale-1300-sq-ft-plot-in-hebbal/10667910',
-                               'psf': 8462,
-                               'plot_sqft': 1300,
-                               'locality': 'Hebbal'},
-                              {'url': 'https://www.squareyards.com/resale-1350-sq-ft-plot-in-hebbal/10615063',
-                               'psf': 11111,
-                               'plot_sqft': 1350,
-                               'locality': 'Hebbal, Central Bangalore, Hebbal'},
-                              {'url': 'https://www.squareyards.com/resale-1500-sq-ft-plot-in-hebbal/10016793',
-                               'psf': 26000,
-                               'plot_sqft': 1500,
-                               'locality': 'Hebbal'},
-                              {'url': 'https://www.squareyards.com/resale-1500-sq-ft-plot-in-hebbal/10622503',
-                               'psf': 22000,
-                               'plot_sqft': 1500,
-                               'locality': 'Hebbal, Central Bangalore, Hebbal'},
-                              {'url': 'https://www.squareyards.com/resale-1600-sq-ft-plot-in-hebbal/10604850',
-                               'psf': 25000,
-                               'plot_sqft': 1600,
-                               'locality': 'Hebbal, Central Bangalore, Hebbal'},
-                              {'url': 'https://www.squareyards.com/resale-1600-sq-ft-plot-in-hebbal/10608679',
-                               'psf': 22000,
-                               'plot_sqft': 1600,
-                               'locality': 'Hebbal, Central Bangalore, Hebbal'},
-                              {'url': 'https://www.squareyards.com/resale-2000-sq-ft-plot-in-hebbal/10637323',
-                               'psf': 18000,
-                               'plot_sqft': 2000,
-                               'locality': 'Hebbal, Central Bangalore, Hebbal'},
-                              {'url': 'https://www.squareyards.com/resale-2400-sq-ft-plot-in-hebbal/10633742',
-                               'psf': 17000,
-                               'plot_sqft': 2400,
-                               'locality': 'Hebbal, Central Bangalore, Hebbal'},
-                              {'url': 'https://www.squareyards.com/resale-4000-sq-ft-plot-in-hebbal/9894543',
-                               'psf': 23000,
-                               'plot_sqft': 4000,
-                               'locality': 'Hebbal'}]},
+            'mb': {'v': 16103, 'p': 'Q3 2026', 'u': 'https://www.magicbricks.com/Property-Rates-Trends/Multistorey-Apartment-rates-Hebbal-in-Bangalore'},
+            'sy': {'v': 17350, 'chg': 1.5, 'u': 'https://www.squareyards.com/property-rates/hebbal-bangalore'},
+            'mbp': {'v': 2986,
+                    'sqyd': 26873,
+                    'p': 'Q3 2026',
+                    'u': 'https://www.magicbricks.com/Property-Rates-Trends/Multistorey-Apartment-rates-Hebbal-in-Bangalore'},
+            'listings': [{'url': 'https://www.squareyards.com/resale-1200-sq-ft-plot-in-hebbal/10608342',
+                          'psf': 7500,
+                          'plot_sqft': 1200,
+                          'locality': 'Hebbal, Central Bangalore, Hebbal'},
+                         {'url': 'https://www.squareyards.com/resale-1200-sq-ft-plot-in-hebbal/9464516',
+                          'psf': 3938,
+                          'plot_sqft': 1200,
+                          'locality': 'Ready For Construction, Hebbal'},
+                         {'url': 'https://www.squareyards.com/resale-1200-sq-ft-plot-in-hebbal/9834193', 'psf': 25000, 'plot_sqft': 1200, 'locality': 'Hebbal'},
+                         {'url': 'https://www.squareyards.com/resale-1300-sq-ft-plot-in-hebbal/10667910', 'psf': 8462, 'plot_sqft': 1300, 'locality': 'Hebbal'},
+                         {'url': 'https://www.squareyards.com/resale-1350-sq-ft-plot-in-hebbal/10615063',
+                          'psf': 11111,
+                          'plot_sqft': 1350,
+                          'locality': 'Hebbal, Central Bangalore, Hebbal'},
+                         {'url': 'https://www.squareyards.com/resale-1500-sq-ft-plot-in-hebbal/10016793',
+                          'psf': 26000,
+                          'plot_sqft': 1500,
+                          'locality': 'Hebbal'},
+                         {'url': 'https://www.squareyards.com/resale-1500-sq-ft-plot-in-hebbal/10622503',
+                          'psf': 22000,
+                          'plot_sqft': 1500,
+                          'locality': 'Hebbal, Central Bangalore, Hebbal'},
+                         {'url': 'https://www.squareyards.com/resale-1600-sq-ft-plot-in-hebbal/10604850',
+                          'psf': 25000,
+                          'plot_sqft': 1600,
+                          'locality': 'Hebbal, Central Bangalore, Hebbal'},
+                         {'url': 'https://www.squareyards.com/resale-1600-sq-ft-plot-in-hebbal/10608679',
+                          'psf': 22000,
+                          'plot_sqft': 1600,
+                          'locality': 'Hebbal, Central Bangalore, Hebbal'},
+                         {'url': 'https://www.squareyards.com/resale-2000-sq-ft-plot-in-hebbal/10637323',
+                          'psf': 18000,
+                          'plot_sqft': 2000,
+                          'locality': 'Hebbal, Central Bangalore, Hebbal'},
+                         {'url': 'https://www.squareyards.com/resale-2400-sq-ft-plot-in-hebbal/10633742',
+                          'psf': 17000,
+                          'plot_sqft': 2400,
+                          'locality': 'Hebbal, Central Bangalore, Hebbal'},
+                         {'url': 'https://www.squareyards.com/resale-4000-sq-ft-plot-in-hebbal/9894543',
+                          'psf': 23000,
+                          'plot_sqft': 4000,
+                          'locality': 'Hebbal'}]},
  'JP Nagar': {'zone': 'South',
-              'mb': {'value': 9919,
-                     'period': 'Q3 2026',
-                     'page_updated': 'Oct-2026',
-                     'url': 'https://www.magicbricks.com/Property-Rates-Trends/Multistorey-Apartment-rates-Jp-Nagar-in-Bangalore'},
-              'sy': {'value': 11900,
-                     'page_date': 'Nov 2026',
-                     'url': 'https://www.squareyards.com/property-rates/jp-nagar-bangalore',
-                     'headline_all_types': 11350},
-              'land_listings': [{'url': 'https://www.squareyards.com/resale-1200-sq-ft-plot-in-jp-nagar/10525866',
-                                 'psf': 17583,
-                                 'plot_sqft': 1200,
-                                 'locality': 'Jp Nagar 6th Phase Puttanahalli Plot, Jp Nagar'},
-                                {'url': 'https://www.squareyards.com/resale-1200-sq-ft-plot-in-jp-nagar/9754219',
-                                 'psf': 12000,
-                                 'plot_sqft': 1200,
-                                 'locality': 'Star City, Jp Nagar'},
-                                {'url': 'https://www.squareyards.com/resale-1600-sq-ft-plot-in-jp-nagar-phase-9/10120677',
-                                 'psf': 25000,
-                                 'plot_sqft': 1600,
-                                 'locality': 'Jp Nagar Phase 9, Jp Nagar, Jp Nagar Phase 9'},
-                                {'url': 'https://www.squareyards.com/resale-2400-sq-ft-plot-in-jp-nagar-phase-7/9943553',
-                                 'psf': 15000,
-                                 'plot_sqft': 2400,
-                                 'locality': 'Jp Nagar Phase 7, Jp Nagar, Jp Nagar Phase 7'},
-                                {'url': 'https://www.squareyards.com/resale-2400-sq-ft-plot-in-jp-nagar/10051876',
-                                 'psf': 22917,
-                                 'plot_sqft': 2400,
-                                 'locality': 'Jp Nagar'},
-                                {'url': 'https://www.squareyards.com/resale-2400-sq-ft-plot-in-jp-nagar/10545504',
-                                 'psf': 22000,
-                                 'plot_sqft': 2400,
-                                 'locality': 'Jp Nagar'}]},
+              'mb': {'v': 9919, 'p': 'Q3 2026', 'u': 'https://www.magicbricks.com/Property-Rates-Trends/Multistorey-Apartment-rates-JP-Nagar-in-Bangalore'},
+              'sy': {'v': 11900, 'chg': 4.9, 'u': 'https://www.squareyards.com/property-rates/jp-nagar-bangalore'},
+              'mbp': {'v': 12599,
+                      'sqyd': 113388,
+                      'p': 'Q3 2026',
+                      'u': 'https://www.magicbricks.com/Property-Rates-Trends/Multistorey-Apartment-rates-JP-Nagar-in-Bangalore'},
+              'listings': [{'url': 'https://www.squareyards.com/resale-1200-sq-ft-plot-in-jp-nagar/10525866',
+                            'psf': 17583,
+                            'plot_sqft': 1200,
+                            'locality': 'Jp Nagar 6th Phase Puttanahalli Plot, Jp Nagar'},
+                           {'url': 'https://www.squareyards.com/resale-1200-sq-ft-plot-in-jp-nagar/9754219',
+                            'psf': 12000,
+                            'plot_sqft': 1200,
+                            'locality': 'Star City, Jp Nagar'},
+                           {'url': 'https://www.squareyards.com/resale-1600-sq-ft-plot-in-jp-nagar-phase-9/10120677',
+                            'psf': 25000,
+                            'plot_sqft': 1600,
+                            'locality': 'Jp Nagar Phase 9, Jp Nagar, Jp Nagar Phase 9'},
+                           {'url': 'https://www.squareyards.com/resale-2400-sq-ft-plot-in-jp-nagar-phase-7/9943553',
+                            'psf': 15000,
+                            'plot_sqft': 2400,
+                            'locality': 'Jp Nagar Phase 7, Jp Nagar, Jp Nagar Phase 7'},
+                           {'url': 'https://www.squareyards.com/resale-2400-sq-ft-plot-in-jp-nagar/10051876',
+                            'psf': 22917,
+                            'plot_sqft': 2400,
+                            'locality': 'Jp Nagar'},
+                           {'url': 'https://www.squareyards.com/resale-2400-sq-ft-plot-in-jp-nagar/10545504',
+                            'psf': 22000,
+                            'plot_sqft': 2400,
+                            'locality': 'Jp Nagar'}]},
  'Basavanagudi': {'zone': 'Central',
-                  'mb': {'value': 14913,
-                         'period': 'Q3 2026',
-                         'page_updated': 'Oct-2026',
-                         'url': 'https://www.magicbricks.com/Property-Rates-Trends/Multistorey-Apartment-rates-Basavanagudi-in-Bangalore'},
-                  'sy': {'value': 16100,
-                         'page_date': 'Nov 2026',
-                         'url': 'https://www.squareyards.com/property-rates/basavanagudi-bangalore',
-                         'headline_all_types': 16500},
-                  'land_listings': [{'url': 'https://www.squareyards.com/resale-1201-sq-ft-plot-in-basavanagudi/10391588',
-                                     'psf': 3250,
-                                     'plot_sqft': 1201,
-                                     'locality': 'Basavanagudi'},
-                                    {'url': 'https://www.squareyards.com/resale-2400-sq-ft-plot-in-basavanagudi/10796240',
-                                     'psf': 42000,
-                                     'plot_sqft': 2400,
-                                     'locality': 'Basavanagudi, Basavanagudi'}]},
+                  'mb': {'v': 14913,
+                         'p': 'Q3 2026',
+                         'u': 'https://www.magicbricks.com/Property-Rates-Trends/Multistorey-Apartment-rates-Basavanagudi-in-Bangalore'},
+                  'sy': {'v': 16100, 'chg': -2.5, 'u': 'https://www.squareyards.com/property-rates/basavanagudi-bangalore'},
+                  'mbp': {'v': 3602,
+                          'sqyd': 32418,
+                          'p': 'Q3 2026',
+                          'u': 'https://www.magicbricks.com/Property-Rates-Trends/Multistorey-Apartment-rates-Basavanagudi-in-Bangalore'},
+                  'listings': [{'url': 'https://www.squareyards.com/resale-1201-sq-ft-plot-in-basavanagudi/10391588',
+                                'psf': 3250,
+                                'plot_sqft': 1201,
+                                'locality': 'Basavanagudi'},
+                               {'url': 'https://www.squareyards.com/resale-2400-sq-ft-plot-in-basavanagudi/10796240',
+                                'psf': 42000,
+                                'plot_sqft': 2400,
+                                'locality': 'Basavanagudi, Basavanagudi'}]},
  'Sarjapur Road': {'zone': 'East',
-                   'mb': {'value': 11978,
-                          'period': 'Q3 2026',
-                          'page_updated': 'Oct-2026',
-                          'url': 'https://www.magicbricks.com/Property-Rates-Trends/Multistorey-Apartment-rates-Sarjapur-Road-in-Bangalore'},
-                   'sy': {'value': 12200,
-                          'page_date': 'Nov 2026',
-                          'url': 'https://www.squareyards.com/property-rates/sarjapur-road-bangalore',
-                          'headline_all_types': 12250},
-                   'land_listings': [{'url': 'https://www.squareyards.com/resale-1499-sq-ft-plot-in-sarjapur-road/9548179',
-                                      'psf': 4536,
-                                      'plot_sqft': 1499,
-                                      'locality': 'Sarjapur Road'}]},
+                   'mb': {'v': 11978,
+                          'p': 'Q3 2026',
+                          'u': 'https://www.magicbricks.com/Property-Rates-Trends/Multistorey-Apartment-rates-Sarjapur-Road-in-Bangalore'},
+                   'sy': {'v': 12200, 'chg': -0.6, 'u': 'https://www.squareyards.com/property-rates/sarjapur-road-bangalore'},
+                   'mbp': {'v': 7968,
+                           'sqyd': 71709,
+                           'p': 'Q3 2026',
+                           'u': 'https://www.magicbricks.com/Property-Rates-Trends/Multistorey-Apartment-rates-Sarjapur-Road-in-Bangalore'},
+                   'listings': [{'url': 'https://www.squareyards.com/resale-1499-sq-ft-plot-in-sarjapur-road/9548179',
+                                 'psf': 4536,
+                                 'plot_sqft': 1499,
+                                 'locality': 'Sarjapur Road'}]},
  'KR Puram': {'zone': 'East',
-              'mb': {'value': 10543,
-                     'period': 'Q3 2026',
-                     'page_updated': 'Oct-2026',
-                     'url': 'https://www.magicbricks.com/Property-Rates-Trends/Multistorey-Apartment-rates-Kr-Puram-in-Bangalore'},
-              'sy': {'value': 11500,
-                     'page_date': 'Nov 2026',
-                     'url': 'https://www.squareyards.com/property-rates/kr-puram-bangalore',
-                     'headline_all_types': 11450},
-              'land_listings': [{'url': 'https://www.squareyards.com/resale-1200-sq-ft-plot-in-kr-puram/9704509',
-                                 'psf': 1132,
-                                 'plot_sqft': 1200,
-                                 'locality': 'Villa Plots Are Available, Kr Puram'},
-                                {'url': 'https://www.squareyards.com/resale-1200-sq-ft-plot-in-kr-puram/9705010',
-                                 'psf': 2083,
-                                 'plot_sqft': 1200,
-                                 'locality': 'Maa Plots, Kr Puram'}]},
+              'mb': {'v': 10543, 'p': 'Q3 2026', 'u': 'https://www.magicbricks.com/Property-Rates-Trends/Multistorey-Apartment-rates-KR-Puram-in-Bangalore'},
+              'sy': {'v': 11500, 'chg': 0.5, 'u': 'https://www.squareyards.com/property-rates/kr-puram-bangalore'},
+              'mbp': {'v': 7769,
+                      'sqyd': 69921,
+                      'p': 'Q3 2026',
+                      'u': 'https://www.magicbricks.com/Property-Rates-Trends/Multistorey-Apartment-rates-KR-Puram-in-Bangalore'},
+              'listings': [{'url': 'https://www.squareyards.com/resale-1200-sq-ft-plot-in-kr-puram/9704509',
+                            'psf': 1132,
+                            'plot_sqft': 1200,
+                            'locality': 'Villa Plots Are Available, Kr Puram'},
+                           {'url': 'https://www.squareyards.com/resale-1200-sq-ft-plot-in-kr-puram/9705010',
+                            'psf': 2083,
+                            'plot_sqft': 1200,
+                            'locality': 'Maa Plots, Kr Puram'}]},
  'Yeshwanthpur': {'zone': 'North',
-                  'mb': {'value': 12908,
-                         'period': 'Q3 2026',
-                         'page_updated': 'Oct-2026',
-                         'url': 'https://www.magicbricks.com/Property-Rates-Trends/Multistorey-Apartment-rates-Yeswanthpur-in-Bangalore'},
-                  'sy': {'value': 12200,
-                         'page_date': 'Nov 2026',
-                         'url': 'https://www.squareyards.com/property-rates/yeshwanthpur-bangalore',
-                         'headline_all_types': 12900},
-                  'land_listings': [{'url': 'https://www.squareyards.com/resale-1500-sq-ft-plot-in-yeshwanthpur/10642017',
-                                     'psf': 4500,
-                                     'plot_sqft': 1500,
-                                     'locality': 'Yeshwanthpur'}]},
+                  'mb': {'v': 12908,
+                         'p': 'Q3 2026',
+                         'u': 'https://www.magicbricks.com/Property-Rates-Trends/Multistorey-Apartment-rates-Yeshwanthpur-in-Bangalore'},
+                  'sy': {'v': 12200, 'chg': -5.5, 'u': 'https://www.squareyards.com/property-rates/yeshwanthpur-bangalore'},
+                  'listings': [{'url': 'https://www.squareyards.com/resale-1500-sq-ft-plot-in-yeshwanthpur/10642017',
+                                'psf': 4500,
+                                'plot_sqft': 1500,
+                                'locality': 'Yeshwanthpur'}]},
  'Kalyan Nagar': {'zone': 'North',
-                  'mb': {'value': 9255,
-                         'period': 'Q3 2026',
-                         'page_updated': 'Oct-2026',
-                         'url': 'https://www.magicbricks.com/Property-Rates-Trends/Multistorey-Apartment-rates-Kalyan-Nagar-in-Bangalore'},
-                  'sy': {'value': 7900,
-                         'page_date': 'Nov 2026',
-                         'url': 'https://www.squareyards.com/property-rates/kalyan-nagar-bangalore',
-                         'headline_all_types': 7900},
-                  'land_listings': [{'url': 'https://www.squareyards.com/resale-2000-sq-ft-plot-in-kalyan-nagar/10637229',
-                                     'psf': 18000,
-                                     'plot_sqft': 2000,
-                                     'locality': 'Kalyan Nagar, Central Bangalore, Kalyan Nagar'}]},
+                  'mb': {'v': 9255,
+                         'p': 'Q3 2026',
+                         'u': 'https://www.magicbricks.com/Property-Rates-Trends/Multistorey-Apartment-rates-Kalyan-Nagar-in-Bangalore'},
+                  'sy': {'v': 7900, 'chg': -4.6, 'u': 'https://www.squareyards.com/property-rates/kalyan-nagar-bangalore'},
+                  'mbp': {'v': 9624,
+                          'sqyd': 86617,
+                          'p': 'Q3 2026',
+                          'u': 'https://www.magicbricks.com/Property-Rates-Trends/Multistorey-Apartment-rates-Kalyan-Nagar-in-Bangalore'},
+                  'listings': [{'url': 'https://www.squareyards.com/resale-2000-sq-ft-plot-in-kalyan-nagar/10637229',
+                                'psf': 18000,
+                                'plot_sqft': 2000,
+                                'locality': 'Kalyan Nagar, Central Bangalore, Kalyan Nagar'}]},
  'Kammanahalli': {'zone': 'North',
-                  'mb': {'value': 17122,
-                         'period': 'Q3 2026',
-                         'page_updated': 'Oct-2026',
-                         'url': 'https://www.magicbricks.com/Property-Rates-Trends/Multistorey-Apartment-rates-Kammanahalli-in-Bangalore'},
-                  'sy': {'value': 19550,
-                         'page_date': 'Nov 2026',
-                         'url': 'https://www.squareyards.com/property-rates/kammanahalli-bangalore',
-                         'headline_all_types': 19250},
-                  'land_listings': [{'url': 'https://www.squareyards.com/resale-1300-sq-ft-plot-in-kammanahalli/10637114',
-                                     'psf': 25000,
-                                     'plot_sqft': 1300,
-                                     'locality': 'Kammanahalli, Central Bangalore, Kammanahalli'},
-                                    {'url': 'https://www.squareyards.com/resale-1652-sq-ft-plot-in-kammanahalli/10222711',
-                                     'psf': 13983,
-                                     'plot_sqft': 1652,
-                                     'locality': 'Kammanahalli, Central Bangalore, Kammanahalli'},
-                                    {'url': 'https://www.squareyards.com/resale-3300-sq-ft-plot-in-nandi-homes-kammanahalli/10317972',
-                                     'psf': 6061,
-                                     'plot_sqft': 3300,
-                                     'locality': 'Nandi Homes Kammanahalli, Kammanahalli'},
-                                    {'url': 'https://www.squareyards.com/resale-880-sq-ft-plot-in-kammanahalli/10493612',
-                                     'psf': 12500,
-                                     'plot_sqft': 880,
-                                     'locality': 'Kammanahalli, Central Bangalore, Kammanahalli'}]},
- 'Nagarbhavi': {'zone': 'West',
-                'mb': {'value': 7022,
-                       'period': 'Q3 2026',
-                       'page_updated': 'Oct-2026',
-                       'url': 'https://www.magicbricks.com/Property-Rates-Trends/Multistorey-Apartment-rates-Naagarabhaavi-in-Bangalore'},
-                'land_listings': []},
+                  'mb': {'v': 17122,
+                         'p': 'Q3 2026',
+                         'u': 'https://www.magicbricks.com/Property-Rates-Trends/Multistorey-Apartment-rates-Kammanahalli-in-Bangalore'},
+                  'sy': {'v': 19550, 'chg': 1.5, 'u': 'https://www.squareyards.com/property-rates/kammanahalli-bangalore'},
+                  'listings': [{'url': 'https://www.squareyards.com/resale-1300-sq-ft-plot-in-kammanahalli/10637114',
+                                'psf': 25000,
+                                'plot_sqft': 1300,
+                                'locality': 'Kammanahalli, Central Bangalore, Kammanahalli'},
+                               {'url': 'https://www.squareyards.com/resale-1652-sq-ft-plot-in-kammanahalli/10222711',
+                                'psf': 13983,
+                                'plot_sqft': 1652,
+                                'locality': 'Kammanahalli, Central Bangalore, Kammanahalli'},
+                               {'url': 'https://www.squareyards.com/resale-3300-sq-ft-plot-in-nandi-homes-kammanahalli/10317972',
+                                'psf': 6061,
+                                'plot_sqft': 3300,
+                                'locality': 'Nandi Homes Kammanahalli, Kammanahalli'},
+                               {'url': 'https://www.squareyards.com/resale-880-sq-ft-plot-in-kammanahalli/10493612',
+                                'psf': 12500,
+                                'plot_sqft': 880,
+                                'locality': 'Kammanahalli, Central Bangalore, Kammanahalli'}]},
+ 'Nagarabhaavi': {'zone': 'West',
+                  'mb': {'v': 7022,
+                         'p': 'Q3 2026',
+                         'u': 'https://www.magicbricks.com/Property-Rates-Trends/Multistorey-Apartment-rates-Naagarabhaavi-in-Bangalore'},
+                  'mbp': {'v': 9136,
+                          'sqyd': 82227,
+                          'p': 'Q3 2026',
+                          'u': 'https://www.magicbricks.com/Property-Rates-Trends/Multistorey-Apartment-rates-Naagarabhaavi-in-Bangalore'},
+                  'listings': []},
  'Vijayanagar': {'zone': 'West',
-                 'sy': {'value': 10850,
-                        'page_date': 'Oct 2026',
-                        'url': 'https://www.squareyards.com/property-rates/vijayanagar-bangalore',
-                        'headline_all_types': 10850},
-                 'land_listings': []},
+                 'mb': {'v': 8921,
+                        'p': 'Jul-Sep 2025 (older version of page)',
+                        'u': 'https://www.magicbricks.com/Property-Rates-Trends/Multistorey-Apartment-rates-Vijayanagar-in-Bangalore'},
+                 'sy': {'v': 10850, 'chg': 0.2, 'u': 'https://www.squareyards.com/property-rates/vijayanagar-bangalore'},
+                 'mbp': {'v': 13267,
+                         'sqyd': 119404,
+                         'p': 'Jul-Sep 2025 (older version of page)',
+                         'u': 'https://www.magicbricks.com/Property-Rates-Trends/Multistorey-Apartment-rates-Vijayanagar-in-Bangalore'},
+                 'listings': []},
  'RT Nagar': {'zone': 'North',
-              'mb': {'value': 6334,
-                     'period': 'Q3 2026',
-                     'page_updated': 'Oct-2026',
-                     'url': 'https://www.magicbricks.com/Property-Rates-Trends/Multistorey-Apartment-rates-RT-Nagar-in-Bangalore'},
-              'sy': {'value': 14900,
-                     'page_date': 'Nov 2026',
-                     'url': 'https://www.squareyards.com/property-rates/rt-nagar-bangalore',
-                     'headline_all_types': 15650},
-              'land_listings': [{'url': 'https://www.squareyards.com/resale-1300-sq-ft-plot-in-rt-nagar/10625124',
-                                 'psf': 6923,
-                                 'plot_sqft': 1300,
-                                 'locality': 'Rt Nagar, Central Bangalore, Rt Nagar'},
-                                {'url': 'https://www.squareyards.com/resale-1500-sq-ft-plot-in-rt-nagar/10631158',
-                                 'psf': 3000,
-                                 'plot_sqft': 1500,
-                                 'locality': 'Rt Nagar, Central Bangalore, Rt Nagar'},
-                                {'url': 'https://www.squareyards.com/resale-2000-sq-ft-plot-in-rt-nagar/9893822',
-                                 'psf': 23000,
-                                 'plot_sqft': 2000,
-                                 'locality': 'Rt Nagar'},
-                                {'url': 'https://www.squareyards.com/resale-4000-sq-ft-plot-in-rt-nagar/10631458',
-                                 'psf': 30000,
-                                 'plot_sqft': 4000,
-                                 'locality': 'Rt Nagar, Central Bangalore, Rt Nagar'}]},
+              'mb': {'v': 6334, 'p': 'Q3 2026', 'u': 'https://www.magicbricks.com/Property-Rates-Trends/Multistorey-Apartment-rates-RT-Nagar-in-Bangalore'},
+              'sy': {'v': 14900, 'chg': -4.8, 'u': 'https://www.squareyards.com/property-rates/rt-nagar-bangalore'},
+              'mbp': {'v': 3379,
+                      'sqyd': 30410,
+                      'p': 'Q3 2026',
+                      'u': 'https://www.magicbricks.com/Property-Rates-Trends/Multistorey-Apartment-rates-RT-Nagar-in-Bangalore'},
+              'listings': [{'url': 'https://www.squareyards.com/resale-1300-sq-ft-plot-in-rt-nagar/10625124',
+                            'psf': 6923,
+                            'plot_sqft': 1300,
+                            'locality': 'Rt Nagar, Central Bangalore, Rt Nagar'},
+                           {'url': 'https://www.squareyards.com/resale-1500-sq-ft-plot-in-rt-nagar/10631158',
+                            'psf': 3000,
+                            'plot_sqft': 1500,
+                            'locality': 'Rt Nagar, Central Bangalore, Rt Nagar'},
+                           {'url': 'https://www.squareyards.com/resale-2000-sq-ft-plot-in-rt-nagar/9893822',
+                            'psf': 23000,
+                            'plot_sqft': 2000,
+                            'locality': 'Rt Nagar'},
+                           {'url': 'https://www.squareyards.com/resale-4000-sq-ft-plot-in-rt-nagar/10631458',
+                            'psf': 30000,
+                            'plot_sqft': 4000,
+                            'locality': 'Rt Nagar, Central Bangalore, Rt Nagar'}]},
  'Bannerghatta Road': {'zone': 'South',
-                       'mb': {'value': 9825,
-                              'period': 'Q3 2026',
-                              'page_updated': 'Oct-2026',
-                              'url': 'https://www.magicbricks.com/Property-Rates-Trends/Multistorey-Apartment-rates-Bannerghatta-Main-Road-in-Bangalore'},
-                       'sy': {'value': 12450,
-                              'page_date': 'Nov 2026',
-                              'url': 'https://www.squareyards.com/property-rates/bannerghatta-road-bangalore',
-                              'headline_all_types': 12450},
-                       'land_listings': [{'url': 'https://www.squareyards.com/resale-1200-sq-ft-plot-in-bannerghatta-road/10306050',
-                                          'psf': 1598,
-                                          'plot_sqft': 1200,
-                                          'locality': 'Bannerghatta Road'}]},
+                       'mb': {'v': 9825,
+                              'p': 'Q3 2026',
+                              'u': 'https://www.magicbricks.com/Property-Rates-Trends/Multistorey-Apartment-rates-Bannerghatta-Main-Road-in-Bangalore'},
+                       'sy': {'v': 12450, 'chg': -3.2, 'u': 'https://www.squareyards.com/property-rates/bannerghatta-road-bangalore'},
+                       'mbp': {'v': 4466,
+                               'sqyd': 40193,
+                               'p': 'Q3 2026',
+                               'u': 'https://www.magicbricks.com/Property-Rates-Trends/Multistorey-Apartment-rates-Bannerghatta-Main-Road-in-Bangalore'},
+                       'listings': [{'url': 'https://www.squareyards.com/resale-1200-sq-ft-plot-in-bannerghatta-road/10306050',
+                                     'psf': 1598,
+                                     'plot_sqft': 1200,
+                                     'locality': 'Bannerghatta Road'}]},
  'Begur': {'zone': 'South',
-           'mb': {'value': 10146,
-                  'period': 'Q3 2026',
-                  'page_updated': 'Oct-2026',
-                  'url': 'https://www.magicbricks.com/Property-Rates-Trends/Multistorey-Apartment-rates-Begur-in-Bangalore'},
-           'sy': {'value': 9550,
-                  'page_date': 'Nov 2026',
-                  'url': 'https://www.squareyards.com/property-rates/begur-bangalore',
-                  'headline_all_types': 9550},
-           'land_listings': [{'url': 'https://www.squareyards.com/resale-1260-sq-ft-plot-in-begur/9382504',
-                              'psf': 7714,
-                              'plot_sqft': 1260,
-                              'locality': 'Green Valley 6, Begur'},
-                             {'url': 'https://www.squareyards.com/resale-1260-sq-ft-plot-in-begur/9481467',
-                              'psf': 7714,
-                              'plot_sqft': 1260,
-                              'locality': 'Green Valley 10, Begur'}]},
+           'mb': {'v': 10146, 'p': 'Q3 2026', 'u': 'https://www.magicbricks.com/Property-Rates-Trends/Multistorey-Apartment-rates-Begur-in-Bangalore'},
+           'sy': {'v': 9550, 'chg': 0.4, 'u': 'https://www.squareyards.com/property-rates/begur-bangalore'},
+           'mbp': {'v': 7366,
+                   'sqyd': 66297,
+                   'p': 'Q3 2026',
+                   'u': 'https://www.magicbricks.com/Property-Rates-Trends/Multistorey-Apartment-rates-Begur-in-Bangalore'},
+           'listings': [{'url': 'https://www.squareyards.com/resale-1260-sq-ft-plot-in-begur/9382504',
+                         'psf': 7714,
+                         'plot_sqft': 1260,
+                         'locality': 'Green Valley 6, Begur'},
+                        {'url': 'https://www.squareyards.com/resale-1260-sq-ft-plot-in-begur/9481467',
+                         'psf': 7714,
+                         'plot_sqft': 1260,
+                         'locality': 'Green Valley 10, Begur'}]},
  'Singasandra': {'zone': 'South',
-                 'mb': {'value': 11053,
-                        'period': 'Q3 2026',
-                        'page_updated': 'Oct-2026',
-                        'url': 'https://www.magicbricks.com/Property-Rates-Trends/Multistorey-Apartment-rates-Singasandra-in-Bangalore'},
-                 'sy': {'value': 11850,
-                        'page_date': 'Nov 2026',
-                        'url': 'https://www.squareyards.com/property-rates/singasandra-bangalore',
-                        'headline_all_types': 12000},
-                 'land_listings': []},
+                 'mb': {'v': 11053,
+                        'p': 'Q3 2026',
+                        'u': 'https://www.magicbricks.com/Property-Rates-Trends/Multistorey-Apartment-rates-Singasandra-in-Bangalore'},
+                 'sy': {'v': 11850, 'chg': -1.1, 'u': 'https://www.squareyards.com/property-rates/singasandra-bangalore'},
+                 'mbp': {'v': 12503,
+                         'sqyd': 112525,
+                         'p': 'Q3 2026',
+                         'u': 'https://www.magicbricks.com/Property-Rates-Trends/Multistorey-Apartment-rates-Singasandra-in-Bangalore'},
+                 'listings': []},
  'RR Nagar': {'zone': 'West',
-              'mb': {'value': 8538,
-                     'period': 'Q3 2026',
-                     'page_updated': 'Oct-2026',
-                     'url': 'https://www.magicbricks.com/Property-Rates-Trends/Multistorey-Apartment-rates-Rajarajeshwari-Nagar-in-Bangalore'},
-              'land_listings': []},
- 'Puttenahalli': {'zone': 'South', 'land_listings': []}}
+              'mb': {'v': 8538,
+                     'p': 'Q3 2026',
+                     'u': 'https://www.magicbricks.com/Property-Rates-Trends/Multistorey-Apartment-rates-Rajarajeshwari-Nagar-in-Bangalore'},
+              'mbp': {'v': 11693,
+                      'sqyd': 105239,
+                      'p': 'Q3 2026',
+                      'u': 'https://www.magicbricks.com/Property-Rates-Trends/Multistorey-Apartment-rates-Rajarajeshwari-Nagar-in-Bangalore'},
+              'listings': []},
+ 'Puttenahalli': {'zone': 'South', 'listings': []}}
 
-# Zone trends: Square Yards zone averages, year on year to Sep 2026, as reported by mypropertypoint.com (23 Oct 2026)
+# Areas with no portal page of their own are estimated from the parent locality (disclosed in the app).
+PROXY_PARENT = {'Puttenahalli': 'JP Nagar'}
+
+# Past 12 months, zone average asking price (Square Yards zone figures as reported by mypropertypoint.com, 23 Oct 2026)
 ZONE_YOY = {"Central": 5.8, "East": -1.3, "South": 3.3, "North": 2.3, "West": -1.0}
 ZONE_YOY_URL = "https://mypropertypoint.com/blog/property-rates-in-bangalore-per-sq-ft-by-area-october-2026"
 
+import statistics as _st
+
+
+def _clamp(x, lo, hi):
+    return max(lo, min(hi, x))
+
 
 def apartment_view(area):
-    d = PRICE_DATA.get(area, {})
+    d = MARKET.get(area, {})
+    proxy = None
+    if not (d.get('mb') or d.get('sy')) and area in PROXY_PARENT:
+        proxy = PROXY_PARENT[area]
+        d = MARKET.get(proxy, {})
     srcs = []
-    for key, label, period in (('mb', 'MagicBricks, multistorey apartment average', 'Q3 2026'), ('sy', 'Square Yards, apartment average', 'Nov 2026')):
-        if d.get(key):
-            srcs.append({'source': label, 'value': d[key]['value'], 'period': period, 'url': d[key]['url']})
+    if d.get('mb'):
+        srcs.append({'source': 'MagicBricks, multistorey apartment average', 'value': d['mb']['v'], 'period': d['mb'].get('p') or '', 'url': d['mb']['u']})
+    if d.get('sy'):
+        srcs.append({'source': 'Square Yards, apartment average', 'value': d['sy']['v'], 'period': 'Nov 2026', 'url': d['sy']['u']})
     vals = [x['value'] for x in srcs]
     if not vals:
-        return {'low': None, 'high': None, 'mid': None, 'note': 'No portal figure found for this area.', 'sources': []}
+        return {'low': None, 'high': None, 'mid': None, 'est': None, 'confidence': 'none', 'method': 'none', 'spread_percent': None, 'note': 'No portal figure found for this area.', 'sources': []}
     low, high = min(vals), max(vals)
-    if len(vals) == 1:
-        note = 'One portal only (' + srcs[0]['source'].split(',')[0] + '). Treat as indicative.'
+    est = int(round(sum(vals) / len(vals), -1))
+    spread = round((high - low) / low * 100) if len(vals) == 2 else None
+    if proxy:
+        conf, method = 'low', 'proxy'
+        note = 'No portal page exists for ' + area + '. This is the figure for ' + proxy + ', the locality it sits in, so it is a stand-in, not a measurement.'
+    elif len(vals) == 1:
+        conf, method = 'low', 'one portal'
+        note = 'Estimate = the one portal figure found (' + srcs[0]['source'].split(',')[0] + '). Only one source, so treat it as indicative.'
+    elif spread < 20:
+        conf, method = 'high', 'two portals'
+        note = 'Estimate = midpoint of two portals that agree within ' + str(spread) + ' percent.'
+    elif spread < 60:
+        conf, method = 'medium', 'two portals'
+        note = 'Estimate = midpoint of two portals ' + str(spread) + ' percent apart. The real figure for a given flat can sit anywhere in the range.'
     else:
-        gap = round((high - low) / low * 100)
-        if gap >= 20:
-            note = 'Two portals, ' + str(gap) + ' percent apart. Both are asking prices and portal averages follow whatever is listed that quarter. No single figure is shown.'
+        conf, method = 'low', 'two portals'
+        note = 'Estimate = midpoint of two portals ' + str(spread) + ' percent apart. They disagree a lot (asking averages follow whatever is listed), so use the range, not the midpoint.'
+    return {'low': low, 'high': high, 'mid': est, 'est': est, 'confidence': conf, 'method': method, 'spread_percent': spread, 'proxy_of': proxy, 'note': note, 'sources': srcs}
+
+
+_PLOT_CACHE = {}
+# A portal plot average below this share of the area's own apartment estimate is not used: residential land in a built-up area
+# is not credibly cheaper than 40 percent of the flat rate per sqft, so such a figure reflects the listing mix, not the area. It stays visible in the sources.
+PLOT_MIN_VS_APT = 0.4
+
+
+def _plot_sourced(area):
+    """Plot estimate from the sources found for this area, or None."""
+    d = MARKET.get(area, {})
+    ls = d.get('listings', [])
+    cands = []
+    srcn = []
+    if len(ls) >= 3:
+        vals = sorted(l['psf'] for l in ls)
+        med = _st.median(vals)
+        cands.append(med)
+        srcn.append('Square Yards listing median (' + str(len(ls)) + ' listings)')
+    excluded = None
+    if d.get('mbp'):
+        apt_est = apartment_view(area)['est']
+        if apt_est and d['mbp']['v'] < PLOT_MIN_VS_APT * apt_est:
+            excluded = d['mbp']['v']
         else:
-            note = 'Two portals agree within ' + str(gap) + ' percent.'
-    return {'low': low, 'high': high, 'mid': int(round((low + high) / 2)), 'note': note, 'sources': srcs}
+            cands.append(d['mbp']['v'])
+            srcn.append('MagicBricks plot average, ' + str(d['mbp'].get('p') or ''))
+    if not cands:
+        return None
+    est = _st.geometric_mean(cands) if len(cands) > 1 else cands[0]
+    lo, hi = min(cands), max(cands)
+    if len(cands) == 1 and len(ls) >= 3:
+        vals = sorted(l['psf'] for l in ls)
+        k = len(vals)
+        lo, hi = vals[k // 4], vals[(3 * k) // 4]
+    return {'est': int(round(est, -2)), 'low': int(round(lo, -2)), 'high': int(round(hi, -2)), 'cands': cands, 'srcn': srcn, 'mb_excluded': excluded}
 
 
 def plot_view(area):
-    ls = PRICE_DATA.get(area, {}).get('land_listings', [])
-    n = len(ls)
-    if n < 5:
-        return {'n': n, 'shown': False, 'note': 'Only ' + str(n) + ' usable listing(s) found. Not enough to show a range.', 'listings': ls}
-    vals = [l['psf'] for l in ls]
-    lo, hi = min(vals), max(vals)
-    note = str(n) + ' Square Yards resale plot listings, asking price per sqft. This is the range seen, not an average.'
-    if hi / lo > 3:
-        note += ' The spread is very wide, so no typical value can be read from it.'
-    return {'n': n, 'shown': True, 'low': lo, 'high': hi, 'note': note, 'listings': ls}
+    d = MARKET.get(area, {})
+    ls = d.get('listings', [])
+    srcs = []
+    if d.get('mbp'):
+        srcs.append({'source': 'MagicBricks, residential plot average (' + format(d['mbp']['sqyd'], ',') + ' per sq yd, divided by 9)', 'value': d['mbp']['v'], 'period': d['mbp'].get('p') or '', 'url': d['mbp']['u']})
+    s = _plot_sourced(area)
+    if s:
+        spread = max(s['cands']) / max(1, min(s['cands']))
+        if len(s['cands']) == 2 and spread < 1.6:
+            conf = 'medium'
+        elif len(s['cands']) == 2:
+            conf = 'low'
+        elif len(ls) >= 5:
+            conf = 'medium'
+        else:
+            conf = 'low'
+        note = 'Estimate from: ' + ' and '.join(s['srcn']) + '.'
+        if len(s['cands']) == 2:
+            note = 'Estimate = geometric mean of ' + ' and '.join(s['srcn']) + (', which are ' + str(round(spread, 1)) + 'x apart. Listings usually show prime pockets, portal averages cover the whole locality, so the true figure depends on the micro-area.' if spread >= 1.6 else ', which agree within 1.6x.')
+        else:
+            note += ' Single source.'
+        if s.get('mb_excluded'):
+            note += ' The MagicBricks plot average (' + format(s['mb_excluded'], ',') + '/sqft) is shown in the sources but not used: it is below ' + str(int(PLOT_MIN_VS_APT * 100)) + '% of the apartment rate here, so it likely reflects the listing mix.'
+        out = {'n': len(ls), 'shown': True, 'est': s['est'], 'low': s['low'], 'high': s['high'], 'confidence': conf, 'method': 'sourced', 'note': note, 'listings': ls, 'sources': srcs}
+        return out
+    # Ratio fallback: zone median of (plot estimate / apartment estimate) over areas that have sourced plot figures
+    zone = d.get('zone')
+    apt = apartment_view(area)['est']
+    parent = PROXY_PARENT.get(area)
+    if parent:
+        ps = _plot_sourced(parent)
+        if ps:
+            return {'n': 0, 'shown': True, 'est': ps['est'], 'low': ps['low'], 'high': ps['high'], 'confidence': 'low', 'method': 'proxy',
+                    'note': 'No portal plot figure for ' + area + '. This is the figure for ' + parent + ', the locality it sits in. A stand-in, not a measurement.', 'listings': [], 'sources': []}
+    ratios = []
+    for a2, d2 in MARKET.items():
+        if a2 == area or d2.get('zone') != zone or a2 in PROXY_PARENT:
+            continue
+        s2 = _plot_sourced(a2)
+        a2v = apartment_view(a2)['est']
+        if s2 and a2v:
+            ratios.append(s2['est'] / a2v)
+    if apt and len(ratios) >= 2:
+        r = _st.median(ratios)
+        return {'n': 0, 'shown': True, 'est': int(round(apt * r, -2)), 'low': int(round(apt * min(ratios), -2)), 'high': int(round(apt * max(ratios), -2)), 'confidence': 'low', 'method': 'ratio',
+                'note': ('The only portal plot figure (' + format(d['mbp']['v'], ',') + '/sqft, MagicBricks) is below ' + str(int(PLOT_MIN_VS_APT * 100)) + '% of this area\'s apartment rate and is not used. ' if d.get('mbp') else 'No plot data found for this area. ') + 'Modelled estimate: its apartment estimate times the median plot-to-apartment price ratio (' + format(r, '.2f') + ') of ' + str(len(ratios)) + ' ' + zone + ' zone areas that do have plot data. The range uses the lowest and highest ratio in the zone. Low confidence.',
+                'listings': [], 'sources': []}
+    return {'n': 0, 'shown': False, 'est': None, 'low': None, 'high': None, 'confidence': 'none', 'method': 'none', 'note': 'No plot data and no basis for an estimate.', 'listings': [], 'sources': []}
 
 
-BASE_PRICES = {a: (apartment_view(a)['mid'] or 0) for a in PRICE_DATA}
+BASE_PRICES = {a: (apartment_view(a)['mid'] or 0) for a in MARKET}
 
 
 COORDS = {
@@ -1157,7 +1233,10 @@ def fetch_news(area_name, force_refresh=False):
 
     if area_name not in cache_data:
         cache_data[area_name] = {}
-    cache_data[area_name]['news'] = {'time': now, 'data': news_items}
+    if news_items or 'news' not in cache_data[area_name]:
+        cache_data[area_name]['news'] = {'time': now, 'data': news_items}
+    else:
+        return cache_data[area_name]['news'].get('data', [])
     save_cache()
     return news_items
 
@@ -1188,43 +1267,143 @@ def fetch_social_sentiment(area_name, force_refresh=False):
                 posts.append({
                     'title': post_data.get('title'),
                     'link': f"https://reddit.com{post_data.get('permalink')}",
-                    'score': post_data.get('score', 0)
+                    'score': post_data.get('score', 0),
+                    'fetched': now
                 })
     except Exception as e:
         print(f"Error fetching reddit for {area_name}: {e}")
         
     if area_name not in cache_data:
         cache_data[area_name] = {}
-    cache_data[area_name]['social'] = {'time': now, 'data': posts}
+    if posts or 'social' not in cache_data[area_name]:
+        cache_data[area_name]['social'] = {'time': now, 'data': posts}
+    else:
+        return cache_data[area_name]['social'].get('data', [])
     save_cache()
     return posts
 
-def analyze_sentiment_and_predict(area, news_items, social_items):
-    """Sourced apartment and plot figures, plus the zone trend. Headlines only feed the small liveability signal."""
-    d = PRICE_DATA.get(area, {})
-    positive_words = ['new', 'develop', 'metro', 'inaugurate', 'tech park', 'growth', 'rise', 'boom', 'clean', 'upgrade', 'good', 'best', 'love', 'safe']
-    negative_words = ['traffic', 'flood', 'water logging', 'crime', 'poor', 'pothole', 'protest', 'delay', 'fall', 'slump', 'bad', 'worst', 'hate', 'scam', 'rage', 'kick']
-    score = 0
-    texts = [i['title'].lower() for i in news_items] + [i['title'].lower() for i in social_items]
-    for t in texts:
-        for w in positive_words:
-            if w in t:
-                score += 1
-        for w in negative_words:
-            if w in t:
-                score -= 1
-    headline_percent = max(-20.0, min(20.0, score * 1.5))
+import email.utils as _eu
+
+POS_TERMS = {'metro': 1.0, 'inaugurat': 1.0, 'tech park': 1.0, 'flyover': 0.5, 'new road': 0.5, 'upgrade': 1.0, 'green': 0.5, 'redevelop': 0.5, 'growth': 1.0, 'rise in': 0.5, 'boom': 1.0, 'clean': 0.5, 'safe': 0.5, 'opens': 0.5, 'launch': 0.5, 'airport': 0.5, 'lake revival': 1.0, 'rejuvenat': 1.0, 'connectivity': 0.5, 'best': 0.5}
+NEG_TERMS = {'flood': 1.5, 'waterlog': 1.5, 'water logging': 1.5, 'crime': 1.0, 'murder': 1.0, 'robbery': 1.0, 'pothole': 0.75, 'protest': 0.5, 'delay': 0.75, 'traffic jam': 1.0, 'gridlock': 1.0, 'accident': 0.75, 'killed': 0.75, 'fire': 0.75, 'collapse': 1.5, 'scam': 1.0, 'water shortage': 1.5, 'tanker': 1.0, 'power cut': 0.75, 'demolition': 0.75, 'encroachment': 0.5, 'garbage': 0.75, 'sewage': 1.0, 'stink': 0.75, 'slump': 1.0, 'worst': 0.75}
+AREA_TERMS = {'Malleswaram': ['malleswaram', 'malleshwaram'], 'Nagarabhaavi': ['nagarbhavi', 'nagarabhavi', 'nagarabhaavi'], 'RR Nagar': ['rr nagar', 'rajarajeshwari', 'rajarajeshwari nagar'], 'JP Nagar': ['jp nagar', 'j p nagar'], 'BTM Layout': ['btm'], 'HSR Layout': ['hsr'], 'KR Puram': ['kr puram', 'k r puram', 'krishnarajapura'], 'MG Road': ['mg road', 'mahatma gandhi road'], 'RT Nagar': ['rt nagar', 'r t nagar'], 'Bannerghatta Road': ['bannerghatta'], 'Sarjapur Road': ['sarjapur'], 'Electronic City': ['electronic city']}
+MIN_FRESH_ITEMS = 3
+FRESH_DAYS = 90
+
+
+def _age_days(date_str):
+    try:
+        t = _eu.parsedate_to_datetime(date_str).timestamp()
+        return (time.time() - t) / 86400.0
+    except Exception:
+        return None
+
+
+def sentiment_signal(area, news_items, social_items):
+    """Keyword-lexicon sentiment of recent, area-specific headlines. A missing signal is reported as missing, never as neutral."""
+    terms = AREA_TERMS.get(area, [area.lower()])
+    used, stale, offtopic = [], 0, 0
+    for it in news_items:
+        title = (it.get('title') or '')
+        low = title.lower()
+        if not any(t in low for t in terms):
+            offtopic += 1
+            continue
+        age = _age_days(it.get('date') or '')
+        if age is None or age > FRESH_DAYS:
+            stale += 1
+            continue
+        used.append(('news', title, low))
+    for it in social_items:
+        title = (it.get('title') or '')
+        low = title.lower()
+        if not any(t in low for t in terms):
+            offtopic += 1
+            continue
+        fetched = it.get('fetched')
+        if not fetched or (time.time() - fetched) / 86400.0 > FRESH_DAYS:
+            stale += 1
+            continue
+        used.append(('social', title, low))
+    seen, uniq = set(), []
+    for k, t, low in used:
+        key = low[:60]
+        if key in seen:
+            continue
+        seen.add(key)
+        uniq.append((k, t, low))
+    scores = []
+    for k, t, low in uniq:
+        s = sum(w for term, w in POS_TERMS.items() if term in low) - sum(w for term, w in NEG_TERMS.items() if term in low)
+        scores.append(_clamp(s, -2.0, 2.0))
+    n = len(uniq)
+    base = {'n_used': n, 'n_stale': stale, 'n_offtopic': offtopic, 'min_needed': MIN_FRESH_ITEMS, 'fresh_days': FRESH_DAYS,
+            'items': [{'source': k, 'title': t} for k, t, low in uniq][:6]}
+    if n < MIN_FRESH_ITEMS:
+        base.update({'status': 'insufficient', 'net': None, 'tilt_percent': 0.0,
+                     'note': 'Not enough recent area-specific headlines (' + str(n) + ' found, ' + str(MIN_FRESH_ITEMS) + ' needed, newer than ' + str(FRESH_DAYS) + ' days). Sentiment adds nothing to this outlook. This is missing data, not a neutral reading.'})
+        return base
+    net = _clamp(sum(scores) / n / 2.0, -1.0, 1.0)
+    tilt = round(_clamp(net * 1.5, -1.0, 1.0), 2)
+    base.update({'status': 'ok', 'net': round(net, 2), 'tilt_percent': tilt,
+                 'note': str(n) + ' recent area headlines and posts scored with a keyword list. Net sentiment ' + format(net, '+.2f') + ' (scale -1 to +1), adjusting the outlook by ' + format(tilt, '+.2f') + ' points at most +/-1. Keyword scoring misses sarcasm and context, so the weight is small.'})
+    return base
+
+
+def outlook(area, sent):
+    """Indicative 12-month outlook. Formula, not a validated forecast: no backtest has been run."""
+    apt, plot = apartment_view(area), plot_view(area)
+    d = MARKET.get(area, {})
     zone = d.get('zone', 'South')
-    yoy = ZONE_YOY.get(zone, 0.0)
+    zy = ZONE_YOY.get(zone, 0.0)
+    sy_chg = (d.get('sy') or {}).get('chg')
+    if sy_chg is None and area in PROXY_PARENT:
+        sy_chg = (MARKET.get(PROXY_PARENT[area], {}).get('sy') or {}).get('chg')
+    area_part = zy if sy_chg is None else _clamp(sy_chg, -6.0, 8.0)
+    base = round(0.7 * zy + 0.3 * area_part, 2)
+    live = calculate_liveability_score(area, 0)['score']
+    live_tilt = round((live - 6.0) * 0.35, 2)
+    sent_tilt = sent.get('tilt_percent', 0.0)
+    g = round(base + live_tilt + sent_tilt, 2)
+    spread = apt.get('spread_percent') or 0
+    half = _clamp(3.0 + 0.1 * spread + (2.0 if apt.get('method') in ('one portal', 'proxy') else 0.0), 3.0, 12.0)
+    def proj(est, extra):
+        if not est:
+            return None
+        h = half * extra
+        return {'now': est, 'projected': int(round(est * (1 + g / 100), -1)), 'low': int(round(est * (1 + (g - h) / 100), -1)), 'high': int(round(est * (1 + (g + h) / 100), -1)), 'half_width': round(h, 1)}
+    conf = 'low' if (apt.get('confidence') in ('low', 'none') or sent.get('status') != 'ok') else 'medium'
+    return {
+        'change_percent': g,
+        'apartment': proj(apt.get('est'), 1.0),
+        'plot': proj(plot.get('est'), 1.6),
+        'components': {
+            'zone_trend': {'value': zy, 'note': zone + ' zone, last 12 months'},
+            'area_trend_used': {'value': round(area_part, 2), 'note': ('Square Yards change % beside this area\'s apartment rate, clamped to -6..+8' if sy_chg is not None else 'no area figure, zone trend used')},
+            'baseline': {'value': base, 'note': '70% zone trend + 30% area trend'},
+            'liveability': {'value': live_tilt, 'score': live, 'note': 'water, flood risk, green canopy, amenities score of ' + str(live) + ' vs a neutral 6.0, 0.35 points per score point'},
+            'sentiment': {'value': sent_tilt, 'status': sent.get('status')},
+        },
+        'confidence': conf,
+        'disclaimer': 'Indicative scenario from a fixed formula (past trend + liveability + news/social tilt). It has not been backtested, so there is no measured accuracy. The range is a judgement of uncertainty, not a statistical interval.',
+    }
+
+
+def analyze_sentiment_and_predict(area, news_items, social_items):
+    d = MARKET.get(area, {})
+    sent = sentiment_signal(area, news_items, social_items)
+    ol = outlook(area, sent)
+    zone = d.get('zone', 'South')
     return {
         'apartment': apartment_view(area),
         'plot': plot_view(area),
         'zone': zone,
-        'zone_trend_percent': yoy,
-        'zone_trend_note': zone + ' Bengaluru zone average over the last 12 months to Sep 2026, Square Yards figure as reported by mypropertypoint.com. It describes the whole zone, not this area, and is not a forecast for the next 12 months. No area-level trend is shown because none was found with a source.',
+        'zone_trend_percent': ZONE_YOY.get(zone, 0.0),
+        'zone_trend_note': zone + ' Bengaluru zone average over the last 12 months to Sep 2026, Square Yards figure as reported by mypropertypoint.com. It describes the whole zone, not this area.',
         'zone_trend_url': ZONE_YOY_URL,
-        'change_percent': yoy,
-        'headline_percent': round(headline_percent, 2),
+        'change_percent': ol['change_percent'],
+        'outlook': ol,
+        'sentiment': sent,
         'data_date': PRICE_DATA_DATE,
     }
 
@@ -1283,6 +1462,10 @@ def get_summary():
             'area': area,
             'lat': lat, 'lon': lon,
             'price_sqft': apartment_view(area)['mid'],
+            'apt_est': apartment_view(area)['est'],
+            'apt_conf': apartment_view(area)['confidence'],
+            'apt_method': apartment_view(area)['method'],
+            'outlook_percent': outlook(area, {'tilt_percent': 0.0, 'status': 'not_loaded'})['change_percent'],
             'apt_low': apartment_view(area)['low'],
             'apt_high': apartment_view(area)['high'],
             'plot': {k: v for k, v in plot_view(area).items() if k != 'listings'},
@@ -1316,14 +1499,16 @@ def get_methodology():
         'news_cache_note': 'Dates come from this server cache.',
         'news_cache_oldest': iso(oldest),
         'metrics': [
-            {'name': 'Apartment price per sqft', 'kind': 'sourced',
-             'how': 'Shown as the two portal figures, not averaged. MagicBricks: locality "Multistorey Apartment (Average Price per sq ft)", Q3 2026, pages updated Oct 2026. Square Yards: locality apartment average, pages dated Nov 2026 (the all-property headline is not used). Both are asking prices from live listings, so they follow the listing mix. They can differ by 80 percent or more for the same area (HSR Layout, Marathahalli, Rajajinagar), and a published review of the same data names that mix as the likely cause (mypropertypoint.com, 23 Oct 2026). Nothing here says which portal is right, so the range is shown and each source is linked in the area panel. Some areas have only one portal figure and Puttenahalli has none. Compare sorts on the middle of the two figures and Find matches on the lower one, because those need one number.'},
-            {'name': 'Plot price per sqft', 'kind': 'sourced',
-             'how': 'Range of asking prices across Square Yards resale plot listings found in Nov 2026, with listing links in the area panel. A listing counts only if its price, plot area and total price reconcile, it is in sqft, the plot is 10,000 sqft or less, the listing page says Property Type Plot (industrial and semi-commercial plots are dropped), the page City is Bangalore, the locality name matches the area as a whole name (for example Doddakammanahalli is not Kammanahalli), the micro-area is verifiable from the listing title (listings titled only with a seller or project code are dropped), and it is not a duplicate. Nothing is removed for its price. Where fewer than 5 listings pass, the range is withheld and only the individual listings are shown. A range is shown only when 5 or more listings pass; otherwise the app says there are too few. It is a range, not an average, and the spread within an area is often very wide. Listing dates were not shown on the pages, so freshness is unknown.'},
+            {'name': 'Apartment price per sqft (estimate)', 'kind': 'sourced estimate',
+             'how': 'Two public asking-price series per area: MagicBricks locality "Multistorey Apartment (Average Price per sq ft)", Q3 2026, pages updated Oct 2026 (Marathahalli and Vijayanagar pages showed Jul-Sep 2025 data when read, so those two MagicBricks figures are older), and the Square Yards locality apartment average, pages dated Nov 2026. The estimate is the midpoint of the two, always shown next to the full range and a confidence label: high if the portals agree within 20 percent, medium within 60, low if further apart or if only one portal has the area. Portals disagree because asking averages follow whatever is listed that quarter, so the midpoint is a summary, not a measured price. Nagarabhaavi and RR Nagar have only a MagicBricks figure. Puttenahalli has no portal page and uses its parent locality JP Nagar, labelled as a stand-in. All are asking prices, not registered sale prices.'},
+            {'name': 'Plot price per sqft (estimate)', 'kind': 'sourced or modelled estimate',
+             'how': 'Sources: (1) MagicBricks locality "Residential Plot" average, quoted per sq yard, divided by 9 to get per sqft; (2) the median of audited Square Yards resale plot listings where 3 or more passed (property type plain Plot, city Bangalore, locality matches as a whole name, price/area/total reconcile, sqft, 10,000 sqft or less, no duplicates, micro-area verifiable from the title; nothing is removed for its price). When both exist the estimate is their geometric mean and the range runs between them; with one source the estimate is that source (listing-only ranges use the 25th to 75th percentile). A MagicBricks plot average below 40 percent of the same area\'s apartment rate is not used because it likely reflects the listing mix (it stays visible in the sources). Where no usable source exists the estimate is modelled: the area\'s apartment estimate times the median plot-to-apartment ratio of areas in the same zone that have plot data, with the zone min and max ratio as the range, labelled low confidence. Listings usually show prime pockets while portal averages cover whole localities, so plot figures can be several times apart. Listing dates were not shown on the pages. Confidence is never above medium.'},
             {'name': 'Recorded sale prices', 'kind': 'not available',
-             'how': 'No recorded-sale dataset was verified for this update, so the app shows none. Everything above is asking prices.'},
-            {'name': 'Past zone trend (no forecast)', 'kind': 'trend',
-             'how': 'Last-12-month change in the zone average asking price (Central +5.8%, South +3.3%, North +2.3%, East -1.3%, West -1.0%, to Sep 2026), Square Yards figures as reported by mypropertypoint.com. It is a zone-level past figure, not a forecast, and not specific to the area. Forecasts are withheld because the evidence is not enough to support one.'},
+             'how': 'No recorded-sale dataset (for example Karnataka registration data) was verified for this update, so the app shows none. Everything above is asking prices.'},
+            {'name': '12-month outlook', 'kind': 'indicative formula',
+             'how': 'Outlook % = baseline + liveability tilt + sentiment tilt. Baseline = 70 percent of the zone trend (last 12 months to Sep 2026, Square Yards zone figures as reported by mypropertypoint.com, 23 Oct 2026) + 30 percent of the area change % printed beside the area apartment rate on its Square Yards page (clamped to -6..+8 because those figures are noisy). Liveability tilt = (liveability score - 6) x 0.35 points, so a 9 adds about 1 point and a 3 removes about 1. Sentiment tilt: see next item. The projected price is the apartment or plot estimate times (1 + outlook), shown with a plausible range whose width grows with portal disagreement and thin sources (plots use a wider band). It is a transparent scenario, not a validated forecast: no backtest has been run, so no accuracy is claimed. Confidence is low unless the portals agree and live sentiment was usable.'},
+            {'name': 'News and social sentiment', 'kind': 'live signal, often missing',
+             'how': 'Google News RSS headlines and r/bangalore search results for the area, kept only if the title names the area (news also must be under 90 days old), de-duplicated, and scored with a keyword list (metro, flood, water logging, crime and similar, each with a weight). At least 3 usable items are needed. Below that the status is "insufficient" and sentiment adds exactly 0 to the outlook: that means no data, not a neutral reading, and the panel says so. With enough items the tilt is net sentiment x 1.5 points, capped at +/-1. Keyword scoring misses context and sarcasm, so it is kept small. The reddit feed may be blocked from the server, in which case only news is used.'},
             {'name': 'Kaveri water supply', 'kind': 'fixed',
              'how': 'A fixed rating per area typed into the code, which mentions BWSSB Cauvery stages. The source is not cited in the app and has not been verified. Not a live supply reading.'},
             {'name': 'Green canopy', 'kind': 'fixed',
@@ -1352,7 +1537,7 @@ def get_area_data(area_name):
     prediction = analyze_sentiment_and_predict(area_name, news, social)
     
     # Calculate Liveability Index (monthly/weekly sentiment cache bound)
-    liveability = calculate_liveability_score(area_name, prediction['headline_percent'])
+    liveability = calculate_liveability_score(area_name, (prediction['sentiment']['net'] or 0) * 7 if prediction['sentiment']['status'] == 'ok' else 0)
     
     return jsonify({
         'area': area_name,
@@ -1402,23 +1587,18 @@ def nearest_area():
     news = fetch_news(nearest)
     social = fetch_social_sentiment(nearest)
     prediction = analyze_sentiment_and_predict(nearest, news, social)
-    liveability = calculate_liveability_score(nearest, prediction['headline_percent'])
+    liveability = calculate_liveability_score(nearest, (prediction['sentiment']['net'] or 0) * 7 if prediction['sentiment']['status'] == 'ok' else 0)
 
-    # Format currency for summary
-    apt = prediction['apartment']; pl = prediction['plot']
+    apt = prediction['apartment']; pl = prediction['plot']; ol = prediction['outlook']
     summary = f"<b>{nearest}</b> (nearest listed area).<br>"
-    if apt['low'] is None:
+    if apt['est'] is None:
         summary += "Apartments: no portal figure found.<br>"
-    elif apt['low'] == apt['high']:
-        summary += f"Apartments: ₹{apt['low']:,}/sqft asking, one portal only.<br>"
     else:
-        summary += f"Apartments: ₹{apt['low']:,} to ₹{apt['high']:,}/sqft asking (two portals disagree).<br>"
-    if pl['shown']:
-        summary += f"Plots: ₹{pl['low']:,} to ₹{pl['high']:,}/sqft asking across {pl['n']} listings, not an average.<br>"
-    else:
-        summary += "Plots: too few usable listings to show a range.<br>"
-    summary += f"Zone trend, last 12 months: <b>{prediction['zone_trend_percent']:+.1f}%</b> ({prediction['zone']} zone, not specific to this area, not a forecast).<br>"
-    summary += f"Liveability: <b>{liveability['score']}/10</b>. Built from fixed water, canopy and terrain ratings plus the headline signal."
+        summary += f"Apartments: about ₹{apt['est']:,}/sqft asking (portal range ₹{apt['low']:,} to ₹{apt['high']:,}, {apt['confidence']} confidence).<br>"
+    if pl['est']:
+        summary += f"Plots: about ₹{pl['est']:,}/sqft asking (range ₹{pl['low']:,} to ₹{pl['high']:,}, {pl['confidence']} confidence, {pl['method']}).<br>"
+    summary += f"12-month outlook: <b>{ol['change_percent']:+.1f}%</b> indicative (formula, not validated, {ol['confidence']} confidence).<br>"
+    summary += f"Liveability: <b>{liveability['score']}/10</b>."
 
     return jsonify({
         'nearest_area': nearest,
