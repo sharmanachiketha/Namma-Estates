@@ -747,6 +747,15 @@ function updateSidebar(data) {
         }
     }
     
+    const landEl = document.getElementById('land-price');
+    const landNote = document.getElementById('land-note');
+    if (fin.land) {
+        landEl.innerText = formatCurrency(fin.land.price_sqft) + ' / sqft';
+        landNote.innerText = fin.land.samples + ' sampled listings, ' + formatCurrency(fin.land.low) + ' to ' + formatCurrency(fin.land.high) + '. Low confidence.';
+    } else {
+        landEl.innerText = 'Not enough listings';
+        landNote.innerText = 'Fewer than 3 distinct plot listings found.';
+    }
     const trendInd = document.getElementById('trend-indicator');
     const trendIcon = document.getElementById('trend-icon');
     const trendPercent = document.getElementById('trend-percent');
@@ -766,7 +775,7 @@ function updateSidebar(data) {
         trendPercent.innerText = `0%`;
     }
     
-    document.getElementById('reasoning-text').innerText = fin.reason + (data.headlines_fetched ? ' Headlines cached ' + data.headlines_fetched + '.' : '');
+    document.getElementById('reasoning-text').innerText = 'Apartment price: average of public portal asking prices, ' + fin.data_date + ', confidence ' + fin.confidence + '. ' + fin.reason + (data.headlines_fetched ? ' Headlines cached ' + data.headlines_fetched + '.' : '');
     
     // Update water and elevation badges dynamically
     const waterBadge = document.getElementById('water-status-badge');
@@ -1088,4 +1097,3 @@ function updateHeatmapVisualsForZoom() {
 map.on('zoomend', updateHeatmapVisualsForZoom);
 
 document.addEventListener('DOMContentLoaded', initializeApp);
-
