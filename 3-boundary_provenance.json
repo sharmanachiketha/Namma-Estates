@@ -1,0 +1,254 @@
+{
+ "Jayanagar": {
+  "outline_source": "gba_wards",
+  "approximate": true,
+  "wards": [
+   "Ashoka Pillar",
+   "Byrasandra",
+   "Devagiri Temple Ward",
+   "Jayanagar East",
+   "Kanakanapalya",
+   "Pattabhirama Nagara",
+   "Tilak Nagara",
+   "Yediyuru"
+  ]
+ },
+ "HSR Layout": {
+  "outline_source": "osm_suburb",
+  "approximate": false,
+  "wards": []
+ },
+ "BTM Layout": {
+  "outline_source": "gba_wards",
+  "approximate": true,
+  "wards": [
+   "Madiwala",
+   "New Tavarekere",
+   "Viswamanava Kuvempu Ward"
+  ]
+ },
+ "MG Road": {
+  "outline_source": "gba_wards",
+  "approximate": true,
+  "wards": [
+   "Ashokanagar"
+  ]
+ },
+ "Rajajinagar": {
+  "outline_source": "gba_wards",
+  "approximate": true,
+  "wards": [
+   "Da.Ra. Bendre Ward",
+   "Dr Rajkumar Ward",
+   "Kethamaranahalli",
+   "Rajajinagara",
+   "Rama Mandira"
+  ]
+ },
+ "Indiranagar": {
+  "outline_source": "gba_wards",
+  "approximate": true,
+  "wards": [
+   "Hoysala Nagara Central",
+   "Indiranagar",
+   "Jogpalya"
+  ]
+ },
+ "Koramangala": {
+  "outline_source": "gba_wards",
+  "approximate": true,
+  "wards": [
+   "A Adugodi",
+   "Kormangala East",
+   "Kormangala West",
+   "National Games Village",
+   "Sri Lakshmi Devi Ward"
+  ]
+ },
+ "Whitefield": {
+  "outline_source": "gba_wards",
+  "approximate": true,
+  "wards": [
+   "Whitefield"
+  ]
+ },
+ "Electronic City": {
+  "outline_source": "none",
+  "approximate": true,
+  "wards": []
+ },
+ "Malleswaram": {
+  "outline_source": "gba_wards",
+  "approximate": true,
+  "wards": [
+   "Malleshwaram"
+  ]
+ },
+ "Yelahanka": {
+  "outline_source": "gba_wards",
+  "approximate": true,
+  "wards": [
+   "Raja Kempegowda Ward",
+   "Yelahanka Old Town",
+   "Yelahanka Satellite Town"
+  ]
+ },
+ "Banashankari": {
+  "outline_source": "gba_wards",
+  "approximate": true,
+  "wards": [
+   "Ashoka Nagara",
+   "Banashankari Temple Ward",
+   "Ganesh Mandira Ward",
+   "Kamakya Layout",
+   "Kathriguppe",
+   "Padmanabhanagara",
+   "Swamy Vivekananda Ward"
+  ]
+ },
+ "Bellandur": {
+  "outline_source": "gba_wards",
+  "approximate": true,
+  "wards": [
+   "Bellanduru",
+   "Yamalur"
+  ]
+ },
+ "Marathahalli": {
+  "outline_source": "gba_wards",
+  "approximate": true,
+  "wards": [
+   "Marathahalli"
+  ]
+ },
+ "Hebbal": {
+  "outline_source": "gba_wards",
+  "approximate": true,
+  "wards": [
+   "Hebbal",
+   "Vishwanatha Nagenahalli"
+  ]
+ },
+ "JP Nagar": {
+  "outline_source": "gba_wards",
+  "approximate": true,
+  "wards": [
+   "J.P Nagar",
+   "Marenahalli South",
+   "Shakambarinagara"
+  ]
+ },
+ "Basavanagudi": {
+  "outline_source": "gba_wards",
+  "approximate": true,
+  "wards": [
+   "N.R Colony",
+   "Sunkenahalli"
+  ]
+ },
+ "Sarjapur Road": {
+  "outline_source": "gba_wards",
+  "approximate": true,
+  "wards": [
+   "Kasavanahalli"
+  ]
+ },
+ "KR Puram": {
+  "outline_source": "gba_wards",
+  "approximate": true,
+  "wards": [
+   "Chikka Devasandra",
+   "K.R Pura"
+  ]
+ },
+ "Yeshwanthpur": {
+  "outline_source": "gba_wards",
+  "approximate": true,
+  "wards": [
+   "Goraguntepalya",
+   "Yeshwanthpura"
+  ]
+ },
+ "Kalyan Nagar": {
+  "outline_source": "gba_wards",
+  "approximate": true,
+  "wards": [
+   "Chellakere",
+   "Kalyanagar"
+  ]
+ },
+ "Kammanahalli": {
+  "outline_source": "gba_wards",
+  "approximate": true,
+  "wards": [
+   "HRBR Layout",
+   "Kammanahalli",
+   "Subbayanapalya"
+  ]
+ },
+ "Nagarabhaavi": {
+  "outline_source": "gba_wards",
+  "approximate": true,
+  "wards": [
+   "Nagarbhavi",
+   "Vinayaka Layout"
+  ]
+ },
+ "Vijayanagar": {
+  "outline_source": "gba_wards",
+  "approximate": true,
+  "wards": [
+   "Attigupe",
+   "Dr. Vishnuvardhan Ward",
+   "Hampi Nagar",
+   "Maruthi Mandira Ward"
+  ]
+ },
+ "RT Nagar": {
+  "outline_source": "gba_wards",
+  "approximate": true,
+  "wards": [
+   "R.T Nagar"
+  ]
+ },
+ "Bannerghatta Road": {
+  "outline_source": "gba_wards",
+  "approximate": true,
+  "wards": [
+   "Bilekahalli",
+   "Doresanipalya",
+   "Hulimavu"
+  ]
+ },
+ "Begur": {
+  "outline_source": "gba_wards",
+  "approximate": true,
+  "wards": [
+   "Beguru"
+  ]
+ },
+ "Singasandra": {
+  "outline_source": "gba_wards",
+  "approximate": true,
+  "wards": [
+   "Bandepalya",
+   "Kudlu",
+   "Singasandra"
+  ]
+ },
+ "RR Nagar": {
+  "outline_source": "gba_wards",
+  "approximate": true,
+  "wards": [
+   "Rajarajeshwari Nagara"
+  ]
+ },
+ "Puttenahalli": {
+  "outline_source": "gba_wards",
+  "approximate": true,
+  "wards": [
+   "Jaraganahalli",
+   "Puttenahalli"
+  ]
+ }
+}
