@@ -728,15 +728,15 @@ function updateSidebar(data) {
     document.getElementById('apt-note').innerText = (apt.est === null ? '' : 'Portal range ' + (rng(apt.low, apt.high) || fmt(apt.low)) + '. Confidence: ' + apt.confidence + '. ') + apt.note;
     const oa = ol.apartment;
     document.getElementById('predicted-price').innerText = oa ? '~' + fmt(oa.projected) + ' / sqft' : '--';
-    document.getElementById('zone-note').innerText = oa ? 'Apartments in 12 months, ' + (ol.change_percent > 0 ? '+' : '') + ol.change_percent + '%, plausible range ' + fmt(oa.low) + ' to ' + fmt(oa.high) + '. Confidence: ' + ol.confidence + '. A formula estimate, not a validated forecast.' : '';
+    document.getElementById('zone-note').innerText = oa ? 'Apartments in 12 months, ' + (ol.change_percent > 0 ? '+' : '') + ol.change_percent + '%, sensitivity band ' + fmt(oa.low) + ' to ' + fmt(oa.high) + ' (judgement, not a statistical interval). Confidence: ' + ol.confidence + '. A formula scenario, not a validated forecast.' : '';
     const od = document.getElementById('outlook-detail');
     od.innerHTML = '';
     if (ol.components) {
         const c = ol.components, s = fin.sentiment || {};
         const mkp = (t) => { const p = document.createElement('p'); p.textContent = t; od.appendChild(p); };
-        mkp('Outlook ' + (ol.change_percent > 0 ? '+' : '') + ol.change_percent + '% = baseline ' + c.baseline.value + '% (' + c.baseline.note + '; zone ' + c.zone_trend.value + '%, area ' + c.area_trend_used.value + '%) + liveability ' + c.liveability.value + ' (' + c.liveability.note + ') + sentiment ' + c.sentiment.value + '.');
+        mkp('Outlook ' + (ol.change_percent > 0 ? '+' : '') + ol.change_percent + '% = zone trend ' + c.baseline.value + '% (' + c.baseline.note + ') + liveability ' + c.liveability.value + ' (' + c.liveability.note + ') + sentiment ' + c.sentiment.value + '.');
         mkp('News and social sentiment: ' + (s.status === 'ok' ? 'used. ' : 'NOT used. ') + (s.note || ''));
-        if (ol.plot) mkp('Plots in 12 months: ~' + fmt(ol.plot.projected) + ' / sqft, plausible range ' + fmt(ol.plot.low) + ' to ' + fmt(ol.plot.high) + ' (wider band, plot data is thinner).');
+        if (ol.plot) mkp('Plots in 12 months: ~' + fmt(ol.plot.projected) + ' / sqft, sensitivity band ' + fmt(ol.plot.low) + ' to ' + fmt(ol.plot.high) + ' (wider, plot data is thinner).');
         mkp(ol.disclaimer);
     }
     // Update overview Highlights (Liveability & Green Cover)
