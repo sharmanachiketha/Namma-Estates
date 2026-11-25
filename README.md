@@ -57,7 +57,7 @@ Counts of OpenStreetMap point features within 1.5 km of each area's centre point
 
 ### News and social sentiment
 
-Google News RSS headlines and r/bangalore search results per area, cached server-side for 7 days. An item counts only if its title names the area and its own timestamp is under 90 days old; untimestamped items are dropped. Items are de-duplicated into distinct stories and scored with a weighted keyword lexicon (metro, flood, water logging, crime and similar). At least 3 usable distinct stories are required; below that the status is "insufficient" and sentiment adds exactly 0: missing data, not a neutral reading. With enough items, tilt = net sentiment x 1.5 points, capped at +/-1. Currently only Hebbal and KR Puram have a usable signal.
+Google News RSS headlines and r/bangalore search results per area, cached server-side for 7 days. An item counts only if its title names the area and its own timestamp is under 90 days old; untimestamped items are dropped. Items are de-duplicated into distinct stories and scored with a weighted keyword lexicon (metro, flood, water logging, crime and similar). At least 3 usable distinct stories are required; below that the status is "insufficient" and sentiment adds exactly 0: missing data, not a neutral reading. With enough items, tilt = net sentiment x 1.5 points, capped at +/-1. As of 25 Nov 2026, only Hebbal and KR Puram had enough fresh items; this changes as news arrives.
 
 ### 12-month outlook
 
@@ -76,17 +76,19 @@ Each outline merges the official Greater Bengaluru Authority ward polygons (369 
 
 | Data | Source | Date | Used for |
 | --- | --- | --- | --- |
-| Apartment asking averages | MagicBricks locality pages | Q3 2026 (pages updated Oct 2026; Marathahalli and Vijayanagar Jul-Sep 2025) | Apartment estimate |
-| Apartment asking averages | Square Yards locality pages | Nov 2026 | Apartment estimate |
-| Plot asking listings | Square Yards resale plot listings | Read 25 Nov 2026; listing dates not shown on pages | Plot estimate |
-| Plot averages (reference only) | MagicBricks locality pages | Q3 2026 | Shown, not used (unit ambiguous) |
-| Micro-market annual change | Knight Frank India Real Estate H1 2026 PDF | 12 months to H1 2026 | Outlook baseline (11 areas) |
-| City annual change | ANAROCK Pan-India Residential Market Viewpoints Q3 2026 | Q3 2026 | Outlook baseline (19 areas) |
-| Ward polygons | GBA wards delimitation 2025 via OpenCity | 2025 | Map outlines (28 areas) |
-| HSR Layout outline | OpenStreetMap suburb relation (ODbL) | 2026 | Map outline |
-| Amenity counts | OpenStreetMap via Geofabrik southern-zone extract | 24 Nov 2026 | Liveability amenities component |
-| News headlines | Google News RSS | live, 7-day cache, 90-day freshness window | Sentiment |
-| Social posts | Reddit r/bangalore search | live, 7-day cache, 90-day freshness window | Sentiment |
+| Apartment asking averages | [MagicBricks locality pages](https://www.magicbricks.com/Property-Rates-Trends/Multistorey-Apartment-rates-Btm-Layout-in-Bangalore) (representative page; every area's URL is in `app.py` and in the app's sources dropdown) | Q3 2026 (pages updated Oct 2026; Marathahalli and Vijayanagar Jul-Sep 2025) | Apartment estimate |
+| Apartment asking averages | [Square Yards locality pages](https://www.squareyards.com/property-rates/btm-layout-bangalore) (representative page) | Nov 2026 | Apartment estimate |
+| Plot asking listings | [Square Yards resale plot listings](https://www.squareyards.com/resale-1200-sq-ft-plot-in-btm-layout/9318622) (representative listing; all listing URLs are in `app.py`) | Read 25 Nov 2026; listing dates not shown on pages | Plot estimate |
+| Plot averages (reference only) | [MagicBricks locality pages](https://www.magicbricks.com/Property-Rates-Trends/Multistorey-Apartment-rates-Btm-Layout-in-Bangalore) | Q3 2026 | Shown, not used (unit ambiguous) |
+| Micro-market annual change | [Knight Frank India Real Estate H1 2026 (PDF)](https://content.knightfrank.com/research/3116/documents/en/india-real-estate-office-and-residential-market-h1-2026-12927.pdf), table "Residential price movement in select locations" | 12 months to H1 2026 | Outlook baseline (11 areas) |
+| City annual change | [ANAROCK Pan-India Residential Market Viewpoints Q3 2026 (PDF)](https://investmentguruindia.com/editorial/uploads/news-pdf/12601e58_Q3_2026_Pan_India_Residential_Market_Viewpoints_9cf1a7e616.pdf), read from a third-party host because the PDF on anarock.com would not load | Q3 2026 | Outlook baseline (19 areas) |
+| Ward polygons | [GBA Wards Delimitation 2025, OpenCity](https://data.opencity.in/dataset/gba-wards-delimitation-2025) (369 wards, "Other (Public Domain)" license) | 2025 | Map outlines (28 areas) |
+| HSR Layout outline | [OpenStreetMap relation 17168010](https://www.openstreetmap.org/relation/17168010) (suburb boundary, ODbL) | 2026 | Map outline |
+| Amenity counts | OpenStreetMap via [Geofabrik southern-zone extract](https://download.geofabrik.de/asia/india/southern-zone.html) | 24 Nov 2026 | Liveability amenities component |
+| News headlines | [Google News RSS](https://news.google.com/rss/search) | live, 7-day cache, 90-day freshness window | Sentiment |
+| Social posts | [Reddit r/bangalore search](https://www.reddit.com/r/bangalore/search/) | live, 7-day cache, 90-day freshness window | Sentiment |
+
+All links verified reachable on 25 Nov 2026. Live sentiment coverage noted in this document is a snapshot of that date, not a standing fact.
 
 ## Known limitations
 
@@ -95,7 +97,7 @@ Each outline merges the official Greater Bengaluru Authority ward polygons (369 
 - 8 plot estimates are modelled placeholders and 1 is a proxy; all are labelled.
 - Water, flood-risk and canopy ratings are fixed values typed into the code with unverified sources.
 - Amenity counts undercount (point-mapped features only) and use a typed centre point.
-- Sentiment is currently usable in only 2 of 30 areas.
+- As of 25 Nov 2026, sentiment was usable in only 2 of 30 areas; coverage shifts with the news cycle.
 - The outlook has not been backtested.
 - ANAROCK's Q3 2026 report was read from a third-party host because the PDF on anarock.com would not load; the figures match ANAROCK's published numbers.
 - Area outlines are ward-based approximations, not official locality limits; Electronic City has no outline.
@@ -104,7 +106,7 @@ Each outline merges the official Greater Bengaluru Authority ward polygons (369 
 
 ### 25 Nov 2026: full data coverage, verified baselines and UX
 
-- Replaced CARTO map tiles (which started requiring an API key) with OpenStreetMap tiles.
+- Replaced the original CARTO tile layer, whose configuration needed an API key that was no longer available, with OpenStreetMap tiles.
 - Added area outlines: GBA 2025 ward merges via OpenCity for 28 areas, HSR Layout from its OpenStreetMap suburb boundary, Electronic City as a pin. Hover or tap shows the outline and the wards behind it.
 - Added the Compare, Find my area and About data views.
 - Extended to full 30-area coverage: apartment, plot and outlook figures for all 30 areas (plots: 21 direct, 8 modelled, 1 proxy).
