@@ -722,11 +722,23 @@ function updateSidebar(data) {
     const fin = data.financials;
     const apt = fin.apartment, plot = fin.plot;
     const fmt = (n) => formatCurrency(n);
-    document.getElementById('current-price').innerText = apt.low === null ? 'No figure found'
-        : (apt.low === apt.high ? fmt(apt.low) + ' / sqft' : fmt(apt.low) + ' to ' + fmt(apt.high) + ' / sqft');
-    document.getElementById('apt-note').innerText = apt.note;
-    document.getElementById('predicted-price').innerText = (fin.zone_trend_percent > 0 ? '+' : '') + fin.zone_trend_percent + '% (' + fin.zone + ' zone)';
-    document.getElementById('zone-note').innerText = fin.zone_trend_note;
+    const rng = (lo, hi) => lo === hi ? '' : fmt(lo) + ' to ' + fmt(hi);
+    const ol = fin.outlook || {};
+    document.getElementById('current-price').innerText = apt.est === null ? 'No figure found' : '~' + fmt(apt.est) + ' / sqft';
+    document.getElementById('apt-note').innerText = (apt.est === null ? '' : 'Portal range ' + (rng(apt.low, apt.high) || fmt(apt.low)) + '. Confidence: ' + apt.confidence + '. ') + apt.note;
+    const oa = ol.apartment;
+    document.getElementById('predicted-price').innerText = oa ? '~' + fmt(oa.projected) + ' / sqft' : '--';
+    document.getElementById('zone-note').innerText = oa ? 'Apartments in 12 months, ' + (ol.change_percent > 0 ? '+' : '') + ol.change_percent + '%, plausible range ' + fmt(oa.low) + ' to ' + fmt(oa.high) + '. Confidence: ' + ol.confidence + '. A formula estimate, not a validated forecast.' : '';
+    const od = document.getElementById('outlook-detail');
+    od.innerHTML = '';
+    if (ol.components) {
+        const c = ol.components, s = fin.sentiment || {};
+        const mkp = (t) => { const p = document.createElement('p'); p.textContent = t; od.appendChild(p); };
+        mkp('Outlook ' + (ol.change_percent > 0 ? '+' : '') + ol.change_percent + '% = baseline ' + c.baseline.value + '% (' + c.baseline.note + '; zone ' + c.zone_trend.value + '%, area ' + c.area_trend_used.value + '%) + liveability ' + c.liveability.value + ' (' + c.liveability.note + ') + sentiment ' + c.sentiment.value + '.');
+        mkp('News and social sentiment: ' + (s.status === 'ok' ? 'used. ' : 'NOT used. ') + (s.note || ''));
+        if (ol.plot) mkp('Plots in 12 months: ~' + fmt(ol.plot.projected) + ' / sqft, plausible range ' + fmt(ol.plot.low) + ' to ' + fmt(ol.plot.high) + ' (wider band, plot data is thinner).');
+        mkp(ol.disclaimer);
+    }
     // Update overview Highlights (Liveability & Green Cover)
     if (data.liveability) {
         const scoreEl = document.getElementById('overview-liveability');
@@ -753,12 +765,13 @@ function updateSidebar(data) {
     
     const landEl = document.getElementById('land-price');
     const landNote = document.getElementById('land-note');
-    landEl.innerText = plot.shown ? fmt(plot.low) + ' to ' + fmt(plot.high) + ' / sqft' : 'Too few listings';
-    landNote.innerText = plot.note;
+    landEl.innerText = plot.est ? '~' + fmt(plot.est) + ' / sqft' : 'No estimate';
+    landNote.innerText = (plot.est ? 'Range ' + (rng(plot.low, plot.high) || 'n/a (single source)') + '. Confidence: ' + plot.confidence + '. ' : '') + plot.note;
     const srcBox = document.getElementById('price-sources');
     srcBox.innerHTML = '';
     const mk = (tag, text, parent, href) => { const e = document.createElement(tag); e.textContent = text; if (href) { e.href = href; e.target = '_blank'; e.rel = 'noopener'; } parent.appendChild(e); return e; };
     mk('h4', 'Sources, asking prices, ' + fin.data_date, srcBox);
+    (plot.sources || []).forEach(s => { const p = mk('p', '', srcBox); mk('a', s.source + ', ' + s.period + ': ' + fmt(s.value) + ' / sqft', p, s.url); });
     apt.sources.forEach(s => { const p = mk('p', '', srcBox); mk('a', s.source + ', ' + s.period + ': ' + fmt(s.value) + ' / sqft', p, s.url); });
     if (plot.listings && plot.listings.length) {
         const det = mk('details', '', srcBox); mk('summary', plot.listings.length + ' plot listings checked', det);
@@ -783,7 +796,7 @@ function updateSidebar(data) {
         trendPercent.innerText = `0%`;
     }
     
-    document.getElementById('reasoning-text').innerText = 'Prices are asking prices copied from two public portals on ' + fin.data_date + ', not recorded sale prices, and they are not averaged. Plot figures are the range of listings that passed the checks in About data. The only trend shown is the past zone figure above; price forecasts are withheld because the evidence is insufficient.' + (data.headlines_fetched ? ' Headlines cached ' + data.headlines_fetched + ' (they only feed the small liveability signal).' : '');
+    document.getElementById('reasoning-text').innerText = 'All prices are asking prices from public portals read on ' + fin.data_date + ', not recorded sale prices. Estimates always come with their source range and confidence. Where a figure is modelled or borrowed from a nearby area the note says so. See About data for the full method.' + (data.headlines_fetched ? ' Headlines cached ' + data.headlines_fetched + ' (used in the outlook only when enough recent headlines about this area exist).' : '');
     
     // Update water and elevation badges dynamically
     const waterBadge = document.getElementById('water-status-badge');
