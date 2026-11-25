@@ -691,9 +691,19 @@ MARKET = {'Jayanagar': {'zone': 'South',
 # Areas with no portal page of their own are estimated from the parent locality (disclosed in the app).
 PROXY_PARENT = {'Puttenahalli': 'JP Nagar'}
 
-# Past 12 months, zone average asking price (Square Yards zone figures as reported by mypropertypoint.com, 23 Oct 2026)
-ZONE_YOY = {"Central": 5.8, "East": -1.3, "South": 3.3, "North": 2.3, "West": -1.0}
-ZONE_YOY_URL = "https://mypropertypoint.com/blog/property-rates-in-bangalore-per-sq-ft-by-area-october-2026"
+# Annual (12 months to June 2026) price change by micro-market, Knight Frank H1 2026 as relayed by mypropertypoint.com (30 Oct 2026).
+KF_ANNUAL = {"KR Puram": 20, "Yelahanka": 18, "Marathahalli": 15, "Whitefield": 14, "Malleswaram": 13, "Hebbal": 11,
+             "Electronic City": 10, "Bannerghatta Road": 7, "Sarjapur Road": 3}
+KF_URL = "https://mypropertypoint.com/blog/bangalore-property-prices-up-14-5-percent-areas-gained-most-2026"
+# City-wide fallback: ANAROCK Q3 2026, base selling price up 8% in the year (other reports: Knight Frank 11%, NoBroker 14.5%).
+CITY_YOY = 8.0
+
+
+def baseline_for(area):
+    if area in KF_ANNUAL:
+        return float(KF_ANNUAL[area]), 'Knight Frank, price change over the 12 months to June 2026 for this micro-market (reported by mypropertypoint.com, 30 Oct 2026). Past change assumed to repeat, which is a scenario assumption.'
+    return CITY_YOY, 'No area figure found, so the Bengaluru city-wide annual change is used: ANAROCK Q3 2026, +8% in the year (Knight Frank reports 11% and NoBroker 14.5% for the city, so reports differ). It is not specific to this area.'
+
 
 import statistics as _st
 
@@ -730,99 +740,64 @@ def apartment_view(area):
         note = 'Estimate = midpoint of two portals that agree within ' + str(spread) + ' percent.'
     elif spread < 60:
         conf, method = 'medium', 'two portals'
-        note = 'Estimate = midpoint of two portals ' + str(spread) + ' percent apart. The real figure for a given flat can sit anywhere in the range.'
+        note = 'Estimate = midpoint of two portals ' + str(spread) + ' percent apart. The range is the disagreement between two portal averages, not a bound on the real price of any flat.'
     else:
         conf, method = 'low', 'two portals'
-        note = 'Estimate = midpoint of two portals ' + str(spread) + ' percent apart. They disagree a lot (asking averages follow whatever is listed), so use the range, not the midpoint.'
+        note = 'Estimate = midpoint of two portals ' + str(spread) + ' percent apart. They disagree a lot (asking averages follow whatever is listed), so the midpoint is only a summary of that disagreement, not a valuation.'
     return {'low': low, 'high': high, 'mid': est, 'est': est, 'confidence': conf, 'method': method, 'spread_percent': spread, 'proxy_of': proxy, 'note': note, 'sources': srcs}
 
 
-# Sanity flag (my threshold, NOT validated): a sole MagicBricks plot average below this share of the area's own apartment rate
-# looks inconsistent with it. Its cause (listing mix, unit, scope) cannot be checked from the page, so the observed figure is
-# shown unchanged and a modelled estimate is offered next to it, clearly labelled.
-PLOT_FLAG_VS_APT = 0.4
-
-
-def _plot_obs(area):
-    d = MARKET.get(area, {})
-    ls = d.get('listings', [])
-    obs = {}
-    if len(ls) >= 3:
-        vals = sorted(l['psf'] for l in ls)
-        obs['sy_median'] = int(round(_st.median(vals), -2))
-        obs['sy_low'], obs['sy_high'] = vals[0], vals[-1]
-    if d.get('mbp'):
-        obs['mb'] = d['mbp']['v']
-    return obs
-
-
-def _plot_direct(area):
-    """(est, low, high, obs) from observed sources only, or None."""
-    obs = _plot_obs(area)
-    vals = [v for k, v in (('mb', obs.get('mb')), ('sy', obs.get('sy_median'))) if v]
-    if not vals:
+def _sy_obs(area):
+    """Square Yards asking-price listings, per sqft with the area in sqft stated: the only unambiguous plot unit found."""
+    ls = MARKET.get(area, {}).get('listings', [])
+    if not ls:
         return None
-    lo, hi = min(vals), max(vals)
-    est = int(round(sum(vals) / len(vals), -2))
-    if len(vals) == 1 and 'sy_median' in obs:
-        lo, hi = obs['sy_low'], obs['sy_high']
-    return {'est': est, 'low': int(lo), 'high': int(hi), 'obs': obs, 'n_src': len(vals)}
-
-
-def _plot_flagged(area):
-    d = _plot_direct(area)
-    apt = apartment_view(area)['est']
-    if not d or not apt:
-        return False
-    return d['n_src'] == 1 and 'mb' in d['obs'] and 'sy_median' not in d['obs'] and d['obs']['mb'] < PLOT_FLAG_VS_APT * apt
+    vals = sorted(l['psf'] for l in ls)
+    return {'n': len(vals), 'median': int(round(_st.median(vals), -2)), 'low': vals[0], 'high': vals[-1]}
 
 
 def plot_view(area):
     d = MARKET.get(area, {})
     ls = d.get('listings', [])
-    obs = _plot_obs(area)
+    sy = _sy_obs(area)
     srcs = []
     if d.get('mbp'):
-        srcs.append({'source': 'MagicBricks, residential plot average (card label Sq-Yrd: ' + format(d['mbp']['sqyd'], ',') + ' per sq yd, divided by 9)', 'value': d['mbp']['v'], 'period': d['mbp'].get('p') or '', 'url': d['mbp']['u']})
+        srcs.append({'source': 'MagicBricks plot average, REPORTED ONLY, NOT USED in any estimate (its unit is ambiguous: the card says Sq-Yrd, a summary sentence says sqft). Card value ' + format(d['mbp']['sqyd'], ',') + ' per sq yd would be ' + format(d['mbp']['v'], ',') + ' per sqft', 'value': d['mbp']['v'], 'period': d['mbp'].get('p') or '', 'url': d['mbp']['u']})
+    obs = {}
+    if sy:
+        obs.update({'sy_median': sy['median'], 'sy_low': sy['low'], 'sy_high': sy['high'], 'sy_n': sy['n']})
+    if d.get('mbp'):
+        obs['mb_unit_ambiguous'] = d['mbp']['v']
     base = {'n': len(ls), 'listings': ls, 'sources': srcs, 'observed': obs}
-    direct = _plot_direct(area)
-    if direct and not _plot_flagged(area):
-        if direct['n_src'] == 2:
-            ratio = max(obs['mb'], obs['sy_median']) / min(obs['mb'], obs['sy_median'])
-            conf = 'medium' if ratio < 1.6 else 'low'
-            note = 'Two sources: MagicBricks locality plot average ' + format(obs['mb'], ',') + ' and the median of ' + str(len(ls)) + ' Square Yards listings ' + format(obs['sy_median'], ',') + ' per sqft, ' + format(ratio, '.1f') + 'x apart. The estimate is just their midpoint. Nothing I checked says which is closer to the truth, so rely on the range.'
-        elif 'sy_median' in obs:
-            conf = 'low'
-            note = 'Square Yards listings only (' + str(len(ls)) + ' listings, median ' + format(obs['sy_median'], ',') + '). Range shown is lowest to highest listing. Single source.'
-        else:
-            conf = 'low'
-            note = 'MagicBricks locality plot average only. Single source, sample size and micro-area scope are not stated on the page.'
-        base.update({'shown': True, 'est': direct['est'], 'low': direct['low'], 'high': direct['high'], 'confidence': conf, 'method': 'direct', 'note': note})
+    if sy and sy['n'] >= 3:
+        base.update({'shown': True, 'est': sy['median'], 'low': sy['low'], 'high': sy['high'], 'confidence': 'low', 'method': 'direct',
+                     'note': 'Median of ' + str(sy['n']) + ' Square Yards asking-price plot listings (lowest ' + format(sy['low'], ',') + ', highest ' + format(sy['high'], ',') + ' per sqft). Listings show that prices in this range exist here, not that this is the typical price. Listing dates are not shown on the pages.'})
         return base
-    # modelled paths
-    zone = d.get('zone')
-    apt = apartment_view(area)['est']
+    if sy:
+        base.update({'shown': True, 'est': sy['median'], 'low': sy['low'], 'high': sy['high'], 'confidence': 'low', 'method': 'direct',
+                     'note': 'Only ' + str(sy['n']) + ' Square Yards asking-price listing(s) found (' + ', '.join(format(l['psf'], ',') for l in ls) + ' per sqft). A very thin sample: it shows a price that exists, not what is typical.'})
+        return base
     parent = PROXY_PARENT.get(area)
-    flagged_txt = ''
-    if direct and _plot_flagged(area):
-        flagged_txt = 'The only portal figure (MagicBricks ' + format(obs['mb'], ',') + '/sqft) is ' + str(int(100 * obs['mb'] / apt)) + '% of this area\'s apartment estimate. It is shown as observed, but looks inconsistent with it (cause cannot be checked), so a modelled estimate is given instead. '
-    if parent and _plot_direct(parent) and not _plot_flagged(parent):
-        p = _plot_direct(parent)
-        base.update({'shown': True, 'est': p['est'], 'low': p['low'], 'high': p['high'], 'confidence': 'low', 'method': 'proxy',
-                     'note': 'No portal plot figure for ' + area + '. This is the figure for ' + parent + ', the locality it sits in. A stand-in, not a measurement.'})
+    if parent and _sy_obs(parent) and _sy_obs(parent)['n'] >= 3:
+        p = _sy_obs(parent)
+        base.update({'shown': True, 'est': p['median'], 'low': p['low'], 'high': p['high'], 'confidence': 'low', 'method': 'proxy',
+                     'note': 'No plot listings for ' + area + '. This is the ' + parent + ' figure (median of ' + str(p['n']) + ' listings), the locality it sits in. A stand-in, not a measurement.'})
         return base
+    apt = apartment_view(area)['est']
     ratios = []
-    for a2, d2 in MARKET.items():
-        if a2 == area or d2.get('zone') != zone or a2 in PROXY_PARENT:
+    for a2 in MARKET:
+        if a2 in PROXY_PARENT:
             continue
-        dd = _plot_direct(a2)
+        o2 = _sy_obs(a2)
         a2v = apartment_view(a2)['est']
-        if dd and a2v and not _plot_flagged(a2):
-            ratios.append(dd['est'] / a2v)
-    if apt and len(ratios) >= 2:
+        if o2 and o2['n'] >= 3 and a2v:
+            ratios.append(o2['median'] / a2v)
+    if apt and len(ratios) >= 5:
+        ratios.sort()
         r = _st.median(ratios)
-        base.update({'shown': True, 'est': int(round(apt * r, -2)), 'low': int(round(apt * min(ratios), -2)), 'high': int(round(apt * max(ratios), -2)), 'confidence': 'low', 'method': 'modelled',
-                     'note': flagged_txt + ('No plot data found for this area. ' if not flagged_txt else '') + 'MODELLED, not observed: apartment estimate times the median plot-to-apartment price ratio (' + format(r, '.2f') + ') of ' + str(len(ratios)) + ' ' + zone + ' zone areas that have plot data. Range = lowest and highest ratio in the zone. Those ratios come from the same unreconciled sources, so treat this as a rough placeholder.'})
+        q1, q3 = ratios[len(ratios) // 4], ratios[(3 * len(ratios)) // 4]
+        base.update({'shown': True, 'est': int(round(apt * r, -2)), 'low': int(round(apt * q1, -2)), 'high': int(round(apt * q3, -2)), 'confidence': 'low', 'method': 'modelled',
+                     'note': 'MODELLED, not observed: no plot listings found for this area. Apartment estimate times the median plot-listing-to-apartment ratio (' + format(r, '.2f') + ') of the ' + str(len(ratios)) + ' areas that have 3 or more listings. Range = the middle half of those ratios, which differ widely (' + format(ratios[0], '.2f') + ' to ' + format(ratios[-1], '.2f') + '), so this is a rough placeholder. No price cutoff was applied to any area.'})
         return base
     base.update({'shown': False, 'est': None, 'low': None, 'high': None, 'confidence': 'none', 'method': 'none', 'note': 'No plot data and no basis for an estimate.'})
     return base
@@ -1225,16 +1200,31 @@ def fetch_news(area_name, force_refresh=False):
     params = {"q": query, "hl": "en-IN", "gl": "IN", "ceid": "IN:en"}
     news_items = []
     
-    try:
-        response = requests.get(url, params=params, timeout=5)
-        root = ET.fromstring(response.content)
-        for item in root.findall('./channel/item')[:5]:  
-            title = item.find('title').text
-            link = item.find('link').text
-            pubDate = item.find('pubDate').text
-            news_items.append({'title': title, 'link': link, 'date': pubDate})
-    except Exception as e:
-        print(f"Error fetching news for {area_name}: {e}")
+    for attempt in range(2):
+        try:
+            response = requests.get(url, params=params, timeout=8, headers={'User-Agent': 'Mozilla/5.0'})
+            raw = response.content.decode('utf-8', 'ignore')
+            raw = re.sub(r'[\x00-\x08\x0b\x0c\x0e-\x1f]', '', raw)
+            try:
+                root = ET.fromstring(raw)
+                for item in root.findall('./channel/item')[:10]:
+                    news_items.append({'title': item.find('title').text, 'link': item.find('link').text, 'date': item.find('pubDate').text})
+            except ET.ParseError:
+                # malformed feed: pull items out with a tolerant pattern instead of failing
+                import html as _html
+                for m in re.finditer(r'<item>(.*?)</item>', raw, re.S):
+                    blk = m.group(1)
+                    t = re.search(r'<title>(.*?)</title>', blk, re.S)
+                    l = re.search(r'<link>(.*?)</link>', blk, re.S)
+                    p = re.search(r'<pubDate>(.*?)</pubDate>', blk, re.S)
+                    if t and p:
+                        news_items.append({'title': _html.unescape(t.group(1)), 'link': _html.unescape(l.group(1)) if l else '', 'date': p.group(1)})
+                    if len(news_items) >= 10:
+                        break
+            if news_items:
+                break
+        except Exception as e:
+            print(f"Error fetching news for {area_name}: {e}")
 
     if area_name not in cache_data:
         cache_data[area_name] = {}
@@ -1365,7 +1355,7 @@ def outlook(area, sent):
     apt, plot = apartment_view(area), plot_view(area)
     d = MARKET.get(area, {})
     zone = d.get('zone', 'South')
-    zy = ZONE_YOY.get(zone, 0.0)
+    zy, zy_note = baseline_for(area)
     base = round(zy, 2)
     live = calculate_liveability_score(area, 0)['score']
     live_tilt = round((live - 6.0) * 0.35, 2)
@@ -1384,13 +1374,13 @@ def outlook(area, sent):
         'apartment': proj(apt.get('est'), 1.0),
         'plot': proj(plot.get('est'), 1.6),
         'components': {
-            'zone_trend': {'value': zy, 'note': zone + ' zone, last 12 months'},
-            'baseline': {'value': base, 'note': 'zone trend only. Area-level change figures were dropped because their period is unclear (one portal page labels the same number both annual and quarterly)'},
+            'zone_trend': {'value': zy, 'note': zy_note},
+            'baseline': {'value': base, 'note': zy_note},
             'liveability': {'value': live_tilt, 'score': live, 'note': 'liveability score ' + str(live) + ' vs a neutral 6.0, 0.35 points per score point. The score is built from FIXED ratings typed into the code (water, flood risk, canopy and a 3-tier amenities list), not live measurements'},
             'sentiment': {'value': sent_tilt, 'status': sent.get('status')},
         },
         'confidence': conf,
-        'disclaimer': 'Indicative scenario from a fixed formula (zone past trend + liveability + news/social tilt). It has not been backtested, so there is no measured accuracy. The band is a sensitivity range based on my judgement of source disagreement. It is not a statistical prediction interval and has not been calibrated.',
+        'disclaimer': 'Indicative scenario from a fixed formula (past 12-month change + liveability + news/social tilt). It has not been backtested, so there is no measured accuracy. The band is a sensitivity range based on my judgement of source disagreement. It is not a statistical prediction interval and has not been calibrated.',
     }
 
 
@@ -1403,9 +1393,9 @@ def analyze_sentiment_and_predict(area, news_items, social_items):
         'apartment': apartment_view(area),
         'plot': plot_view(area),
         'zone': zone,
-        'zone_trend_percent': ZONE_YOY.get(zone, 0.0),
-        'zone_trend_note': zone + ' Bengaluru zone average over the last 12 months to Sep 2026, Square Yards figure as reported by mypropertypoint.com. It describes the whole zone, not this area.',
-        'zone_trend_url': ZONE_YOY_URL,
+        'zone_trend_percent': baseline_for(area)[0],
+        'zone_trend_note': baseline_for(area)[1],
+        'zone_trend_url': KF_URL,
         'change_percent': ol['change_percent'],
         'outlook': ol,
         'sentiment': sent,
@@ -1507,11 +1497,11 @@ def get_methodology():
             {'name': 'Apartment price per sqft (estimate)', 'kind': 'sourced estimate',
              'how': 'Two public asking-price series per area: MagicBricks locality "Multistorey Apartment (Average Price per sq ft)", Q3 2026, pages updated Oct 2026 (Marathahalli and Vijayanagar pages showed Jul-Sep 2025 data when read, so those two MagicBricks figures are older), and the Square Yards locality apartment average, pages dated Nov 2026. The estimate is the midpoint of the two, always shown next to the full range and a confidence label: high if the portals agree within 20 percent, medium within 60, low if further apart or if only one portal has the area. Portals disagree because asking averages follow whatever is listed that quarter, so the midpoint is a summary, not a measured price. Nagarabhaavi and RR Nagar have only a MagicBricks figure. Puttenahalli has no portal page and uses its parent locality JP Nagar, labelled as a stand-in. All are asking prices, not registered sale prices.'},
             {'name': 'Plot price per sqft (estimate)', 'kind': 'sourced or modelled estimate',
-             'how': 'Observed sources: (1) MagicBricks locality page, card "Residential Plot (Average Price Rs/Sq-Yrd)", Q3 2026 (Marathahalli and Vijayanagar pages showed Jul-Sep 2025). The figure is divided by 9 to get per sqft. The unit label is the card label; one page summary sentence (Indiranagar) prints the same number as per sqft, so the unit rests on the card label and on plausibility. The pages do not state the sample size or micro-area scope. (2) The median of audited Square Yards resale plot listings where 3 or more passed (rules: plain Plot type, city Bangalore, locality matches as a whole name, price/area/total reconcile, sqft, 10,000 sqft or less, no duplicates, micro-area verifiable from the title; nothing removed for price). The two sources can be several times apart and I found no evidence about which is closer, so with both the estimate is only their midpoint and the range between them is the real information. With one source the estimate is that source. Where a sole MagicBricks figure is below 40 percent of the area apartment rate (a threshold I chose, not validated) it is shown as observed but flagged, and a MODELLED estimate is offered: apartment estimate times the median plot-to-apartment ratio of same-zone areas with plot data. MG Road, Bellandur, Yeshwanthpur and Basavanagudi are modelled this way; Puttenahalli borrows JP Nagar. Modelled values are placeholders, not measurements. Listing dates are not shown on the pages.'},
+             'how': 'Plot figures come from Square Yards asking-price resale plot listings that pass an audit (plain Plot type, city Bangalore, locality matches as a whole name, price, area and total reconcile, sqft, 10,000 sqft or less, no duplicates, micro-area verifiable from the title; nothing is removed for being cheap or dear). With 3 or more listings the estimate is their median and the range is lowest to highest. With 1 or 2 it is shown as a very thin sample. Listings show prices that exist, not what is typical. MagicBricks also publishes a locality plot average, but its unit is contradictory (the card says per Sq-Yrd, a summary sentence for the same number says per sqft) and I found no separate evidence that settles it, so it is shown for reference only and is used in no estimate or ratio. Areas with no listings get a MODELLED placeholder: apartment estimate times the median listing-to-apartment ratio of areas with 3 or more listings, range = middle half of those ratios; Puttenahalli uses JP Nagar. No price cutoff is applied to any area. Modelled values are placeholders, not measurements. Listing dates are not shown on the pages.'},
             {'name': 'Recorded sale prices', 'kind': 'not available',
              'how': 'No recorded-sale dataset (for example Karnataka registration data) was verified for this update, so the app shows none. Everything above is asking prices.'},
             {'name': '12-month outlook', 'kind': 'indicative formula',
-             'how': 'Outlook % = zone trend + liveability tilt + sentiment tilt. Zone trend: last-12-month change of the zone average asking price, Square Yards zone figures as reported by mypropertypoint.com on 23 Oct 2026 (that article says "+5.8% in a year" for Central and lists the others without a period; I did not open the Square Yards zone page itself, so the period for the other zones is assumed). Area-level change percentages from Square Yards area pages are NOT used because their period is unclear: the same page labels one number both annual and QoQ. Liveability tilt = (liveability score - 6) x 0.35 points. The liveability score rests on fixed ratings typed into the code for water, flood risk, canopy and a 3-tier amenities list (not measured counts), so this input is an assumption. Sentiment tilt: see next item. The projected price is the estimate times (1 + outlook). The low-high figures are a sensitivity band whose width grows with source disagreement and single-source data; it is my judgement, not a calibrated or statistical prediction interval. No backtest has been run, so no accuracy is claimed. Compare and Find show the baseline outlook without live sentiment; the area panel adds sentiment when enough fresh items exist.'},
+             'how': 'Outlook % = past 12-month change + liveability tilt + sentiment tilt. Baseline: the past 12-month change, assumed to repeat. Where Knight Frank published a figure for the micro-market (12 months to June 2026, relayed by mypropertypoint.com on 30 Oct 2026) that is used; otherwise the city-wide ANAROCK Q3 2026 figure of +8% in the year (other city reports say 11% and 14.5%, so the reports differ). Area-level change percentages from Square Yards are not used because their period is unclear. Liveability tilt = (liveability score - 6) x 0.35 points. The liveability score rests on fixed ratings typed into the code for water, flood risk, canopy and a 3-tier amenities list (not measured counts), so this input is an assumption. Amenities is a real input, but a fixed-assumption one: I could not obtain measured counts (OpenStreetMap Overpass was down and its mirrors refused access). Sentiment tilt: see next item. The projected price is the estimate times (1 + outlook). The low-high figures are a sensitivity band whose width grows with source disagreement and single-source data; it is my judgement, not a calibrated or statistical prediction interval. No backtest has been run, so no accuracy is claimed. Compare and Find show the baseline outlook without live sentiment; the area panel adds sentiment when enough fresh items exist.'},
             {'name': 'News and social sentiment', 'kind': 'live signal, often missing',
              'how': 'Google News RSS headlines and r/bangalore search results for the area. An item counts only if its title names the area and it is under 90 days old by its own timestamp (news pubDate, reddit created time). Items without a timestamp are dropped. De-duplicated, then scored with a keyword list (metro, flood, water logging, crime and similar, each weighted). At least 3 usable items are needed. Below that the status is insufficient and sentiment adds exactly 0: no data, not a neutral reading. With enough items the tilt is net sentiment x 1.5 points, capped at +/-1. Keyword scoring misses context and sarcasm, so the weight is small. The reddit feed may be blocked from the server, in which case only news is used. Past cached posts without a creation time are treated as stale.'},
             {'name': 'Kaveri water supply', 'kind': 'fixed',
