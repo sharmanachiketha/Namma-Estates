@@ -1168,3 +1168,8 @@ html[data-theme="light"] .leaflet-tooltip.zone-tip { background: rgba(255,255,25
 .outline-note { font-size: 0.75rem; color: var(--text-secondary); line-height: 1.4; margin: 0.25rem 0 0.75rem; }
 .zone-tip-warn { margin-top: 0.3rem; font-size: 0.7rem; color: var(--warning); }
 .zone-tip-ok { margin-top: 0.3rem; font-size: 0.7rem; color: var(--success); }
+
+.price-note { display:block; margin-top:0.25rem; font-size:0.72rem; color:var(--text-muted, #94a3b8); line-height:1.3; }
+.tag-sourced { background:rgba(16,185,129,.15); color:#10b981; }
+.tag-trend { background:rgba(59,130,246,.15); color:#3b82f6; }
+.tag-not\ available { background:rgba(148,163,184,.15); color:#94a3b8; }
