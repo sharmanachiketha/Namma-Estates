@@ -57,7 +57,7 @@
         const s = state.byName[area];
         if (!s) return `<strong>${esc(area)}</strong>`;
         return `<div class="zone-tip-name">${esc(area)}</div>` +
-            `<div class="zone-tip-row"><span>Indicative price</span><b>${inr(s.price_sqft)}/sqft</b></div>` +
+            `<div class="zone-tip-row"><span>Apartment asking price</span><b>${inr(s.price_sqft)}/sqft</b></div>` +
             `<div class="zone-tip-row"><span>Liveability</span><b>${s.liveability}/10</b></div>` +
             `<div class="${s.outline && s.outline.approximate ? 'zone-tip-warn' : 'zone-tip-ok'}">${s.outline && s.outline.approximate ? 'Ward-based approximation (' + (s.outline.wards || []).length + (((s.outline.wards || []).length === 1) ? ' ward)' : ' wards)') : 'OpenStreetMap suburb outline'}</div>` +
             `<div class="zone-tip-hint">Click for details</div>`;
@@ -167,7 +167,8 @@
             return;
         }
         const rows = [
-            { label: 'Price per sqft', get: s => s.price_sqft, show: s => inr(s.price_sqft), best: 'min' },
+            { label: 'Apartment price per sqft', get: s => s.price_sqft, show: s => inr(s.price_sqft), best: 'min' },
+            { label: 'Plot price per sqft (listing sample)', get: s => s.land_sqft || null, show: s => s.land_sqft ? inr(s.land_sqft) + ' (' + s.land_samples + ' listings)' : 'not enough listings', best: null },
             { label: 'Liveability', get: s => s.liveability, show: s => s.liveability + ' / 10', best: 'max' },
             { label: 'Water supply', get: s => s.water_level, show: s => waterLabel(s.water_level), best: 'max' },
             { label: 'Green canopy', get: s => s.canopy_percent, show: s => s.canopy_percent + '%', best: 'max' },
@@ -179,7 +180,7 @@
         rows.forEach(r => {
             const vals = chosen.map(c => r.get(state.byName[c.a]));
             const target = r.best === 'min' ? Math.min(...vals) : Math.max(...vals);
-            const tie = vals.every(v => v === vals[0]);
+            const tie = !r.best || vals.every(v => v === vals[0]);
             html += `<tr><td class="row-label">${r.label}</td>` + chosen.map((c, idx) => {
                 const s = state.byName[c.a];
                 const best = !tie && vals[idx] === target;
@@ -187,7 +188,7 @@
             }).join('') + '</tr>';
         });
         html += '</tbody></table>' +
-            '<p class="fine-print">Prices and ratings are fixed estimates, see About data. Liveability here excludes the live news signal.</p>' +
+            '<p class="fine-print">Prices are asking prices from public portals, ratings are fixed estimates. See About data. Liveability here excludes the live news signal.</p>' +
             '<div class="compare-actions">' + chosen.map(c => `<button class="mini-btn" onclick="selectAreaByName('${esc(c.a).replace(/'/g, "\\'")}')">Open ${esc(c.a)}</button>`).join('') + '</div>';
         wrap.innerHTML = html;
     }
@@ -247,8 +248,8 @@
         if (el.dataset.loaded) return;
         try {
             const m = await (await fetch('/api/methodology')).json();
-            const tag = { fixed: 'Fixed estimate', heuristic: 'News heuristic', mixed: 'Mixed', derived: 'Derived' };
-            let html = '<p class="view-hint">Most numbers are fixed estimates typed into the app, and their sources are not cited there. One moves with cached headlines. Here is which is which.</p>';
+            const tag = { fixed: 'Fixed estimate', heuristic: 'News heuristic', mixed: 'Mixed', derived: 'Derived', sourced: 'Public data', trend: 'Trend', 'not available': 'Not available' };
+            let html = '<p class="view-hint">Prices come from public portal asking prices dated Nov 2026. Water, canopy, terrain and flood ratings are still fixed estimates typed into the app without cited sources. Here is which is which.</p>';
             m.metrics.forEach(x => {
                 html += `<div class="about-item"><div class="about-head"><span>${esc(x.name)}</span><span class="tag tag-${x.kind}">${tag[x.kind]}</span></div><p>${esc(x.how)}</p></div>`;
             });
