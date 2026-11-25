@@ -205,26 +205,26 @@
     function runFind() {
         readFind();
         const f = state.find;
-        const ok = state.summary.filter(s =>
-            (f.price >= 30000 || (s.apt_low !== null && s.apt_low <= f.price)) &&
-            s.liveability >= f.live &&
-            s.water_level >= f.water &&
-            s.canopy_percent >= f.green &&
-            (!f.flood || s.flood_risk === 'Low'));
-        // Best fit first: liveability high, price low
-        ok.sort((a, b) => (b.liveability - a.liveability) || ((a.apt_low || 0) - (b.apt_low || 0)));
-        state.matches = new Set(ok.map(s => s.area));
+        const base = s => s.liveability >= f.live && s.water_level >= f.water && s.canopy_percent >= f.green && (!f.flood || s.flood_risk === 'Low');
+        const any = f.price >= 30000;
+        const ok = state.summary.filter(s => base(s) && (any || (s.apt_high !== null && s.apt_high <= f.price)));
+        const partial = any ? [] : state.summary.filter(s => base(s) && s.apt_low !== null && s.apt_low <= f.price && s.apt_high > f.price);
+        const byFit = (a, b) => (b.liveability - a.liveability) || ((a.apt_low || 0) - (b.apt_low || 0));
+        ok.sort(byFit); partial.sort(byFit);
+        state.matches = new Set(ok.concat(partial).map(s => s.area));
         const sum = document.getElementById('find-summary');
-        sum.innerText = ok.length ? `${ok.length} of ${state.summary.length} areas match` : 'No area matches all of these. Loosen one limit.';
-        const res = document.getElementById('find-results');
-        res.innerHTML = ok.map((s, i) =>
+        sum.innerText = (ok.length ? `${ok.length} of ${state.summary.length} areas match, both portals within your cap` : 'No area has both portals within your cap.') + (partial.length ? ` ${partial.length} more are only partly within it (listed below).` : '');
+        const item = (s, i) =>
             `<button class="find-item" onclick="selectAreaByName('${esc(s.area).replace(/'/g, "\\'")}')">` +
             `<span class="find-rank">${i + 1}</span>` +
             `<span class="find-name">${esc(s.area)}</span>` +
-            `<span class="find-meta">${s.apt_low === null ? 'no price' : (s.apt_low === s.apt_high ? inr(s.apt_low) : inr(s.apt_low) + ' to ' + inr(s.apt_high))} · ${s.liveability}/10 · ${esc(waterLabel(s.water_level).split(' ')[0])} water</span></button>`).join('');
+            `<span class="find-meta">${s.apt_low === null ? 'no price' : (s.apt_low === s.apt_high ? inr(s.apt_low) : inr(s.apt_low) + ' to ' + inr(s.apt_high))} · ${s.liveability}/10 · ${esc(waterLabel(s.water_level).split(' ')[0])} water</span></button>`;
+        const res = document.getElementById('find-results');
+        res.innerHTML = ok.map(item).join('') +
+            (partial.length ? `<div class="find-partial-head">Partly within your cap: one portal is under it, the other is above it</div>` + partial.map(item).join('') : '');
         refreshZoneStyles();
-        if (ok.length) {
-            const b = L.featureGroup(ok.map(s => state.zoneLayers[s.area]).filter(Boolean)).getBounds();
+        if (ok.length || partial.length) {
+            const b = L.featureGroup(ok.concat(partial).map(s => state.zoneLayers[s.area]).filter(Boolean)).getBounds();
             if (b.isValid()) map.flyToBounds(b, { padding: [50, 50], maxZoom: 13, duration: 0.8 });
         }
     }
