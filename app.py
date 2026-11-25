@@ -1,3 +1,4 @@
+import re
 import os
 import time
 import requests
@@ -1289,7 +1290,7 @@ def fetch_social_sentiment(area_name, force_refresh=False):
 
 import email.utils as _eu
 
-POS_TERMS = {'metro': 1.0, 'inaugurat': 1.0, 'tech park': 1.0, 'flyover': 0.5, 'new road': 0.5, 'upgrade': 1.0, 'green': 0.5, 'redevelop': 0.5, 'growth': 1.0, 'rise in': 0.5, 'boom': 1.0, 'clean': 0.5, 'safe': 0.5, 'opens': 0.5, 'launch': 0.5, 'airport': 0.5, 'lake revival': 1.0, 'rejuvenat': 1.0, 'connectivity': 0.5, 'best': 0.5}
+POS_TERMS = {'metro': 1.0, 'inaugurat': 1.0, 'tech park': 1.0, 'flyover': 0.5, 'new road': 0.5, 'upgrade': 1.0, 'green': 0.5, 'redevelop': 0.5, 'growth': 1.0, 'rise in': 0.5, 'boom': 1.0, 'clean': 0.5, 'safe': 0.5, 'airport': 0.5, 'lake revival': 1.0, 'rejuvenat': 1.0, 'connectivity': 0.5, 'best': 0.5}
 NEG_TERMS = {'flood': 1.5, 'waterlog': 1.5, 'water logging': 1.5, 'crime': 1.0, 'murder': 1.0, 'robbery': 1.0, 'pothole': 0.75, 'protest': 0.5, 'delay': 0.75, 'traffic jam': 1.0, 'gridlock': 1.0, 'accident': 0.75, 'killed': 0.75, 'fire': 0.75, 'collapse': 1.5, 'scam': 1.0, 'water shortage': 1.5, 'tanker': 1.0, 'power cut': 0.75, 'demolition': 0.75, 'encroachment': 0.5, 'garbage': 0.75, 'sewage': 1.0, 'stink': 0.75, 'slump': 1.0, 'worst': 0.75}
 AREA_TERMS = {'Malleswaram': ['malleswaram', 'malleshwaram'], 'Nagarabhaavi': ['nagarbhavi', 'nagarabhavi', 'nagarabhaavi'], 'RR Nagar': ['rr nagar', 'rajarajeshwari', 'rajarajeshwari nagar'], 'JP Nagar': ['jp nagar', 'j p nagar'], 'BTM Layout': ['btm'], 'HSR Layout': ['hsr'], 'KR Puram': ['kr puram', 'k r puram', 'krishnarajapura'], 'MG Road': ['mg road', 'mahatma gandhi road'], 'RT Nagar': ['rt nagar', 'r t nagar'], 'Bannerghatta Road': ['bannerghatta'], 'Sarjapur Road': ['sarjapur'], 'Electronic City': ['electronic city']}
 MIN_FRESH_ITEMS = 3
@@ -1330,28 +1331,32 @@ def sentiment_signal(area, news_items, social_items):
             stale += 1
             continue
         used.append(('social', title, low))
-    seen, uniq = set(), []
+    uniq, toks = [], []
     for k, t, low in used:
-        key = low[:60]
-        if key in seen:
-            continue
-        seen.add(key)
+        core = low.rsplit(' - ', 1)[0]
+        tk = set(w for w in re.findall(r'[a-z0-9]+', core) if len(w) > 3)
+        if any(len(tk & o) / max(1, len(tk | o)) >= 0.4 for o in toks):
+            continue  # same story as one already counted
+        toks.append(tk)
         uniq.append((k, t, low))
-    scores = []
+    all_scores = []
     for k, t, low in uniq:
-        s = sum(w for term, w in POS_TERMS.items() if term in low) - sum(w for term, w in NEG_TERMS.items() if term in low)
-        scores.append(_clamp(s, -2.0, 2.0))
+        sc = sum(w for term, w in POS_TERMS.items() if term in low) - sum(w for term, w in NEG_TERMS.items() if term in low)
+        all_scores.append(_clamp(sc, -2.0, 2.0))
+    scored = [(u, sc) for u, sc in zip(uniq, all_scores) if sc != 0]
+    scores = [sc for u, sc in scored]
+    uniq = [u for u, sc in scored]
     n = len(uniq)
-    base = {'n_used': n, 'n_stale': stale, 'n_offtopic': offtopic, 'min_needed': MIN_FRESH_ITEMS, 'fresh_days': FRESH_DAYS,
+    base = {'n_used': n, 'n_stale': stale, 'n_offtopic': offtopic, 'n_candidates': len(used), 'n_distinct_stories': len(toks), 'min_needed': MIN_FRESH_ITEMS, 'fresh_days': FRESH_DAYS,
             'items': [{'source': k, 'title': t} for k, t, low in uniq][:6]}
     if n < MIN_FRESH_ITEMS:
         base.update({'status': 'insufficient', 'net': None, 'tilt_percent': 0.0,
-                     'note': 'Not enough recent area-specific headlines (' + str(n) + ' found, ' + str(MIN_FRESH_ITEMS) + ' needed, newer than ' + str(FRESH_DAYS) + ' days). Sentiment adds nothing to this outlook. This is missing data, not a neutral reading.'})
+                     'note': 'Not enough usable signal (' + str(n) + ' distinct recent stories naming the area with a positive or negative keyword, ' + str(MIN_FRESH_ITEMS) + ' needed, newer than ' + str(FRESH_DAYS) + ' days; ' + str(len(toks)) + ' distinct stories found in total). Sentiment adds nothing to this outlook. This is missing data, not a neutral reading.'})
         return base
     net = _clamp(sum(scores) / n / 2.0, -1.0, 1.0)
     tilt = round(_clamp(net * 1.5, -1.0, 1.0), 2)
     base.update({'status': 'ok', 'net': round(net, 2), 'tilt_percent': tilt,
-                 'note': str(n) + ' recent area headlines and posts scored with a keyword list. Net sentiment ' + format(net, '+.2f') + ' (scale -1 to +1), adjusting the outlook by ' + format(tilt, '+.2f') + ' points at most +/-1. Keyword scoring misses sarcasm and context, so the weight is small.'})
+                 'note': str(n) + ' distinct recent stories naming the area and containing a keyword, scored. Net sentiment ' + format(net, '+.2f') + ' (scale -1 to +1), adjusting the outlook by ' + format(tilt, '+.2f') + ' points at most +/-1. Keyword scoring misses sarcasm and context, so the weight is small.'})
     return base
 
 
