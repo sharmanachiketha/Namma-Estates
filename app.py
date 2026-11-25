@@ -74,38 +74,293 @@ AREAS = [
     "Puttenahalli"
 ]
 
-BASE_PRICES = {
-    "Jayanagar": 14000,
-    "HSR Layout": 11500,
-    "BTM Layout": 9500,
-    "MG Road": 22000,
-    "Rajajinagar": 12500,
-    "Indiranagar": 16000,
-    "Koramangala": 15500,
-    "Whitefield": 10500,
-    "Electronic City": 7500,
-    "Malleswaram": 14500,
-    "Yelahanka": 8500,
-    "Banashankari": 11000,
-    "Bellandur": 12500,
-    "Marathahalli": 10000,
-    "Hebbal": 13000,
-    "JP Nagar": 11500,
-    "Basavanagudi": 15000,
-    "Sarjapur Road": 11000,
-    "KR Puram": 8000,
-    "Yeshwanthpur": 9500,
-    "Kalyan Nagar": 8500,
-    "Kammanahalli": 8000,
-    "Nagarabhaavi": 9000,
-    "Vijayanagar": 11500,
-    "RT Nagar": 10000,
-    "Bannerghatta Road": 7500,
-    "Begur": 6500,
-    "Singasandra": 6000,
-    "RR Nagar": 8500,
-    "Puttenahalli": 9500
+PRICE_DATA_DATE = "25 Nov 2026"
+PRICE_DATA = {
+ "Jayanagar": {
+  "apt": 16950,
+  "apt_mb": 14028,
+  "apt_sy": 19850,
+  "zone": "South",
+  "apt_conf": "medium",
+  "land": 30000,
+  "land_n": 5,
+  "land_min": 6495,
+  "land_max": 37500
+ },
+ "HSR Layout": {
+  "apt": 13550,
+  "apt_mb": 9486,
+  "apt_sy": 17638,
+  "zone": "South",
+  "apt_conf": "low",
+  "land": 37500,
+  "land_n": 4,
+  "land_min": 18000,
+  "land_max": 40000
+ },
+ "BTM Layout": {
+  "apt": 12350,
+  "apt_mb": 10550,
+  "apt_sy": 14150,
+  "zone": "South",
+  "apt_conf": "medium",
+  "land": 27000,
+  "land_n": 7,
+  "land_min": 6923,
+  "land_max": 33750
+ },
+ "MG Road": {
+  "apt": 18150,
+  "apt_mb": 16222,
+  "apt_sy": 20100,
+  "zone": "Central",
+  "apt_conf": "medium"
+ },
+ "Rajajinagar": {
+  "apt": 18550,
+  "apt_mb": 23414,
+  "apt_sy": 13714,
+  "zone": "West",
+  "apt_conf": "low",
+  "land": 18000,
+  "land_n": 3,
+  "land_min": 11957,
+  "land_max": 30000
+ },
+ "Indiranagar": {
+  "apt": 18750,
+  "apt_mb": 18753,
+  "apt_sy": 18750,
+  "zone": "Central",
+  "apt_conf": "medium",
+  "land": 30000,
+  "land_n": 3,
+  "land_min": 10278,
+  "land_max": 62500
+ },
+ "Koramangala": {
+  "apt": 17000,
+  "apt_mb": 15253,
+  "apt_sy": 18750,
+  "zone": "South",
+  "apt_conf": "medium",
+  "land": 35000,
+  "land_n": 6,
+  "land_min": 10278,
+  "land_max": 45714
+ },
+ "Whitefield": {
+  "apt": 13950,
+  "apt_mb": 13394,
+  "apt_sy": 14500,
+  "zone": "East",
+  "apt_conf": "medium",
+  "land": 8000,
+  "land_n": 4,
+  "land_min": 5699,
+  "land_max": 12000
+ },
+ "Electronic City": {
+  "apt": 9050,
+  "apt_mb": 8732,
+  "apt_sy": 9350,
+  "zone": "South",
+  "apt_conf": "medium"
+ },
+ "Malleshwaram": {
+  "apt": 15200,
+  "apt_mb": 15218,
+  "apt_sy": None,
+  "zone": "Central",
+  "apt_conf": "low",
+  "land": 33500,
+  "land_n": 6,
+  "land_min": 15625,
+  "land_max": 45000
+ },
+ "Yelahanka": {
+  "apt": 10150,
+  "apt_mb": 10164,
+  "apt_sy": 10100,
+  "zone": "North",
+  "apt_conf": "medium",
+  "land": 11000,
+  "land_n": 5,
+  "land_min": 6167,
+  "land_max": 25000
+ },
+ "Banashankari": {
+  "apt": 12300,
+  "apt_mb": 11120,
+  "apt_sy": 13500,
+  "zone": "South",
+  "apt_conf": "medium"
+ },
+ "Bellandur": {
+  "apt": 15800,
+  "apt_mb": 15521,
+  "apt_sy": 16050,
+  "zone": "East",
+  "apt_conf": "medium"
+ },
+ "Marathahalli": {
+  "apt": 11850,
+  "apt_mb": 8419,
+  "apt_sy": 15300,
+  "zone": "East",
+  "apt_conf": "low",
+  "land": 16500,
+  "land_n": 3,
+  "land_min": 9167,
+  "land_max": 42000
+ },
+ "Hebbal": {
+  "apt": 16600,
+  "apt_mb": 16103,
+  "apt_sy": 17100,
+  "zone": "North",
+  "apt_conf": "medium",
+  "land": 18000,
+  "land_n": 7,
+  "land_min": 7500,
+  "land_max": 25000
+ },
+ "JP Nagar": {
+  "apt": 10650,
+  "apt_mb": 9919,
+  "apt_sy": 11350,
+  "zone": "South",
+  "apt_conf": "medium",
+  "land": 20000,
+  "land_n": 6,
+  "land_min": 6495,
+  "land_max": 25000
+ },
+ "Basavanagudi": {
+  "apt": 15700,
+  "apt_mb": 14913,
+  "apt_sy": 16500,
+  "zone": "Central",
+  "apt_conf": "medium"
+ },
+ "Sarjapur Road": {
+  "apt": 12100,
+  "apt_mb": 11978,
+  "apt_sy": 12250,
+  "zone": "East",
+  "apt_conf": "medium",
+  "land": 8000,
+  "land_n": 7,
+  "land_min": 5750,
+  "land_max": 13636
+ },
+ "KR Puram": {
+  "apt": 11000,
+  "apt_mb": 10543,
+  "apt_sy": 11450,
+  "zone": "East",
+  "apt_conf": "medium",
+  "land": 10500,
+  "land_n": 3,
+  "land_min": 6500,
+  "land_max": 32017
+ },
+ "Yeshwanthpur": {
+  "apt": 12900,
+  "apt_mb": 12908,
+  "apt_sy": 12900,
+  "zone": "North",
+  "apt_conf": "medium"
+ },
+ "Kalyan Nagar": {
+  "apt": 8600,
+  "apt_mb": 9255,
+  "apt_sy": 7900,
+  "zone": "North",
+  "apt_conf": "medium",
+  "land": 21500,
+  "land_n": 4,
+  "land_min": 9000,
+  "land_max": 28000
+ },
+ "Kammanahalli": {
+  "apt": 18200,
+  "apt_mb": 17122,
+  "apt_sy": 19250,
+  "zone": "North",
+  "apt_conf": "medium",
+  "land": 12500,
+  "land_n": 5,
+  "land_min": 6061,
+  "land_max": 25000
+ },
+ "Nagarbhavi": {
+  "apt": 7650,
+  "apt_mb": 7650,
+  "apt_sy": None,
+  "zone": "West",
+  "apt_conf": "low"
+ },
+ "Vijayanagar": {
+  "apt": 10000,
+  "apt_mb": 9104,
+  "apt_sy": 10850,
+  "zone": "West",
+  "apt_conf": "medium"
+ },
+ "RT Nagar": {
+  "apt": 6350,
+  "apt_mb": 6334,
+  "apt_sy": None,
+  "zone": "North",
+  "apt_conf": "low"
+ },
+ "Bannerghatta Road": {
+  "apt": 11150,
+  "apt_mb": 9825,
+  "apt_sy": 12450,
+  "zone": "South",
+  "apt_conf": "medium"
+ },
+ "Begur": {
+  "apt": 9850,
+  "apt_mb": 10146,
+  "apt_sy": 9550,
+  "zone": "South",
+  "apt_conf": "medium"
+ },
+ "Singasandra": {
+  "apt": 11550,
+  "apt_mb": 11053,
+  "apt_sy": 12000,
+  "zone": "South",
+  "apt_conf": "medium",
+  "land": 15000,
+  "land_n": 6,
+  "land_min": 7477,
+  "land_max": 25000
+ },
+ "RR Nagar": {
+  "apt": 8550,
+  "apt_mb": 8538,
+  "apt_sy": None,
+  "zone": "West",
+  "apt_conf": "low"
+ },
+ "Puttenahalli": {
+  "apt": 9100,
+  "apt_mb": 9100,
+  "apt_sy": None,
+  "zone": "South",
+  "apt_conf": "low"
+ }
 }
+
+# Square Yards zone averages, year on year to September 2026 (via mypropertypoint.com, 23 Oct 2026)
+ZONE_YOY = {"Central": 5.8, "East": -1.3, "South": 3.3, "North": 2.3, "West": -1.0}
+
+BASE_PRICES = {a: d["apt"] for a, d in PRICE_DATA.items()}
+
 
 COORDS = {
     "Jayanagar": [12.9250, 77.5938],
@@ -556,44 +811,50 @@ def fetch_social_sentiment(area_name, force_refresh=False):
     save_cache()
     return posts
 
-def analyze_sentiment_and_predict(base_price, news_items, social_items):
+def analyze_sentiment_and_predict(area, news_items, social_items):
+    """Price = sourced portal averages (apartments). Projection = zone trend. Headlines are shown as a side signal only."""
+    d = PRICE_DATA.get(area, {})
+    base_price = d.get('apt', 10000)
     positive_words = ['new', 'develop', 'metro', 'inaugurate', 'tech park', 'growth', 'rise', 'boom', 'clean', 'upgrade', 'good', 'best', 'love', 'safe']
     negative_words = ['traffic', 'flood', 'water logging', 'crime', 'poor', 'pothole', 'protest', 'delay', 'fall', 'slump', 'bad', 'worst', 'hate', 'scam', 'rage', 'kick']
-    
     score = 0
-    all_texts = [item['title'].lower() for item in news_items] + [item['title'].lower() for item in social_items]
-    
-    for text in all_texts:
-        for word in positive_words:
-            if word in text:
+    texts = [i['title'].lower() for i in news_items] + [i['title'].lower() for i in social_items]
+    for t in texts:
+        for w in positive_words:
+            if w in t:
                 score += 1
-        for word in negative_words:
-            if word in text:
+        for w in negative_words:
+            if w in t:
                 score -= 1
-                
-    # Deterministic price calculation strictly based on live dynamic sentiments
-    # 1 point moves the price by 1.5%, capped at +/- 20%
-    prediction_change_percent = score * 1.5
-    prediction_change_percent = max(-20.0, min(20.0, prediction_change_percent))
-    
-    future_price = base_price * (1 + prediction_change_percent / 100)
-    
-    if prediction_change_percent > 0:
-        trend = "Upward"
-        reason = f"Cached headlines contain {score} more positive than negative keywords, so the heuristic nudges the estimate up. This is not a price forecast." if score > 0 else "Heuristic nudge only. Not a price forecast."
-    elif prediction_change_percent < 0:
-        trend = "Downward"
-        reason = f"Cached headlines contain {abs(score)} more negative than positive keywords (e.g. traffic, flood), so the heuristic nudges the estimate down. This is not a price forecast." if score < 0 else "Heuristic nudge only. Not a price forecast."
-    else:
-        trend = "Stable"
-        reason = "Cached headlines contain no net positive or negative keywords, so the heuristic leaves the estimate unchanged. This is not a price forecast."
+    headline_percent = max(-20.0, min(20.0, score * 1.5))
+
+    zone = d.get('zone', 'South')
+    yoy = ZONE_YOY.get(zone, 0.0)
+    future_price = base_price * (1 + yoy / 100)
+    trend = "Upward" if yoy > 0 else ("Downward" if yoy < 0 else "Stable")
+    reason = (f"12-month projection: the apartment price moved by the {zone} Bengaluru zone's last-12-month change "
+              f"({yoy:+.1f}%, Square Yards, to Sep 2026) and is carried forward. It is a trend continuation, not a forecast. "
+              f"City level, Knight Frank reports about +9% (H1 2026) and ANAROCK +8% (Q3 2026) for new supply, so zone asking-price trends read lower. "
+              f"Headlines no longer change the price.")
+
+    land = None
+    if d.get('land'):
+        land = {'price_sqft': d['land'], 'samples': d['land_n'], 'low': d['land_min'], 'high': d['land_max']}
+    sources = []
+    if d.get('apt_mb'): sources.append({'source': 'MagicBricks, Q3 2026 apartment average', 'value': d['apt_mb']})
+    if d.get('apt_sy'): sources.append({'source': 'Square Yards, Sep-Oct 2026 apartment average', 'value': d['apt_sy']})
 
     return {
         'current_price_sqft': int(base_price),
         'predicted_price_sqft': int(future_price),
-        'change_percent': round(prediction_change_percent, 2),
+        'change_percent': round(yoy, 2),
+        'headline_percent': round(headline_percent, 2),
         'trend': trend,
-        'reason': reason
+        'reason': reason,
+        'confidence': d.get('apt_conf', 'low'),
+        'sources': sources,
+        'land': land,
+        'data_date': PRICE_DATA_DATE,
     }
 
 @app.route('/')
@@ -651,6 +912,8 @@ def get_summary():
             'area': area,
             'lat': lat, 'lon': lon,
             'price_sqft': BASE_PRICES.get(area, 10000),
+            'land_sqft': PRICE_DATA.get(area, {}).get('land'),
+            'land_samples': PRICE_DATA.get(area, {}).get('land_n'),
             'liveability': live['score'],
             'water': water,
             'water_level': 2 if "High" in water and "Medium" not in water else (1 if ("Medium" in water or "High" in water) else 0),
@@ -681,10 +944,14 @@ def get_methodology():
         'news_cache_note': 'Dates come from this server cache.',
         'news_cache_oldest': iso(oldest),
         'metrics': [
-            {'name': 'Current price per sqft', 'kind': 'fixed',
-             'how': 'A single estimate per area typed into the app. It is not pulled from a listings site and does not update on its own.'},
-            {'name': 'Predicted future price', 'kind': 'heuristic',
-             'how': 'A headline-based heuristic, not a forecast model. The current price is nudged by 1.5% for every net positive or negative keyword (such as metro, growth, traffic, flood) found in cached Google News and social headlines for that area (cached up to 7 days, fetched when someone opens the area). Capped at plus or minus 20%.'},
+            {'name': 'Apartment price per sqft', 'kind': 'sourced',
+             'how': 'Average of two public portal series where both exist: MagicBricks locality apartment average for Q3 2026 (pages updated Oct 2026) and Square Yards locality average (Sep-Oct 2026). These are asking prices, not recorded sale prices. The two often differ by 20 to 80 percent for the same area, so treat the figure as a mid-point. Areas flagged low confidence had one source only or sources that disagree widely (for example HSR Layout, Marathahalli, Rajajinagar). Nagarbhavi, Puttenahalli and RR Nagar use a single MagicBricks figure (Nagarbhavi and Puttenahalli the middle of its listed range). Checked ' + PRICE_DATA_DATE + '.'},
+            {'name': 'Land (plot) price per sqft', 'kind': 'sourced',
+             'how': 'Median asking price across a small sample of resale plot listings on Square Yards (3 to 7 listings per area, duplicates and entries under 5,000 per sqft dropped as outer-area or data-entry outliers). Shown only where at least 3 distinct listings were found. Low confidence. MagicBricks area-wide plot averages are far lower (for BTM Layout about 8,200 per sqft) because they mix many layouts, so they are not used. Official guidance values (the registration floor, FY 2023 notification still quoted in 2026) are lower than asking prices.'},
+            {'name': 'Recorded sale prices', 'kind': 'not available',
+             'how': 'Actual registered sale prices sit in Karnataka Kaveri records and are not published as open area averages, so this app cannot show them. Asking prices usually run above what deals close at.'},
+            {'name': '12-month projection', 'kind': 'trend',
+             'how': 'The apartment price carried forward by its zone last-12-month change from Square Yards (Central +5.8%, South +3.3%, North +2.3%, East -1.3%, West -1.0%, to Sep 2026). A trend continuation, not a forecast. Cached headlines are shown for context and no longer change the price.'},
             {'name': 'Kaveri water supply', 'kind': 'fixed',
              'how': 'A fixed rating per area typed into the code, which mentions BWSSB Cauvery stages. The source is not cited in the app and has not been verified. Not a live supply reading.'},
             {'name': 'Green canopy', 'kind': 'fixed',
@@ -709,12 +976,11 @@ def get_area_data(area_name):
     geojson = fetch_geojson(area_name)
     news = fetch_news(area_name, force_refresh=force_refresh)
     social = fetch_social_sentiment(area_name, force_refresh=force_refresh)
-    base_price = BASE_PRICES.get(area_name, 10000)
-    
-    prediction = analyze_sentiment_and_predict(base_price, news, social)
+        
+    prediction = analyze_sentiment_and_predict(area_name, news, social)
     
     # Calculate Liveability Index (monthly/weekly sentiment cache bound)
-    liveability = calculate_liveability_score(area_name, prediction['change_percent'])
+    liveability = calculate_liveability_score(area_name, prediction['headline_percent'])
     
     return jsonify({
         'area': area_name,
@@ -763,9 +1029,8 @@ def nearest_area():
     # Get data for this nearest area to generate summary
     news = fetch_news(nearest)
     social = fetch_social_sentiment(nearest)
-    base_price = BASE_PRICES.get(nearest, 10000)
-    prediction = analyze_sentiment_and_predict(base_price, news, social)
-    liveability = calculate_liveability_score(nearest, prediction['change_percent'])
+    prediction = analyze_sentiment_and_predict(nearest, news, social)
+    liveability = calculate_liveability_score(nearest, prediction['headline_percent'])
 
     # Format currency for summary
     cur_price = f"₹{prediction['current_price_sqft']:,}"
@@ -776,11 +1041,13 @@ def nearest_area():
     fetched = cache_data.get(nearest, {}).get('news', {}).get('time')
     fetched_txt = time.strftime('%d %b %Y', time.gmtime(fetched)) if fetched else 'date not available'
     chg = prediction['change_percent']
-    nudge = "no change" if chg == 0 else (f"+{chg}%" if chg > 0 else f"{chg}%")
+    land = prediction.get('land')
     summary = f"<b>{nearest}</b> (nearest listed area).<br>"
-    summary += f"Indicative price estimate: <b>{cur_price}/sqft</b>. A fixed figure in this app, not a live listing price.<br>"
-    summary += f"Cached headline heuristic (fetched {fetched_txt}): <b>{nudge}</b>. Not a price forecast.<br>"
-    summary += f"Liveability: <b>{liveability['score']}/10</b>. Built from fixed water, canopy and terrain ratings plus that heuristic."
+    summary += f"Apartments: about <b>{cur_price}/sqft</b> asking (MagicBricks and Square Yards, {prediction['data_date']}).<br>"
+    if land:
+        summary += f"Plots: about <b>₹{land['price_sqft']:,}/sqft</b> asking, from {land['samples']} sampled listings (low confidence).<br>"
+    summary += f"12-month trend carried forward from its zone: <b>{chg:+.1f}%</b>. Not a forecast.<br>"
+    summary += f"Liveability: <b>{liveability['score']}/10</b>. Built from fixed water, canopy and terrain ratings plus the headline signal."
 
     return jsonify({
         'nearest_area': nearest,
