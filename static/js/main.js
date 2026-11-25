@@ -783,7 +783,7 @@ function updateSidebar(data) {
         trendPercent.innerText = `0%`;
     }
     
-    document.getElementById('reasoning-text').innerText = 'Prices are asking prices copied from two public portals on ' + fin.data_date + ', not recorded sale prices, and they are not averaged. Plot figures are the range of listings that passed the checks in About data. The only trend shown is the past zone figure above; the app does not forecast a future price.' + (data.headlines_fetched ? ' Headlines cached ' + data.headlines_fetched + ' (they only feed the small liveability signal).' : '');
+    document.getElementById('reasoning-text').innerText = 'Prices are asking prices copied from two public portals on ' + fin.data_date + ', not recorded sale prices, and they are not averaged. Plot figures are the range of listings that passed the checks in About data. The only trend shown is the past zone figure above; price forecasts are withheld because the evidence is insufficient.' + (data.headlines_fetched ? ' Headlines cached ' + data.headlines_fetched + ' (they only feed the small liveability signal).' : '');
     
     // Update water and elevation badges dynamically
     const waterBadge = document.getElementById('water-status-badge');
