@@ -47,6 +47,7 @@ const WATER_LEVELS = {
 let activeAreaName = null;
 let currentGeoJsonLayer = null;
 let baseTileLayer = null;
+(function(){const s=document.createElement('style');s.textContent='.osm-dark-tiles{filter:invert(1) hue-rotate(180deg) brightness(0.95) contrast(0.9);}';document.head.appendChild(s);})();
 let topoLayer = null;
 let waterGeoJsonLayerGroup = null;
 let greenGeoJsonLayerGroup = null;
@@ -80,15 +81,13 @@ function updateMapTileLayer() {
         map.removeLayer(baseTileLayer);
     }
     
-    // Choose beautiful tiles depending on light/dark themes
-    const url = currentTheme === 'dark' 
-        ? 'https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png'
-        : 'https://{s}.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}{r}.png';
-        
-    baseTileLayer = L.tileLayer(url, {
-        attribution: '&copy; OpenStreetMap contributors &copy; CARTO',
-        subdomains: 'abcd',
-        maxZoom: 20
+    // CARTO basemaps now require an API key, and Esri's keyless legacy
+    // canvas services are deprecated, so use the standard OpenStreetMap tiles
+    // (allowed with visible attribution) and darken them with a CSS filter in dark mode.
+    baseTileLayer = L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', {
+        attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors',
+        maxZoom: 19,
+        className: currentTheme === 'dark' ? 'osm-dark-tiles' : ''
     }).addTo(map);
 }
 
@@ -1088,3 +1087,4 @@ function updateHeatmapVisualsForZoom() {
 map.on('zoomend', updateHeatmapVisualsForZoom);
 
 document.addEventListener('DOMContentLoaded', initializeApp);
+
