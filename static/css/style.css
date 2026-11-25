@@ -1173,3 +1173,9 @@ html[data-theme="light"] .leaflet-tooltip.zone-tip { background: rgba(255,255,25
 .tag-sourced { background:rgba(16,185,129,.15); color:#10b981; }
 .tag-trend { background:rgba(59,130,246,.15); color:#3b82f6; }
 .tag-not\ available { background:rgba(148,163,184,.15); color:#94a3b8; }
+.price-sources { font-size: 0.8rem; margin: 0.5rem 0 1rem; line-height: 1.5; }
+.price-sources h4 { margin: 0 0 0.35rem; font-size: 0.85rem; }
+.price-sources p { margin: 0.15rem 0; }
+.price-sources a { color: #60a5fa; word-break: break-word; }
+.price-sources summary { cursor: pointer; margin-top: 0.4rem; }
+.price-note { line-height: 1.35; }
