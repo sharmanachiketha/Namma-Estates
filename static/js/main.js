@@ -734,7 +734,7 @@ function updateSidebar(data) {
     if (ol.components) {
         const c = ol.components, s = fin.sentiment || {};
         const mkp = (t) => { const p = document.createElement('p'); p.textContent = t; od.appendChild(p); };
-        mkp('Outlook ' + (ol.change_percent > 0 ? '+' : '') + ol.change_percent + '% = zone trend ' + c.baseline.value + '% (' + c.baseline.note + ') + liveability ' + c.liveability.value + ' (' + c.liveability.note + ') + sentiment ' + c.sentiment.value + '.');
+        mkp('Outlook ' + (ol.change_percent > 0 ? '+' : '') + ol.change_percent + '% = past 12-month change ' + c.baseline.value + '% (' + c.baseline.note + ') + liveability ' + c.liveability.value + ' (' + c.liveability.note + ') + sentiment ' + c.sentiment.value + '.');
         mkp('News and social sentiment: ' + (s.status === 'ok' ? 'used. ' : 'NOT used. ') + (s.note || ''));
         if (ol.plot) mkp('Plots in 12 months: ~' + fmt(ol.plot.projected) + ' / sqft, sensitivity band ' + fmt(ol.plot.low) + ' to ' + fmt(ol.plot.high) + ' (wider, plot data is thinner).');
         mkp(ol.disclaimer);
