@@ -57,7 +57,7 @@
         const s = state.byName[area];
         if (!s) return `<strong>${esc(area)}</strong>`;
         return `<div class="zone-tip-name">${esc(area)}</div>` +
-            `<div class="zone-tip-row"><span>Apartment asking price</span><b>${inr(s.price_sqft)}/sqft</b></div>` +
+            `<div class="zone-tip-row"><span>Apartment asking</span><b>${s.apt_low === null ? 'no figure' : (s.apt_low === s.apt_high ? inr(s.apt_low) : inr(s.apt_low) + ' to ' + inr(s.apt_high))}/sqft</b></div>` +
             `<div class="zone-tip-row"><span>Liveability</span><b>${s.liveability}/10</b></div>` +
             `<div class="${s.outline && s.outline.approximate ? 'zone-tip-warn' : 'zone-tip-ok'}">${s.outline && s.outline.approximate ? 'Ward-based approximation (' + (s.outline.wards || []).length + (((s.outline.wards || []).length === 1) ? ' ward)' : ' wards)') : 'OpenStreetMap suburb outline'}</div>` +
             `<div class="zone-tip-hint">Click for details</div>`;
@@ -167,8 +167,8 @@
             return;
         }
         const rows = [
-            { label: 'Apartment price per sqft', get: s => s.price_sqft, show: s => inr(s.price_sqft), best: 'min' },
-            { label: 'Plot price per sqft (listing sample)', get: s => s.land_sqft || null, show: s => s.land_sqft ? inr(s.land_sqft) + ' (' + s.land_samples + ' listings)' : 'not enough listings', best: null },
+            { label: 'Apartment asking price per sqft (two portals)', get: s => s.price_sqft, show: s => s.apt_low === null ? 'no figure found' : (s.apt_low === s.apt_high ? inr(s.apt_low) + ' (one portal)' : inr(s.apt_low) + ' to ' + inr(s.apt_high)), best: null },
+            { label: 'Plot asking price per sqft (listing range)', get: s => null, show: s => s.plot && s.plot.shown ? inr(s.plot.low) + ' to ' + inr(s.plot.high) + ' (' + s.plot.n + ' listings)' : 'too few listings', best: null },
             { label: 'Liveability', get: s => s.liveability, show: s => s.liveability + ' / 10', best: 'max' },
             { label: 'Water supply', get: s => s.water_level, show: s => waterLabel(s.water_level), best: 'max' },
             { label: 'Green canopy', get: s => s.canopy_percent, show: s => s.canopy_percent + '%', best: 'max' },
@@ -188,7 +188,7 @@
             }).join('') + '</tr>';
         });
         html += '</tbody></table>' +
-            '<p class="fine-print">Prices are asking prices from public portals, ratings are fixed estimates. See About data. Liveability here excludes the live news signal.</p>' +
+            '<p class="fine-print">Prices are asking prices from two public portals, shown as ranges. Ratings are fixed estimates. See About data. Liveability here excludes the live news signal.</p>' +
             '<div class="compare-actions">' + chosen.map(c => `<button class="mini-btn" onclick="selectAreaByName('${esc(c.a).replace(/'/g, "\\'")}')">Open ${esc(c.a)}</button>`).join('') + '</div>';
         wrap.innerHTML = html;
     }
@@ -206,13 +206,13 @@
         readFind();
         const f = state.find;
         const ok = state.summary.filter(s =>
-            (f.price >= 30000 || s.price_sqft <= f.price) &&
+            (f.price >= 30000 || (s.apt_low !== null && s.apt_low <= f.price)) &&
             s.liveability >= f.live &&
             s.water_level >= f.water &&
             s.canopy_percent >= f.green &&
             (!f.flood || s.flood_risk === 'Low'));
         // Best fit first: liveability high, price low
-        ok.sort((a, b) => (b.liveability - a.liveability) || (a.price_sqft - b.price_sqft));
+        ok.sort((a, b) => (b.liveability - a.liveability) || ((a.apt_low || 0) - (b.apt_low || 0)));
         state.matches = new Set(ok.map(s => s.area));
         const sum = document.getElementById('find-summary');
         sum.innerText = ok.length ? `${ok.length} of ${state.summary.length} areas match` : 'No area matches all of these. Loosen one limit.';
@@ -221,7 +221,7 @@
             `<button class="find-item" onclick="selectAreaByName('${esc(s.area).replace(/'/g, "\\'")}')">` +
             `<span class="find-rank">${i + 1}</span>` +
             `<span class="find-name">${esc(s.area)}</span>` +
-            `<span class="find-meta">${inr(s.price_sqft)} · ${s.liveability}/10 · ${esc(waterLabel(s.water_level).split(' ')[0])} water</span></button>`).join('');
+            `<span class="find-meta">${s.apt_low === null ? 'no price' : (s.apt_low === s.apt_high ? inr(s.apt_low) : inr(s.apt_low) + ' to ' + inr(s.apt_high))} · ${s.liveability}/10 · ${esc(waterLabel(s.water_level).split(' ')[0])} water</span></button>`).join('');
         refreshZoneStyles();
         if (ok.length) {
             const b = L.featureGroup(ok.map(s => state.zoneLayers[s.area]).filter(Boolean)).getBounds();
@@ -249,7 +249,7 @@
         try {
             const m = await (await fetch('/api/methodology')).json();
             const tag = { fixed: 'Fixed estimate', heuristic: 'News heuristic', mixed: 'Mixed', derived: 'Derived', sourced: 'Public data', trend: 'Trend', 'not available': 'Not available' };
-            let html = '<p class="view-hint">Prices come from public portal asking prices dated Nov 2026. Water, canopy, terrain and flood ratings are still fixed estimates typed into the app without cited sources. Here is which is which.</p>';
+            let html = '<p class="view-hint">Prices are asking prices from public portals (Nov 2026), shown as the portal figures rather than one average. Water, canopy, terrain and flood ratings are still fixed estimates typed into the app without cited sources. Here is which is which.</p>';
             m.metrics.forEach(x => {
                 html += `<div class="about-item"><div class="about-head"><span>${esc(x.name)}</span><span class="tag tag-${x.kind}">${tag[x.kind]}</span></div><p>${esc(x.how)}</p></div>`;
             });
