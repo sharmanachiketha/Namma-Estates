@@ -57,7 +57,7 @@
         const s = state.byName[area];
         if (!s) return `<strong>${esc(area)}</strong>`;
         return `<div class="zone-tip-name">${esc(area)}</div>` +
-            `<div class="zone-tip-row"><span>Apartment asking</span><b>${s.apt_low === null ? 'no figure' : (s.apt_low === s.apt_high ? inr(s.apt_low) : inr(s.apt_low) + ' to ' + inr(s.apt_high))}/sqft</b></div>` +
+            `<div class="zone-tip-row"><span>Apartment asking</span><b>${s.apt_est === null ? 'no figure' : '~' + inr(s.apt_est)}/sqft</b></div>` +
             `<div class="zone-tip-row"><span>Liveability</span><b>${s.liveability}/10</b></div>` +
             `<div class="${s.outline && s.outline.approximate ? 'zone-tip-warn' : 'zone-tip-ok'}">${s.outline && s.outline.approximate ? 'Ward-based approximation (' + (s.outline.wards || []).length + (((s.outline.wards || []).length === 1) ? ' ward)' : ' wards)') : 'OpenStreetMap suburb outline'}</div>` +
             `<div class="zone-tip-hint">Click for details</div>`;
@@ -167,8 +167,9 @@
             return;
         }
         const rows = [
-            { label: 'Apartment asking price per sqft (two portals)', get: s => s.price_sqft, show: s => s.apt_low === null ? 'no figure found' : (s.apt_low === s.apt_high ? inr(s.apt_low) + ' (one portal)' : inr(s.apt_low) + ' to ' + inr(s.apt_high)), best: null },
-            { label: 'Plot asking price per sqft (listing range)', get: s => null, show: s => s.plot && s.plot.shown ? inr(s.plot.low) + ' to ' + inr(s.plot.high) + ' (' + s.plot.n + ' listings)' : 'too few listings', best: null },
+            { label: 'Apartment asking price per sqft (estimate, portal range)', get: s => s.apt_est, show: s => s.apt_est === null ? 'no figure found' : '~' + inr(s.apt_est) + ' (' + (s.apt_low === s.apt_high ? 'one source' : inr(s.apt_low) + ' to ' + inr(s.apt_high)) + ', ' + s.apt_conf + ' confidence)', best: null },
+            { label: '12-month outlook, indicative (past trend + liveability, news signal when available)', get: s => s.outlook_percent, show: s => (s.outlook_percent > 0 ? '+' : '') + s.outlook_percent + '%', best: 'max' },
+            { label: 'Plot asking price per sqft (estimate, range)', get: s => null, show: s => s.plot && s.plot.est ? '~' + inr(s.plot.est) + ' (' + (s.plot.low === s.plot.high ? 'single source' : inr(s.plot.low) + ' to ' + inr(s.plot.high)) + ', ' + s.plot.confidence + ' confidence, ' + s.plot.method + ')' : 'no estimate', best: null },
             { label: 'Liveability', get: s => s.liveability, show: s => s.liveability + ' / 10', best: 'max' },
             { label: 'Water supply', get: s => s.water_level, show: s => waterLabel(s.water_level), best: 'max' },
             { label: 'Green canopy', get: s => s.canopy_percent, show: s => s.canopy_percent + '%', best: 'max' },
@@ -188,7 +189,7 @@
             }).join('') + '</tr>';
         });
         html += '</tbody></table>' +
-            '<p class="fine-print">Prices are asking prices from two public portals, shown as ranges. Ratings are fixed estimates. See About data. Liveability here excludes the live news signal.</p>' +
+            '<p class="fine-print">Prices are asking-price estimates from public portals with their ranges and confidence. The outlook here is the formula baseline without live news. Ratings are fixed estimates. See About data.</p>' +
             '<div class="compare-actions">' + chosen.map(c => `<button class="mini-btn" onclick="selectAreaByName('${esc(c.a).replace(/'/g, "\\'")}')">Open ${esc(c.a)}</button>`).join('') + '</div>';
         wrap.innerHTML = html;
     }
@@ -218,7 +219,7 @@
             `<button class="find-item" onclick="selectAreaByName('${esc(s.area).replace(/'/g, "\\'")}')">` +
             `<span class="find-rank">${i + 1}</span>` +
             `<span class="find-name">${esc(s.area)}</span>` +
-            `<span class="find-meta">${s.apt_low === null ? 'no price' : (s.apt_low === s.apt_high ? inr(s.apt_low) : inr(s.apt_low) + ' to ' + inr(s.apt_high))} · ${s.liveability}/10 · ${esc(waterLabel(s.water_level).split(' ')[0])} water</span></button>`;
+            `<span class="find-meta">${s.apt_est === null ? 'no price' : '~' + inr(s.apt_est) + ' (' + (s.apt_low === s.apt_high ? 'one source' : inr(s.apt_low) + ' to ' + inr(s.apt_high)) + ')'} · ${s.liveability}/10 · ${esc(waterLabel(s.water_level).split(' ')[0])} water</span></button>`;
         const res = document.getElementById('find-results');
         res.innerHTML = ok.map(item).join('') +
             (partial.length ? `<div class="find-partial-head">Partly within your cap: one portal is under it, the other is above it</div>` + partial.map(item).join('') : '');
