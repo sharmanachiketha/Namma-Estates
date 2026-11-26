@@ -1,0 +1,122 @@
+{
+ "BTM Layout": {
+  "routes": 322,
+  "stops": 56
+ },
+ "Banashankari": {
+  "routes": 97,
+  "stops": 69
+ },
+ "Bannerghatta Road": {
+  "routes": 113,
+  "stops": 58
+ },
+ "Basavanagudi": {
+  "routes": 244,
+  "stops": 85
+ },
+ "Begur": {
+  "routes": 52,
+  "stops": 38
+ },
+ "Bellandur": {
+  "routes": 62,
+  "stops": 11
+ },
+ "Electronic City": {
+  "routes": 160,
+  "stops": 35
+ },
+ "HSR Layout": {
+  "routes": 252,
+  "stops": 73
+ },
+ "Hebbal": {
+  "routes": 334,
+  "stops": 54
+ },
+ "Indiranagar": {
+  "routes": 257,
+  "stops": 55
+ },
+ "JP Nagar": {
+  "routes": 227,
+  "stops": 66
+ },
+ "Jayanagar": {
+  "routes": 224,
+  "stops": 69
+ },
+ "KR Puram": {
+  "routes": 187,
+  "stops": 30
+ },
+ "Kalyan Nagar": {
+  "routes": 250,
+  "stops": 74
+ },
+ "Kammanahalli": {
+  "routes": 159,
+  "stops": 56
+ },
+ "Koramangala": {
+  "routes": 297,
+  "stops": 59
+ },
+ "MG Road": {
+  "routes": 1055,
+  "stops": 93
+ },
+ "Malleswaram": {
+  "routes": 367,
+  "stops": 86
+ },
+ "Marathahalli": {
+  "routes": 180,
+  "stops": 36
+ },
+ "Nagarabhaavi": {
+  "routes": 99,
+  "stops": 66
+ },
+ "Puttenahalli": {
+  "routes": 128,
+  "stops": 59
+ },
+ "RR Nagar": {
+  "routes": 193,
+  "stops": 65
+ },
+ "RT Nagar": {
+  "routes": 273,
+  "stops": 69
+ },
+ "Rajajinagar": {
+  "routes": 243,
+  "stops": 85
+ },
+ "Sarjapur Road": {
+  "routes": 100,
+  "stops": 24
+ },
+ "Singasandra": {
+  "routes": 138,
+  "stops": 31
+ },
+ "Vijayanagar": {
+  "routes": 245,
+  "stops": 70
+ },
+ "Whitefield": {
+  "routes": 64,
+  "stops": 27
+ },
+ "Yelahanka": {
+  "routes": 263,
+  "stops": 50
+ },
+ "Yeshwanthpur": {
+  "routes": 247,
+  "stops": 44
+ }
+}
