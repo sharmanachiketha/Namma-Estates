@@ -55,6 +55,10 @@ Clamped to 1-10.
 
 Counts of OpenStreetMap point features within 1.5 km of each area's centre point: schools, colleges and kindergartens; hospitals, clinics and doctors; supermarkets, malls and department stores; bus stops and metro stations. Source: Geofabrik southern-zone extract dated 24 Nov 2026. Converted to a score by percentile rank across the 30 areas on a log scale. Only features mapped as single points are counted, so these are undercounts and uneven by area; parks are excluded from the score for that reason. The centre point is a typed coordinate, not the area outline.
 
+### Bus connectivity (Compare row)
+
+For each area centre point, the number of BMTC bus stops and distinct bus route numbers within 1.5 km, from the Bengaluru bus GTFS feed (valid 9 Nov 2026 to 9 Nov 2027). A route number is the first word of the feed route name, so variants like `104` and `104 KBS-IIHS` count once. Built by `build_bus_connectivity.py` into `bus_connectivity.json`. It counts which stops and routes exist. It makes no timetable, frequency or waiting-time claim: the upstream project warns its source app has inaccurate timetables and stop timings. It is not used in the liveability score or the outlook. Centre points near big bus hubs (for example MG Road) count very high, and a count does not show how useful the routes are. Congestion data from the same publisher is not used (reuse terms unverified).
+
 ### News and social sentiment
 
 Google News RSS headlines and r/bangalore search results per area, cached server-side for 7 days. An item counts only if its title names the area and its own timestamp is under 90 days old; untimestamped items are dropped. Items are de-duplicated into distinct stories and scored with a weighted keyword lexicon (metro, flood, water logging, crime and similar). At least 3 usable distinct stories are required; below that the status is "insufficient" and sentiment adds exactly 0: missing data, not a neutral reading. With enough items, tilt = net sentiment x 1.5 points, capped at +/-1. As of 25 Nov 2026, only Hebbal and KR Puram had enough fresh items; this changes as news arrives.
@@ -85,6 +89,7 @@ Each outline merges the official Greater Bengaluru Authority ward polygons (369 
 | Ward polygons | [GBA Wards Delimitation 2025, OpenCity](https://data.opencity.in/dataset/gba-wards-delimitation-2025) (369 wards, "Other (Public Domain)" license) | 2025 | Map outlines (28 areas) |
 | HSR Layout outline | [OpenStreetMap relation 17168010](https://www.openstreetmap.org/relation/17168010) (suburb boundary, ODbL) | 2026 | Map outline |
 | Amenity counts | OpenStreetMap via [Geofabrik southern-zone extract](https://download.geofabrik.de/asia/india/southern-zone.html) | 24 Nov 2026 | Liveability amenities component |
+| Bus stops and routes | [Reclaim City India_GTFS, Bengaluru bus feed](https://github.com/reclaimchennai/India_GTFS) (built by [Vonter/bmtc-gtfs](https://github.com/Vonter/bmtc-gtfs) from BMTC data; ODbL, some contents BMTC copyright). Counts in `bus_connectivity.json` are a derived database, shared under ODbL | Feed dated 9 Nov 2026, downloaded 26 Nov 2026 | Compare bus row only |
 | News headlines | [Google News RSS](https://news.google.com/rss/search) | live, 7-day cache, 90-day freshness window | Sentiment |
 | Social posts | [Reddit r/bangalore search](https://www.reddit.com/r/bangalore/search/) | live, 7-day cache, 90-day freshness window | Sentiment |
 
@@ -100,6 +105,7 @@ All links verified reachable on 25 Nov 2026. Live sentiment coverage noted in th
 - As of 25 Nov 2026, sentiment was usable in only 2 of 30 areas; coverage shifts with the news cycle.
 - The outlook has not been backtested.
 - ANAROCK's Q3 2026 report was read from a third-party host because the PDF on anarock.com would not load; the figures match ANAROCK's published numbers.
+- Bus counts show which routes exist near a centre point, not service frequency (upstream warns of inaccurate timetables); they are not scored.
 - Area outlines are ward-based approximations, not official locality limits; Electronic City has no outline.
 
 ## Change log
@@ -154,6 +160,7 @@ All links verified reachable on 25 Nov 2026. Live sentiment coverage noted in th
 - `osm_overrides.json`: HSR Layout OpenStreetMap suburb outline.
 - `boundary_provenance.json`: per-area outline source (28 ward merges, HSR from OSM, Electronic City none).
 - `build_boundaries.py`, `generate_polygons.py`: boundary build scripts (build needs shapely, not in requirements.txt).
+- `bus_connectivity.json`, `build_bus_connectivity.py`: bus stop and route counts per area and the script that builds them from the GTFS feed.
 - `sentiment_cache.json`: 7-day server cache of news and social items.
 - `requirements.txt`, `Procfile`: Render deployment (gunicorn).
 
