@@ -1,122 +1,122 @@
 {
  "BTM Layout": {
-  "routes": 322,
+  "routes": 70,
   "stops": 56
  },
  "Banashankari": {
-  "routes": 97,
+  "routes": 33,
   "stops": 69
  },
  "Bannerghatta Road": {
-  "routes": 113,
+  "routes": 29,
   "stops": 58
  },
  "Basavanagudi": {
-  "routes": 244,
+  "routes": 59,
   "stops": 85
  },
  "Begur": {
-  "routes": 52,
+  "routes": 23,
   "stops": 38
  },
  "Bellandur": {
-  "routes": 62,
+  "routes": 16,
   "stops": 11
  },
  "Electronic City": {
-  "routes": 160,
+  "routes": 39,
   "stops": 35
  },
  "HSR Layout": {
-  "routes": 252,
+  "routes": 56,
   "stops": 73
  },
  "Hebbal": {
-  "routes": 334,
+  "routes": 75,
   "stops": 54
  },
  "Indiranagar": {
-  "routes": 257,
+  "routes": 61,
   "stops": 55
  },
  "JP Nagar": {
-  "routes": 227,
+  "routes": 45,
   "stops": 66
  },
  "Jayanagar": {
-  "routes": 224,
+  "routes": 56,
   "stops": 69
  },
  "KR Puram": {
-  "routes": 187,
+  "routes": 46,
   "stops": 30
  },
  "Kalyan Nagar": {
-  "routes": 250,
+  "routes": 66,
   "stops": 74
  },
  "Kammanahalli": {
-  "routes": 159,
+  "routes": 47,
   "stops": 56
  },
  "Koramangala": {
-  "routes": 297,
+  "routes": 80,
   "stops": 59
  },
  "MG Road": {
-  "routes": 1055,
+  "routes": 277,
   "stops": 93
  },
  "Malleswaram": {
-  "routes": 367,
+  "routes": 82,
   "stops": 86
  },
  "Marathahalli": {
-  "routes": 180,
+  "routes": 51,
   "stops": 36
  },
  "Nagarabhaavi": {
-  "routes": 99,
+  "routes": 32,
   "stops": 66
  },
  "Puttenahalli": {
-  "routes": 128,
+  "routes": 24,
   "stops": 59
  },
  "RR Nagar": {
-  "routes": 193,
+  "routes": 39,
   "stops": 65
  },
  "RT Nagar": {
-  "routes": 273,
+  "routes": 79,
   "stops": 69
  },
  "Rajajinagar": {
-  "routes": 243,
+  "routes": 61,
   "stops": 85
  },
  "Sarjapur Road": {
-  "routes": 100,
+  "routes": 21,
   "stops": 24
  },
  "Singasandra": {
-  "routes": 138,
+  "routes": 29,
   "stops": 31
  },
  "Vijayanagar": {
-  "routes": 245,
+  "routes": 64,
   "stops": 70
  },
  "Whitefield": {
-  "routes": 64,
+  "routes": 34,
   "stops": 27
  },
  "Yelahanka": {
-  "routes": 263,
+  "routes": 68,
   "stops": 50
  },
  "Yeshwanthpur": {
-  "routes": 247,
+  "routes": 52,
   "stops": 44
  }
 }
