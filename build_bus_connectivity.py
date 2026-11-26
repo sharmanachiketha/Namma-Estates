@@ -1,5 +1,5 @@
 """Build bus_connectivity.json: for each of the 30 area centre points, count the BMTC bus stops
-and distinct bus route numbers (first token of the feed route name, so "104" and "104 KBS-IIHS" count once) within 1.5 km, from the Reclaim City / Vonter Bengaluru GTFS feed.
+and distinct base bus route numbers (first digits in the first word of the feed route name, so 293, 293-A, 293-B, G-293 and "293 KBS-X" count once) within 1.5 km, from the Reclaim City / Vonter Bengaluru GTFS feed.
 Counts only: which stops and routes exist. No timetable, frequency or wait-time is used.
 Usage: python build_bus_connectivity.py /path/to/unzipped/gtfs  (needs app.py COORDS)"""
 import csv, json, math, sys, re
@@ -8,11 +8,15 @@ src = open('app.py', encoding='utf-8').read()
 m = re.search(r'^COORDS = \{(.*?)^\}', src, re.S | re.M)
 COORDS = eval('{' + m.group(1) + '}')
 R = 1500.0
+def base(name):
+    w = (name.split() or [''])[0]
+    m = re.search(r'\d+', w)
+    return m.group(0) if m else w  # '293-A', 'G-293', '293E' -> '293'; names without digits stay as is
 def hav(a, b, c, d):
     p = math.pi / 180
     x = math.sin((c - a) * p / 2) ** 2 + math.cos(a * p) * math.cos(c * p) * math.sin((d - b) * p / 2) ** 2
     return 12742000 * math.asin(math.sqrt(x))
-routes = {r['route_id']: (r['route_short_name'].split() or [''])[0] for r in csv.DictReader(open(G + '/routes.txt', encoding='utf-8'))}
+routes = {r['route_id']: base(r['route_short_name']) for r in csv.DictReader(open(G + '/routes.txt', encoding='utf-8'))}
 trip_route = {r['trip_id']: r['route_id'] for r in csv.DictReader(open(G + '/trips.txt', encoding='utf-8'))}
 stops = {s['stop_id']: (float(s['stop_lat']), float(s['stop_lon'])) for s in csv.DictReader(open(G + '/stops.txt', encoding='utf-8'))}
 near = {a: set() for a in COORDS}
