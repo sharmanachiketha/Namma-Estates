@@ -1213,3 +1213,7 @@ html[data-theme="light"] .leaflet-tooltip.zone-tip { background: rgba(255,255,25
     .price-cards .card { flex: none; width: 100%; box-sizing: border-box; }
 }
 .find-partial-head{margin:12px 0 6px;font-size:12px;font-weight:600;color:#9a6700;border-top:1px solid rgba(128,128,128,.3);padding-top:8px}
+
+.bus-note { margin-top: 0.6rem; }
+.bus-note summary { cursor: pointer; color: var(--text-secondary); font-size: 0.78rem; }
+.bus-note .fine-print { margin-top: 0.4rem; }
