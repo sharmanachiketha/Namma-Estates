@@ -174,7 +174,8 @@
             { label: 'Water supply', get: s => s.water_level, show: s => waterLabel(s.water_level), best: 'max' },
             { label: 'Green canopy', get: s => s.canopy_percent, show: s => s.canopy_percent + '%', best: 'max' },
             { label: 'Flood risk', get: s => ({ Low: 2, Moderate: 1, High: 0 })[s.flood_risk], show: s => s.flood_risk, best: 'max' },
-            { label: 'Amenities', get: s => s.amenities_rating, show: s => s.amenities_rating + ' / 10', best: 'max' }
+            { label: 'Amenities', get: s => s.amenities_rating, show: s => s.amenities_rating + ' / 10', best: 'max' },
+            { label: 'Bus routes within 1.5 km (counts, not timetables)', get: s => s.bus_routes, show: s => s.bus_routes == null ? 'no data' : s.bus_routes + ' routes, ' + s.bus_stops + ' stops', best: 'max' }
         ];
         let html = '<table class="compare-table"><thead><tr><th></th>' +
             chosen.map(c => `<th style="border-bottom-color:${COMPARE_COLORS[c.i]}">${esc(c.a)}</th>`).join('') + '</tr></thead><tbody>';
@@ -190,6 +191,7 @@
         });
         html += '</tbody></table>' +
             '<p class="fine-print">Prices are asking-price estimates from public portals with their ranges and confidence. The outlook here is the baseline without live news sentiment; open the area for the full version. Ratings are fixed estimates. See About data.</p>' +
+            '<details class="bus-note"><summary>About the bus row</summary><p class="fine-print">Counts of BMTC bus stops and distinct route numbers within 1.5 km of each area centre point (not the outline), from the Bengaluru GTFS feed published by Reclaim City, built by Vonter from BMTC data, licence ODbL. It shows which routes exist, not how often they run: the upstream project warns its timetables and stop timings can be inaccurate, so no frequency or waiting time is claimed. Central areas near big bus hubs count high. Not used in the liveability score or outlook. Full note in About data.</p></details>' +
             '<div class="compare-actions">' + chosen.map(c => `<button class="mini-btn" onclick="selectAreaByName('${esc(c.a).replace(/'/g, "\\'")}')">Open ${esc(c.a)}</button>`).join('') + '</div>';
         wrap.innerHTML = html;
     }
