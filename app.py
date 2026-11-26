@@ -1143,6 +1143,15 @@ def amen_measure(a):
     return {'total': t, 'rank': round(rank, 2), 'counts': dict(zip(['education', 'health', 'parks', 'shops', 'transit'], AMEN_OSM[a]))}
 
 
+# MEASURED: BMTC bus stops and distinct bus route numbers within 1.5 km of each area's centre point, from the Bengaluru GTFS feed
+# (Reclaim City India_GTFS, built from Vonter/bmtc-gtfs; ODbL). Built by build_bus_connectivity.py. Counts only, not used in any score.
+try:
+    with open(os.path.join(os.path.dirname(os.path.abspath(__file__)), 'bus_connectivity.json'), encoding='utf-8') as _f:
+        BUS_CONN = json.load(_f)
+except Exception:
+    BUS_CONN = {}
+
+
 def calculate_liveability_score(area_name, sentiment_change_percent):
     score = 5.0
     
@@ -1492,6 +1501,8 @@ def get_summary():
             'terrain': topo,
             'flood_risk': "Low" if "Low Flood Risk" in topo else ("Moderate" if "Moderate Flood Risk" in topo else "High"),
             'amenities_rating': live.get('amenities_rating'),
+            'bus_routes': (BUS_CONN.get(area) or {}).get('routes'),
+            'bus_stops': (BUS_CONN.get(area) or {}).get('stops'),
         })
     return jsonify(rows)
 
@@ -1532,6 +1543,8 @@ def get_methodology():
              'how': 'A fixed description of elevation and flood exposure per area. No source is cited in the app.'},
             {'name': 'Liveability score', 'kind': 'mixed',
              'how': 'Starts at 5, then adds or subtracts points for water (up to 1.5), flood risk (1.5), green canopy (1.5), amenities (0.5 to 1.5) and the news signal (up to 1). Water, flood risk and canopy are FIXED per-area ratings typed into the code with no verified source. Amenities is MEASURED: counts of OpenStreetMap points within 1.5 km of the area centre (education, health, shops, transit), ranked across the 30 areas; point-mapped features only, so counts are undercounts. Only the news signal is live, and only when enough fresh headlines exist. Compare and Find use the score without the news signal.'},
+            {'name': 'Bus connectivity (Compare)', 'kind': 'sourced',
+             'how': 'Counts of BMTC bus stops, and of distinct bus route numbers that serve them, within 1.5 km of each area centre point. Source: the Bengaluru bus GTFS feed (feed dated 9 Nov 2026, valid to 9 Nov 2027) published by Reclaim City at github.com/reclaimchennai/India_GTFS, built by Vonter (github.com/Vonter/bmtc-gtfs) from BMTC data, ODbL licence; some contents are BMTC copyright. A route number is the first word of the feed route name, so variants such as 104 and 104 KBS-IIHS count once. The 30 counts are in bus_connectivity.json (derived database, shared under ODbL). Only which stops and routes exist is used. No timetable, frequency or waiting-time claim is made: the upstream project warns its source app has inaccurate timetables and stop timings, and the schedule validity dates do not show the timetable is correct. The count is not used in the liveability score or the price outlook. Stops near the centre point are counted, not the area outline, so central areas that sit next to big bus hubs score high, and a count does not show how useful the routes are.'},
             {'name': 'Area outlines on the map', 'kind': 'derived',
              'how': 'Each outline is built by merging the official Greater Bengaluru Authority ward polygons (369 wards, 2025, published on OpenCity) that match the area. Wards were chosen by name match, OpenStreetMap place points inside the ward, and the area pin. Hover an area to see its wards. These are ward-based approximations, not official locality limits. HSR Layout uses its OpenStreetMap suburb outline. Electronic City is outside the ward map, so it is a pin only.'},
         ]
